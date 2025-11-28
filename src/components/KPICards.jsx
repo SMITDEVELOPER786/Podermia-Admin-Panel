@@ -1,4 +1,4 @@
-function KPICards() {
+function KPICards({displayNone}) {
   return (
     <div className="kpi-section">
       <div className="kpi-card">
@@ -48,7 +48,9 @@ function KPICards() {
         </div>
       </div>
 
-      <div className="kpi-card">
+     {!displayNone && (
+      <>
+       <div className="kpi-card">
         <div className="kpi-icon">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6 4.03-6 9-6 9 4.8 9 6z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -89,7 +91,10 @@ function KPICards() {
           <p className="kpi-subtext">Outstanding</p>
         </div>
       </div>
-    </div>
+
+      </>
+     )}
+         </div>
   )
 }
 
