@@ -1,7 +1,14 @@
-// DataTable.jsx
 import React from "react";
 import styles from "./DataTable.module.css";
 
+/**
+ * DataTable
+ * Props:
+ *  - columns: [{ header, key, styleMap? }]
+ *      - styleMap: { value: className }  -> dynamic class per cell
+ *  - data: array of objects
+ *  - scrollHeight: height of table container
+ */
 const DataTable = ({ columns, data, scrollHeight = 400 }) => {
   return (
     <div className={styles.responsiveWrapper}>
@@ -20,21 +27,29 @@ const DataTable = ({ columns, data, scrollHeight = 400 }) => {
           <tbody>
             {data.map((row, i) => (
               <tr key={i}>
-                {columns.map((col, idx) => (
-                  <td key={idx}>
-                    {col.key === "severity" ? (
+                {columns.map((col, idx) => {
+                  const cellValue = row[col.key];
+                  const className =
+                    col.styleMap && cellValue && col.styleMap[cellValue]
+                      ? col.styleMap[cellValue]
+                      : "";
+
+                  return (
+                    <td key={idx}>
                       <span
-                        className={
-                          styles[`severity-${row[col.key].toLowerCase()}`]
-                        }
+                        className={className}
+                        style={{
+                          borderRadius: "50px",
+                          padding: "2px 10px",
+                          textAlign: "center",
+                        }}
                       >
-                        {row[col.key]}
+                        {" "}
+                        {cellValue}
                       </span>
-                    ) : (
-                      row[col.key]
-                    )}
-                  </td>
-                ))}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

@@ -31,7 +31,7 @@
 
 .filtersGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 15px;
 }
 
@@ -137,12 +137,12 @@
 
 /* Search Wrappers */
 .searchWrapperDesktop {
-  display: block; /* visible on desktop */
+  display: block; 
 }
 
 /* Mobile Search */
 .mobileSearchWrapper {
-  display: none; /* hidden on desktop by default */
+  display: none;
   gap: 8px;
   align-items: center;
   margin-bottom: 12px;
@@ -190,11 +190,11 @@
 /* Mobile Styles */
 @media (max-width: 768px) {
    .searchWrapperDesktop {
-    display: none !important; /* hide desktop search on mobile */
+    display: none !important; 
   }
 
   .mobileSearchWrapper{
-    display: flex !important; /* show mobile search */
+    display: flex !important;
   }
 
   .filterBox {

@@ -51,7 +51,8 @@ const ActivityLog = () => {
       );
     }
 
-    if (filters.module) data = data.filter((log) => log.module === filters.module);
+    if (filters.module)
+      data = data.filter((log) => log.module === filters.module);
     if (filters.admin) data = data.filter((log) => log.admin === filters.admin);
     if (filters.severity)
       data = data.filter(
@@ -74,7 +75,16 @@ const ActivityLog = () => {
     { header: "Action", key: "action" },
     { header: "Module", key: "module" },
     { header: "Target User", key: "target" },
-    { header: "Severity", key: "severity" },
+    {
+      header: "Severity",
+      key: "severity",
+      styleMap: {
+        Critical: styles.severityCritical,
+        High: styles.severityHigh,
+        Medium: styles.severityMedium,
+        Low: styles.severityLow,
+      },
+    },
     { header: "IP Address", key: "ip" },
     { header: "Detail", key: "detail" },
   ];
@@ -137,9 +147,9 @@ const ActivityLog = () => {
   const exportCSV = () => {
     setLoadingCSV(true);
     setTimeout(() => {
-      const headers = columns.map(c => c.header).join(",");
-      const rows = filteredLogs.map(log =>
-        columns.map(c => `"${log[c.key]}"`).join(",")
+      const headers = columns.map((c) => c.header).join(",");
+      const rows = filteredLogs.map((log) =>
+        columns.map((c) => `"${log[c.key]}"`).join(",")
       );
       const csv = [headers, ...rows].join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -167,15 +177,21 @@ const ActivityLog = () => {
         doc.text(`${m.label}: ${m.value}`, 14 + i * 60, yPos);
       });
 
-      const tableColumn = columns.map(c => c.header);
-      const tableRows = filteredLogs.map(log => columns.map(c => log[c.key]));
+      const tableColumn = columns.map((c) => c.header);
+      const tableRows = filteredLogs.map((log) =>
+        columns.map((c) => log[c.key])
+      );
 
       autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
         startY: yPos + 10,
         theme: "grid",
-        headStyles: { fillColor: [41, 92, 191], textColor: 255, fontStyle: "bold" },
+        headStyles: {
+          fillColor: [41, 92, 191],
+          textColor: 255,
+          fontStyle: "bold",
+        },
         bodyStyles: { textColor: 50, fontSize: 10 },
         alternateRowStyles: { fillColor: [240, 240, 240] },
         margin: { top: 10, left: 10, right: 10 },
@@ -202,39 +218,57 @@ const ActivityLog = () => {
 
       <Div className="filter-and-data">
         <FilterSearch
-          modules={modulesList}
-          severities={severityList}
-          admins={adminList}
+          config={{
+            showSearch: true,
+            searchPlaceholder: "Search Logs",
+            showDate: true,
+            dropdowns: [
+              { key: "module", label: "All Modules", options: modulesList },
+              {
+                key: "severity",
+                label: "All Severities",
+                options: severityList,
+              },
+              { key: "admin", label: "All Admin", options: adminList },
+            ],
+          }}
           onFilterChange={applyFilters}
         />
 
-     <Div className="activity-and-btns flexRow">
-  <h3>{filteredLogs.length} Activities Found</h3>
-  <Div className="buttons flexRow">
-    <button className={styles.exportBtn} onClick={exportCSV} disabled={loadingCSV}>
-      {loadingCSV ? (
-        <Loader2 className={styles.spin} size={16} />
-      ) : (
-        <>
-          <span className={styles.desktopText}>Export to </span>
-          <span className={styles.mobileText}>CSV</span>
-        </>
-      )}
-    </button>
+        <Div className="activity-and-btns flexRow">
+          <h3>{filteredLogs.length} Activities Found</h3>
+          <Div className="buttons flexRow">
+            <button
+              className={styles.exportBtn}
+              onClick={exportCSV}
+              disabled={loadingCSV}
+            >
+              {loadingCSV ? (
+                <Loader2 className={styles.spin} size={16} />
+              ) : (
+                <>
+                  <span className={styles.desktopText}>Export to </span>
+                  <span className={styles.mobileText}>CSV</span>
+                </>
+              )}
+            </button>
 
-    <button className={styles.exportBtn} onClick={exportPDF} disabled={loadingPDF}>
-      {loadingPDF ? (
-        <Loader2 className={styles.spin} size={16} />
-      ) : (
-        <>
-          <span className={styles.desktopText}>Export to </span>
-          <span className={styles.mobileText}>PDF</span>
-        </>
-      )}
-    </button>
-  </Div>
-</Div>
-
+            <button
+              className={styles.exportBtn}
+              onClick={exportPDF}
+              disabled={loadingPDF}
+            >
+              {loadingPDF ? (
+                <Loader2 className={styles.spin} size={16} />
+              ) : (
+                <>
+                  <span className={styles.desktopText}>Export to </span>
+                  <span className={styles.mobileText}>PDF</span>
+                </>
+              )}
+            </button>
+          </Div>
+        </Div>
 
         <DataTable columns={columns} data={filteredLogs} scrollHeight={400} />
       </Div>

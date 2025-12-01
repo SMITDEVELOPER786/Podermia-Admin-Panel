@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./FilterSearch.module.css";
 import { Search, SlidersHorizontal, Calendar, RotateCcw, ChevronDown } from "lucide-react";
 
+// ===== Reusable Dropdown Component =====
 const CustomSelect = ({ label, value, onChange, options }) => {
   const [open, setOpen] = useState(false);
 
@@ -34,15 +35,27 @@ const CustomSelect = ({ label, value, onChange, options }) => {
   );
 };
 
-const FilterSearch = ({ modules = [], severities = [], admins = [], onFilterChange }) => {
-  const [filters, setFilters] = useState({
-    search: "",
-    module: "",
-    severity: "",
-    admin: "",
-    date: "",
-  });
+// ===== Main Filter Component =====
+const FilterSearch = ({
+  config = {},
+  onFilterChange,
+}) => {
+  const {
+    showSearch = true,
+    searchPlaceholder = "Search...",
+    dropdowns = [],         // [{ key: "module", label: "Module", options: [...] }]
+    showDate = false,
+    showMonth = false,
+  } = config;
 
+  const initialFilters = {
+    search: "",
+    date: "",
+    month: "",
+    ...dropdowns.reduce((acc, d) => ({ ...acc, [d.key]: "" }), {}),
+  };
+
+  const [filters, setFilters] = useState(initialFilters);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const updateFilter = (key, value) => {
@@ -52,9 +65,8 @@ const FilterSearch = ({ modules = [], severities = [], admins = [], onFilterChan
   };
 
   const resetFilters = () => {
-    const reset = { search: "", module: "", severity: "", admin: "", date: "" };
-    setFilters(reset);
-    onFilterChange(reset);
+    setFilters(initialFilters);
+    onFilterChange(initialFilters);
   };
 
   return (
@@ -64,24 +76,27 @@ const FilterSearch = ({ modules = [], severities = [], admins = [], onFilterChan
         Filter & Search
       </button>
 
-      {/* Mobile-only Search */}
-      <div className={styles.mobileSearchWrapper}>
-        <Search size={18} className={styles.icon} />
-        <input
-          type="text"
-          placeholder="Search Logs"
-          value={filters.search}
-          onChange={(e) => updateFilter("search", e.target.value)}
-        />
-      </div>
+      {/* Mobile Search (Conditional) */}
+      {showSearch && (
+        <div className={styles.mobileSearchWrapper}>
+          <Search size={18} className={styles.icon} />
+          <input
+            type="text"
+            placeholder={searchPlaceholder}
+            value={filters.search}
+            onChange={(e) => updateFilter("search", e.target.value)}
+          />
+        </div>
+      )}
 
-      {/* Overlay / Filter Box */}
+      {/* Filter Box */}
       <div className={`${styles.filterBox} ${mobileOpen ? styles.mobileOpen : ""}`}>
         <div className={styles.header}>
           <div className={styles.heading}>
             <SlidersHorizontal size={20} />
             <h3>Filter & Search</h3>
           </div>
+
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <button onClick={resetFilters} className={styles.resetBtn}>
               <RotateCcw size={18} />
@@ -94,50 +109,53 @@ const FilterSearch = ({ modules = [], severities = [], admins = [], onFilterChan
         </div>
 
         <div className={styles.filtersGrid}>
-          {/* Desktop Search (hidden on mobile) */}
-          <div className={styles.inputWrapper}>
-            <Search size={18} className={styles.icon} />
-            <input
-              type="text"
-              placeholder="Search Logs"
-              value={filters.search}
-              onChange={(e) => updateFilter("search", e.target.value)}
+          {/* Desktop Search (Conditional) */}
+          {showSearch && (
+            <div className={styles.inputWrapper}>
+              <Search size={18} className={styles.icon} />
+              <input
+                type="text"
+                placeholder={searchPlaceholder}
+                value={filters.search}
+                onChange={(e) => updateFilter("search", e.target.value)}
+              />
+            </div>
+          )}
+
+          {/* ===== Dynamic Dropdowns ===== */}
+          {dropdowns.map((d) => (
+            <CustomSelect
+              key={d.key}
+              label={d.label}
+              value={filters[d.key]}
+              options={d.options}
+              onChange={(v) => updateFilter(d.key, v)}
             />
-          </div>
+          ))}
 
-          {/* Module */}
-          <CustomSelect
-            label="All Modules"
-            value={filters.module}
-            options={modules}
-            onChange={(v) => updateFilter("module", v)}
-          />
+          {/* ===== Date (Conditional) ===== */}
+          {showDate && (
+            <div className={styles.inputWrapper}>
+              <Calendar size={18} className={styles.icon} />
+              <input
+                type="date"
+                value={filters.date}
+                onChange={(e) => updateFilter("date", e.target.value)}
+              />
+            </div>
+          )}
 
-          {/* Severities */}
-          <CustomSelect
-            label="All Severities"
-            value={filters.severity}
-            options={severities}
-            onChange={(v) => updateFilter("severity", v)}
-          />
-
-          {/* Admin */}
-          <CustomSelect
-            label="All Admins"
-            value={filters.admin}
-            options={admins}
-            onChange={(v) => updateFilter("admin", v)}
-          />
-
-          {/* Single Date */}
-          <div className={styles.inputWrapper}>
-            <Calendar size={18} className={styles.icon} />
-            <input
-              type="date"
-              value={filters.date}
-              onChange={(e) => updateFilter("date", e.target.value)}
-            />
-          </div>
+          {/* ===== Month (Conditional) ===== */}
+          {showMonth && (
+            <div className={styles.inputWrapper}>
+              <Calendar size={18} className={styles.icon} />
+              <input
+                type="month"
+                value={filters.month}
+                onChange={(e) => updateFilter("month", e.target.value)}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>
