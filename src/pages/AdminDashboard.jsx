@@ -41,12 +41,15 @@ function AdminDashboard() {
   }
 
   return (
+    <>
+     <Header activeTab={activeTab} />
     <div className="admin-dashboard">
-      <Header activeTab={activeTab} />
+     
       <KPICards />
       <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
       {renderContent()}
     </div>
+    </>
   )
 }
 

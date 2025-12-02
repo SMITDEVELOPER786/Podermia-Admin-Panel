@@ -1,4 +1,6 @@
-function KPICards({displayNone}) {
+import { UserRoundIcon } from "lucide-react"
+
+function KPICards({displayNone, suspendedCard}) {
   return (
     <div className="kpi-section">
       <div className="kpi-card">
@@ -47,6 +49,19 @@ function KPICards({displayNone}) {
           <p className="kpi-subtext">Need Review</p>
         </div>
       </div>
+
+      {suspendedCard &&(
+         <div className="kpi-card">
+        <div className="kpi-icon">
+          <UserRoundIcon size={25} color="currentColor"/>
+        </div>
+        <div className="kpi-content">
+          <h3 className="kpi-value">0</h3>
+          <p className="kpi-label">Suspended</p>
+          <p className="kpi-subtext">Today</p>
+        </div>
+      </div>
+      )}
 
      {!displayNone && (
       <>

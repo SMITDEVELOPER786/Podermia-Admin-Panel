@@ -1,0 +1,165 @@
+:root {
+  --primary: #295cbf;
+  --btnColor: #1e3a5f;
+  --btnHover: #1a3250;
+  --txtLight: #675f5f;
+  --lightBG: #f3f3f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.referrals-section {
+  padding: 0 2% 2% 2%;
+}
+
+.admin-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1%;
+  margin-bottom: 10px;
+}
+
+.admin-heading h3 {
+  color: var(--primary);
+  font-size: 30px;
+}
+
+.admin-heading p {
+  padding: 2px 10px;
+  border: 1px solid var(--primary);
+  border-radius: 50px;
+  font-size: 13px;
+}
+
+.referral-content {
+  padding: 1%;
+  background-color: white;
+  border: 1px solid;
+}
+
+.compaigns-head-and-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.compaigns-head-and-button h3 {
+  color: #295cbf;
+  font-size: 25px;
+}
+
+.compaignsStatus {
+  font-weight: 500;
+}
+
+.compaigns-form-wrapper {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.input-block {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative; 
+}
+
+.input-block label{
+    font-weight: 500;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.smallText {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.inputField {
+  width: 100%;
+  height: 45px;
+  border-radius: 8px;
+  border: 1px solid #cccccc98;
+  padding: 0 12px;
+  font-size: 14px;
+  background-color: #F3F3F5;
+}
+
+.infoText {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: -10px;
+}
+
+.updateButton {
+  width: 100%;
+  height: 48px;
+  background: #1c3faa;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.updateButton:hover {
+  background: #153289;
+}
+
+.dropdownWrapper {
+  width: 100%;
+  height: 45px;
+  border: 1px solid #cccccc98;
+  border-radius: 8px;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: #F3F3F5;
+  z-index: 10;
+}
+
+.dropdownList {
+  position: absolute;
+  top: 80px; 
+  left: 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #F3F3F5;
+  overflow: hidden;
+  z-index: 50; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dropdownItem {
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.dropdownItem:hover {
+  background:white;
+}

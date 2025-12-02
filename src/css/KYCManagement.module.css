@@ -292,7 +292,7 @@ padding-right: 50px;
   color: black;
 }
 
-/* Hide default checkbox */
+
 .checkboxLabel input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -308,13 +308,13 @@ padding-right: 50px;
   transition: 0.3s;
 }
 
-/* Checked state */
+
 .checkboxLabel input[type="checkbox"]:checked {
   background-color: #264DAF; /* box blue when checked */
 
 }
 
-/* Tick mark */
+
 .checkboxLabel input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
@@ -335,7 +335,6 @@ padding-right: 50px;
   font-style: initial;
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   .restrictionsGrid {
     grid-template-columns: 1fr;

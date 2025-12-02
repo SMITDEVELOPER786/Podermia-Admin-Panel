@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
 import styles from "../css/KYCModal.module.css";
+import uploadImg from "../assets/upload.png";
+import document1Img from "../assets/document1.png";
+import document2Img from "../assets/document2.png";
+import document3Img from "../assets/document3.png";
+import userIconImg from "../assets/userIcon.png";
 
-/**
- * Props:
- *  - open: boolean
- *  - onClose: function
- *  - user: object { name, type, email, phone, userId, submitted, trn, address, status, netWorth, incomeSources, investmentPurpose }
- *
- * Usage:
- * <KYCModal open={open} onClose={()=>setOpen(false)} user={userData} />
- */
 
 export default function KYCModal({ open, onClose, user }) {
   if (!open || !user) return null;
 
-  const LOCAL_KEY = "kyc_exact_ui";
+  const LOCAL_KEY = "kyc_ui_data";
   const [edit, setEdit] = useState(false);
+  const [activeTab, setActiveTab] = useState("summary");
   const [form, setForm] = useState({ ...user });
 
   useEffect(() => {
@@ -23,13 +20,10 @@ export default function KYCModal({ open, onClose, user }) {
     if (saved) {
       try {
         setForm(JSON.parse(saved));
-      } catch (e) {
+      } catch {
         setForm({ ...user });
       }
-    } else {
-      setForm({ ...user });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } else setForm({ ...user });
   }, [open]);
 
   const handleChange = (e) => {
@@ -54,7 +48,7 @@ export default function KYCModal({ open, onClose, user }) {
   ];
 
   return (
-    <div className={styles.overlay} role="dialog" aria-modal="true">
+    <div className={styles.overlay}>
       <div className={styles.modal}>
         {/* HEADER */}
         <div className={styles.header}>
@@ -65,7 +59,6 @@ export default function KYCModal({ open, onClose, user }) {
               onClose();
               setEdit(false);
             }}
-            aria-label="Close"
           >
             ✕
           </button>
@@ -73,99 +66,259 @@ export default function KYCModal({ open, onClose, user }) {
 
         {/* TABS */}
         <div className={styles.tabs}>
-          <button className={`${styles.tab} ${styles.active}`}>Summary</button>
-          <button className={styles.tab}>BVN/NIN</button>
-          <button className={styles.tab}>Documents</button>
+          <button
+            className={`${styles.tab} ${
+              activeTab === "summary" && styles.active
+            }`}
+            onClick={() => setActiveTab("summary")}
+          >
+            Summary
+          </button>
+
+          <button
+            className={`${styles.tab} ${
+              activeTab === "bvn" && styles.active
+            }`}
+            onClick={() => setActiveTab("bvn")}
+          >
+            BVN/NIN
+          </button>
+
+          <button
+            className={`${styles.tab} ${
+              activeTab === "docs" && styles.active
+            }`}
+            onClick={() => setActiveTab("docs")}
+          >
+            Documents
+          </button>
         </div>
-
-        {/* SUMMARY CARD */}
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <span>User Summary</span>
-
-            {!edit ? (
-              <button
-                className={styles.editBtn}
-                onClick={() => setEdit(true)}
-                type="button"
-              >
-                Edit
-              </button>
-            ) : (
-              <div className={styles.editBtns}>
-                <button
-                  className={styles.cancelBtn}
-                  type="button"
-                  onClick={() => {
-                    setForm(JSON.parse(localStorage.getItem(LOCAL_KEY)) || user);
-                    setEdit(false);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button className={styles.saveBtn} type="button" onClick={saveForm}>
-                  Save
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* GRID */}
-          <div className={styles.grid}>
-            {fields.map(([label, key, locked]) => (
-              <div key={key}>
-                <strong>{label}</strong>
-
-                {key === "address" ? (
-                  <textarea
-                    name={key}
-                    disabled={!edit || !!locked}
-                    value={form[key] || ""}
-                    onChange={handleChange}
-                    className={!edit || locked ? styles.value : styles.inputArea}
-                    placeholder={edit && !locked ? "Enter address..." : ""}
-                  />
+        {activeTab === "summary" && (
+          <>
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+  <img src={userIconImg} alt="user" className={styles.userImg} />
+ <span>User Summary</span>
+                {!edit ? (
+                  <button
+                    className={styles.editBtn}
+                    onClick={() => setEdit(true)}
+                  >
+                    <svg width="14" height="14" fill="currentColor">
+                      <path d="M13.3 2.7l-1-1a1 1 0 00-1.4 0L4 8.6V11h2.4l6.9-6.9a1 1 0 000-1.4z"/>
+                    </svg>
+                    Edit
+                  </button>
                 ) : (
-                  <input
-                    name={key}
-                    disabled={!edit || !!locked}
-                    value={form[key] || ""}
-                    onChange={handleChange}
-                    className={!edit || locked ? styles.value : styles.input}
-                    placeholder={edit && !locked ? `Enter ${label}` : ""}
-                  />
+                  <div className={styles.editBtns}>
+                    <button
+                      className={styles.cancelBtn}
+                      onClick={() => {
+                        setForm(
+                          JSON.parse(localStorage.getItem(LOCAL_KEY)) || user
+                        );
+                        setEdit(false);
+                      }}
+                    >
+                      Cancel
+                    </button>
+
+                    <button className={styles.saveBtn} onClick={saveForm}>
+                      Save
+                    </button>
+                  </div>
                 )}
               </div>
-            ))}
+
+           <div className={styles.summaryGrid}>
+  {fields.map(([label, key, locked]) => (
+    <div key={key} className={styles.summaryRow}>
+      <span className={styles.summaryLabel}>{label}</span>
+
+      {!edit ? (
+        <span className={styles.summaryValue}>{form[key] || "-"}</span>
+      ) : key === "address" ? (
+        <textarea
+          name={key}
+          value={form[key] || ""}
+          onChange={handleChange}
+          className={styles.summaryInputArea}
+        />
+      ) : (
+        <input
+          name={key}
+          value={form[key] || ""}
+          onChange={handleChange}
+          className={styles.summaryInput}
+        />
+      )}
+    </div>
+  ))}
+</div>
+
+        
+
+              {/* KYC STATUS */}
+              <p className={styles.kycRow}>
+                <strong>KYC Status:</strong>
+
+                {!edit ? (
+                  <span
+                    className={`${styles.statusTag} ${
+                      form.status === "Approved"
+                        ? styles.statusApproved
+                        : form.status === "Under Review"
+                        ? styles.statusReview
+                        : styles.statusPending
+                    }`}
+                  >
+                    {form.status}
+                  </span>
+                ) : (
+                  <select
+                    name="status"
+                    value={form.status || "Pending"}
+                    onChange={handleChange}
+                    className={styles.dropdown}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Under Review">Under Review</option>
+                  </select>
+                )}
+              </p>
+            </div>
+
+            {/* Investment Info */}
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <span style={{fontWeight: "600"}}>Investment Information</span>
+              </div>
+
+              <p className={styles.infoBlock}>
+                <span className={styles.infoLabel}>Aggregate Net Worth:</span>
+                <br />
+                {!edit ? (
+                  <span className={styles.infoValue}>
+                    {form.netWorth || "-"}
+                  </span>
+                ) : (
+                  <input
+                    name="netWorth"
+                    value={form.netWorth || ""}
+                    onChange={handleChange}
+                    className={styles.input}
+                  />
+                )}
+              </p>
+
+              <p className={styles.infoBlock}>
+                <span className={styles.infoLabel}>
+                  Sources of Investment Funds:
+                </span>
+                <br />
+                {!edit ? (
+                  <span className={styles.infoValue}>
+                    {form.incomeSources || "-"}
+                  </span>
+                ) : (
+                  <input
+                    name="incomeSources"
+                    value={form.incomeSources || ""}
+                    onChange={handleChange}
+                    className={styles.input}
+                  />
+                )}
+              </p>
+
+              <p className={styles.infoBlock}>
+                <span className={styles.infoLabel}>Purpose of Investment:</span>
+                <br />
+                {!edit ? (
+                  <span className={styles.infoValue}>
+                    {form.investmentPurpose || "-"}
+                  </span>
+                ) : (
+                  <input
+                    name="investmentPurpose"
+                    value={form.investmentPurpose || ""}
+                    onChange={handleChange}
+                    className={styles.input}
+                  />
+                )}
+              </p>
+            </div>
+          </>
+        )}
+
+        {activeTab === "bvn" && (
+          <div className={styles.bvnCard}>
+            <h4 className={styles.sectionTitle}>BVN/NIN Verification</h4>
+
+            <div className={styles.row}>
+              <div className={styles.column}>
+                <p className={styles.label}>BVN Number</p>
+                <p className={styles.bigValue}>12345678901</p>
+                <span className={styles.verifiedTag}>Verified</span>
+              </div>
+
+              <div className={styles.column}>
+                <p className={styles.label}>NIN Number</p>
+                <p className={styles.bigValue}>12345678901234</p>
+                <span className={styles.verifiedTag}>Verified</span>
+              </div>
+            </div>
+
+            <h4 className={styles.sectionTitle2}>Matched Data</h4>
+
+            <div className={styles.matchRow}>
+              <div className={styles.matchBox}>
+                <p className={styles.matchLabel}>Name</p>
+                <span className={styles.matchBtn}>Match</span>
+              </div>
+
+              <div className={styles.matchBox}>
+                <p className={styles.matchLabel}>Date of Birth</p>
+                <span className={styles.matchBtn}>Match</span>
+              </div>
+
+              <div className={styles.matchBox}>
+                <p className={styles.matchLabel}>Phone</p>
+                <span className={styles.matchBtn}>Match</span>
+              </div>
+            </div>
           </div>
+        )}
 
-          <p className={styles.kycRow}>
-            <strong>KYC Status:</strong>
-            <span className={styles.statusTag}>{form.status || "Pending"}</span>
-          </p>
-        </div>
+        {activeTab === "docs" && (
+          <div className={styles.card}>
 
-        {/* INVESTMENT SECTION */}
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <span>Investment Information</span>
+            <div className={styles.uploadRow}>
+              <img src={uploadImg} className={styles.uploadIconImg} />
+              <span className={styles.uploadText}>Upload Documents</span>
+            </div>
+
+            <div className={styles.docsGrid}>
+              <div className={styles.docBox}>
+                <img src={document1Img} className={styles.docImg} />
+                <p className={styles.docName}>National ID</p>
+                <span className={styles.docStatus}>Uploaded</span>
+              </div>
+
+              <div className={styles.docBox}>
+                <img src={document2Img} className={styles.docImg} />
+                <p className={styles.docName}>Passport Photo</p>
+                <span className={styles.docStatus}>Uploaded</span>
+              </div>
+
+              <div className={styles.docBox}>
+                <img src={document3Img} className={styles.docImg} />
+                <p className={styles.docName}>Utility Bills</p>
+                <span className={styles.docStatus}>Uploaded</span>
+              </div>
+            </div>
           </div>
-
-          <p className={styles.infoBlock}>
-            <span className={styles.infoLabel}>Aggregate Net Worth:</span>
-            <span className={styles.infoValue}>{form.netWorth || "-"}</span>
-          </p>
-
-          <p className={styles.infoBlock}>
-            <span className={styles.infoLabel}>Sources of Investment Funds:</span>
-            <span className={styles.infoValue}>{form.incomeSources || "-"}</span>
-          </p>
-
-          <p className={styles.infoBlock}>
-            <span className={styles.infoLabel}>Purpose of Investment:</span>
-            <span className={styles.infoValue}>{form.investmentPurpose || "-"}</span>
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );

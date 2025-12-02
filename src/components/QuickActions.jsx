@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+
+
 function QuickActions() {
   const navigate = useNavigate();
   const handleClick = (link) => {
@@ -9,7 +11,7 @@ function QuickActions() {
     <div className="quick-actions-section">
       <h3 className="quick-actions-title">Quick Actions</h3>
       <div className="quick-actions">
-        <button className="quick-action-btn">
+        <button className="quick-action-btn" onClick={()=> handleClick('/users')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -28,7 +30,7 @@ function QuickActions() {
           </svg>
           View Logs
         </button>
-        <button className="quick-action-btn">
+        <button className="quick-action-btn" onClick={() => handleClick('/admin/referrals')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

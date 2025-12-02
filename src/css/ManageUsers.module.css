@@ -1,0 +1,112 @@
+:root {
+  --primary: #295cbf;
+  --btnColor: #1e3a5f;
+  --btnHover: #1a3250;
+  --txtLight: #675f5f;
+  --lightBG: #f3f3f5;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.users-section {
+  padding: 2%;
+  display: flex;
+  flex-direction: column;
+}
+
+.head-and-details {
+  margin-bottom: 20px;
+  gap: 20px;
+  align-items: center;
+}
+.backBtn {
+  height: fit-content;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.backArrow {
+  color: black;
+  transition: 0.3s ease-in-out;
+}
+.backBtn:hover .backArrow {
+  color: #675f5f;
+}
+.head-and-details h2 {
+  font-size: 30px;
+  color: #295cbf;
+  font-weight: 600;
+}
+.head-and-details p {
+  color: #675f5f;
+  font-size: 18px;
+  font-weight: 500;
+}
+.table-wrapper {
+  margin-top: 20px;
+}
+/* Account Type */
+.accountBasic, .accountPremium, .accountStandard {
+border: 1px solid var(--primary);
+}
+
+
+/* KYC */
+.kycVerified {
+ background-color: #d1e7dd;
+  color: #0f5132;
+  border-radius: 50px;
+}
+.kycPending {
+  background-color: #fff3cd;
+  color: #664d03;
+
+}
+.kycRejected {
+  background-color: #f8d7da;
+  color: #842029;
+
+}
+
+/* Status */
+.statusActive {
+  background-color: #d1e7dd;
+  color: #0f5132;
+
+}
+.statusFlagged {
+  background-color: #fff3cd;
+  color: #664d03;
+
+}
+.statusInactive {
+  background-color: #f8d7da;
+  color: #842029;
+
+}
+.exportBtn{
+    background-color: var(--btnColor);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    width: fit-content;
+    align-self: flex-end;
+}
+.exportBtn:hover {
+  background-color: var(--btnHover);
+}

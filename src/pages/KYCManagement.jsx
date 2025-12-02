@@ -3,15 +3,21 @@ import styles from "../css/KYCManagement.module.css";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
 import KYCModal from "../components/KYCModal";
+import KYCBusinessModal from "../components/KYCBusinessModal";
 
 export default function KYCManagement() {
 
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const handleView = (userData) => {
     setSelectedUser(userData);
-    setOpenModal(true);
+
+    if (userData.type === "Business") {
+      setOpenModal("business");
+    } else {
+      setOpenModal("individual");
+    }
   };
 
   return (
@@ -219,7 +225,27 @@ export default function KYCManagement() {
         </div>
       </div>
 
-      <KYCModal open={openModal} onClose={() => setOpenModal(false)} user={selectedUser} />
+      {openModal === "individual" && selectedUser && (
+        <KYCModal
+          open={openModal === "individual"}
+          user={selectedUser}
+          onClose={() => {
+            setOpenModal(null);
+            setSelectedUser(null);
+          }}
+        />
+      )}
+
+      {openModal === "business" && selectedUser && (
+        <KYCBusinessModal
+          open={openModal === "business"}
+          user={selectedUser}
+          onClose={() => {
+            setOpenModal(null);
+            setSelectedUser(null);
+          }}
+        />
+      )}
     </div>
   );
 }
