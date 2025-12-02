@@ -1,0 +1,408 @@
+.wrapper {
+  padding: 16px;
+  font-family: Inter, sans-serif;
+  max-width: 1380px;
+  width: 100%;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+
+.headerBox {
+  background: #bfe1ff;
+  padding: 28px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.headerTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.headerAdmin {
+  margin: 2px 0;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.headerSub {
+  margin: 3px 0;
+  font-size: 14px;
+  color: #4a4a4a;
+}
+
+.sendReminderToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  width: 100%;
+  border: 1px solid #dce0e5;
+  border-radius: 8px;
+  padding: 16px 12px;
+  background: white;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.sendReminderToggle span {
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+}
+
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+}
+
+.toggleSwitch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 28px;
+  transition: 0.4s;
+}
+
+.toggleSlider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+.toggleSwitch input:checked + .toggleSlider {
+  background-color: #1a73e8;
+
+}
+
+.toggleSwitch input:checked + .toggleSlider::before {
+  transform: translateX(16px);
+}
+
+.contentPanel {
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.kycPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+
+}
+
+.panelTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.kycHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ced4da;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 10px 22px;
+  padding-right: 60px;
+}
+
+.searchIcon {
+  font-size: 14px;
+  color: #555;
+  margin-right: 6px;
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  width: 140px;
+}
+
+.btnOverride {
+  background: #264DAF;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.kycTableContainer {
+  margin-top: 12px;
+ overflow-x: auto; 
+ 
+border-radius: 20px;
+border: #656363 1px solid;
+margin-left: -15px;
+overflow-y: auto;
+ overflow-x: auto;
+}
+
+
+.kycTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+    max-width: 200%;
+    overflow-y: auto;
+}
+
+.kycTable th {
+  text-align: left;
+  background: #f3f7fa;
+padding: 18px;
+  border-bottom: 1px solid #888686;
+  padding-left: 86px;
+}
+
+.kycTable td {
+padding: 18px;
+  border-bottom: 1px solid #888686;
+  padding-left: 70px;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-weight: 600;
+}
+
+.userEmail {
+  font-size: 12px;
+  color: #555;
+}
+
+.statusBadge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.statusPending,
+.statusUnderReview,
+.statusApproved {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.statusPending {
+  background: #ffffff;
+  padding: 6px 26px;
+  color: #264DAF;
+  border-color: #264DAF;
+}
+
+.statusUnderReview {
+  background: #D4183D;
+  color: #ffffff;
+    padding: 6px 12px;
+}
+
+.statusApproved {
+  background: #264DAF;
+  color: #ffffff;
+    padding: 6px 26px;
+}
+
+
+.btnViewDetail {
+ background: #264DAF;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.adminBox {
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 12px;
+  padding: 22px;
+padding-left: 30px;
+padding-right: 50px;
+}
+
+.adminIconTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.adminIcon {
+  font-size: 32px;
+}
+
+.restrictionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: black;
+}
+
+
+.checkboxLabel input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  background: white;
+  display: inline-block;
+  transition: 0.3s;
+}
+
+
+.checkboxLabel input[type="checkbox"]:checked {
+  background-color: #264DAF; /* box blue when checked */
+
+}
+
+
+.checkboxLabel input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0px;
+  width: 6px;
+  height: 12px;
+  border: 2px solid white; /* tick white on blue */
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.panelTitle
+{
+  color: #000000;
+  font-weight: 600;
+  font-size: 22px;
+  font-style: initial;
+}
+
+@media (max-width: 600px) {
+  .restrictionsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kycPanelHeader {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .kycHeaderActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .kycHeaderActions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .searchBar {
+    width: 100%;
+  }
+
+  .btnOverride {
+    width: 100%;
+    text-align: center;
+  }
+  .adminBox {
+    width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-sizing: border-box;
+  }
+  .restrictionsGrid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .panelTitle{
+    font-size: 14px;
+  }
+  .adminIcon{
+    font-size: 60px;
+  }
+
+ .checkboxLabel {
+    display: flex;          /* keep checkbox and text in same line */
+    align-items: center;    /* vertically center */
+    gap: 8px;               /* space between checkbox and text */
+    flex-wrap: nowrap;      /* prevent text from moving to next line */
+    width: 100%;
+  }
+
+  .checkboxLabel input[type="checkbox"] {
+    flex-shrink: 0;         /* keep checkbox size fixed */
+    width: 18px;
+    height: 18px;
+  }
+
+  .checkboxLabel span,
+  .checkboxLabel {
+    white-space: normal;    /* allow text to wrap but keep checkbox inline */
+  }
+}
