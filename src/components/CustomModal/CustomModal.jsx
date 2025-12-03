@@ -11,7 +11,6 @@ const CustomModal = ({
   showClose = true,
   overlayClose = true,
 }) => {
-
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -37,12 +36,14 @@ const CustomModal = ({
     <div className={styles.overlay} onClick={handleOverlayClick}>
       <div
         className={styles.modalBox}
-        style={{ width }}
+        style={{ "--modal-width": width }}
         onClick={stopPropagation}
       >
         {title && (
           <div className={styles.header}>
-            <h2 className={styles.title} style={{ color: titleColor }}>{title}</h2>
+            <h2 className={styles.title} style={{ color: titleColor }}>
+              {title}
+            </h2>
             {showClose && (
               <button className={styles.closeBtn} onClick={onClose}>
                 ✕

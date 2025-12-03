@@ -4,6 +4,11 @@
   --btnHover: #1a3250;
   --txtLight: #675f5f;
   --lightBG: #f3f3f5;
+  --success: #0a0;
+  --danger: #e05a5a;
+  --muted: #666666;
+  --light-bg: #f7f7f8;
+  --flag-bg: #fff6f6;
 }
 
 * {
@@ -405,7 +410,7 @@
 
 .payout-body{
   align-items: center;
-  gap: 40px;
+  gap: 50px;
 }
 
 .payout-body p{
@@ -441,6 +446,244 @@
   align-items: center;
   gap: 25px;
 }
+.detailsContainer{
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.detailsHeader{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.detailsLeft{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.referrerName{
+  margin: 0;
+  font-size: 18px;
+}
+
+.inviteeName{
+  margin: 0;
+  color: var(--muted);
+}
+
+.detailsRight{
+  text-align: right;
+}
+
+.amountGreen{
+  margin: 0;
+  font-weight: 600;
+  color: var(--success);
+}
+
+.muted{
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.detailsList{
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.flaggedBox{
+  border: 1px solid #e6b8b8;
+  background: var(--flag-bg);
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.flagIcon{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+
+.flaggedTitle{
+  margin: 0;
+  font-weight: 700;
+  color: #c22;
+}
+
+.flaggedText{
+  margin: 0;
+  color: #a33;
+}
+
+.moreDetails{
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.actionsRow{
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn{
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.btnClose{
+  background: transparent;
+  border: 1px solid #ddd;
+}
+
+.btnApprove{
+  background: var(--primary);
+  color: white;
+}
+
+.btnReject{
+  background: var(--danger);
+  color: white;
+}
+/* Export */
+
+
+.exportTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1c67da;
+  margin-bottom: 25px;
+}
+
+.btnRow {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.exportBtn {
+  flex: 1;
+  padding: 12px 0;
+  border: 2px solid #1c67da;
+  background: transparent;
+  color: #1c67da;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.exportBtn:hover {
+  background: #1c67da;
+  color: white;
+}
+
+.label {
+  font-size: 15px;
+  margin-bottom: 8px;
+  display: block;
+  color: #333;
+}
+
+
+
+.generateBtn {
+  width: 100%;
+  margin-top: 25px;
+  background: #1c67da;
+  padding: 14px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.generateBtn:hover {
+  opacity: 0.9;
+}
+
+.ExportdropdownWrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.ExportdropdownTrigger {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 12px;
+  border-radius: 6px;
+  border: 1px solid #cccccc98;
+  background: #f3f3f5;
+  cursor: pointer;
+}
+
+.caret {
+  margin-left: 8px;
+}
+
+.ExportdropdownList {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border-radius: 6px;
+  background: #f3f3f5;
+  max-height: 200px;
+  overflow: auto;
+  padding: 6px 0;
+  border: 1px solid #cccccc98;
+}
+
+.ExportdropdownItem {
+  padding: 8px 12px;
+  cursor: pointer;
+  outline: none;
+}
+
+.ExportdropdownItem:focus {
+  background: #f3f4f6; /* light */
+}
+
+.selectedItem {
+  font-weight: 600;
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 
 
 /* Responsive */
@@ -458,6 +701,22 @@
   .pending-cards{
     grid-template-columns: 1fr;
   }
+
+  .search-bar-and-pending-count{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .search-bar,.search-bar input{
+    width: 100%;
+  }
+
+  .payout-body{
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 700px) {
@@ -465,4 +724,6 @@
     flex-direction: column;
     gap: 20px;
   }
+
+  
 }

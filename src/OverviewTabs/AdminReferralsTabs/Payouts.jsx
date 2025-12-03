@@ -13,6 +13,7 @@ function Div({ className, ...props }) {
 const Payouts = () => {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   const individualPayout = [
     {
@@ -129,6 +130,15 @@ const Payouts = () => {
     },
   ];
 
+  const openDetails = (item) => {
+    setSelected(item);
+    setOpen2(true);
+  };
+
+  const closeDetails = () => {
+    setOpen2(false);
+    setSelected(null);
+  };
   return (
     <div className="content-panel">
       <h4 className={styles.payoutHead}>Payout Control</h4>
@@ -200,7 +210,7 @@ const Payouts = () => {
               <Div className="payout-left">
                 <p>Invitee: {item.invitee}</p>
                 <p>Date: {item.date}</p>
-                <button onClick={()=> setOpen2(true)}>Details</button>
+                <button onClick={() => openDetails(item)}>Details</button>{" "}
               </Div>
             </Div>
           </Div>
@@ -208,11 +218,82 @@ const Payouts = () => {
       </CustomModal>
 
       <CustomModal
-       isOpen={open2}
-        onClose={() => setOpen2(false)}
-        title="A work in progress"
-        width="30%"
-      />
+        isOpen={open2}
+        onClose={closeDetails}
+        title={
+          selected ? `Payout Details ${selected.transId}` : "Payout Details"
+        }
+        width="50%"
+      >
+        {selected ? (
+          <div className={styles.detailsContainer}>
+            <div className={styles.detailsHeader}>
+              <div className={styles.detailsLeft}>
+                <h3 className={styles.referrerName}>{selected.referrer}</h3>
+                <p className={styles.muted}>Referrer</p>
+                <p className={styles.inviteeName}>{selected.invitee}</p>
+                <p className={styles.muted}>Invitee</p>
+              </div>
+
+              <div className={styles.detailsRight}>
+                <p className={styles.amountGreen}>{selected.amount}</p>
+                <p className={styles.muted}>Total Payout Amount</p>
+              </div>
+            </div>
+
+            <div className={styles.detailsList}>
+              <p>• Referrer bonus: {selected.amountEach}</p>
+              <p>• Invitee bonus: {selected.amountEach}</p>
+            </div>
+
+            {/* Flagged box (only render if selected.flagged) */}
+            {selected.flagged && (
+              <div className={styles.flaggedBox}>
+                <div className={styles.flagIcon}>!</div>
+                <div className={styles.flaggedContent}>
+                  <p className={styles.flaggedTitle}>Flagged for review:</p>
+                  <p className={styles.flaggedText}>
+                    Same IP address used for signup
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Extra details section */}
+            <div className={styles.moreDetails}>
+              <p>
+                <strong>Transaction ID:</strong> {selected.transId}
+              </p>
+              <p>
+                <strong>Code:</strong> {selected.Code}
+              </p>
+              <p>
+                <strong>Status:</strong> {selected.validation}
+              </p>
+              <p>
+                <strong>Date:</strong> {selected.date}
+              </p>
+            </div>
+
+            {/* <div className={styles.actionsRow}>
+              <button
+                className={`${styles.btn} ${styles.btnClose}`}
+                onClick={closeDetails}
+              >
+                Close
+              </button>
+              <button className={`${styles.btn} ${styles.btnApprove}`}>
+                Approve
+              </button>
+              <button className={`${styles.btn} ${styles.btnReject}`}>
+                Reject
+              </button>
+            </div> */}
+          </div>
+        ) : (
+          <p>No payout selected.</p>
+        )}
+      </CustomModal>
     </div>
   );
 };

@@ -753,4 +753,7 @@
   .kyc-table-container {
     overflow-x: scroll;
   }
+  .nav-tabs{
+    justify-content: flex-start;
+  }
 }
