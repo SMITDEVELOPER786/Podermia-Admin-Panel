@@ -113,7 +113,7 @@ export default function KYCManagement() {
       u.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  // ------------------ ADMIN PANEL (Reusable Component) ------------------
+  
   const AdminPanel = () => (
     <div className={styles.adminBox}>
       <div className={styles.adminIconTitle}>
@@ -132,22 +132,25 @@ export default function KYCManagement() {
     </div>
   );
 
-  // ------------------ OVERRIDE LOG SCREEN ------------------
   if (showOverrideLog) {
     return (
       <div className={styles.wrapper}>
-        <div className={styles.overrideHeader}>
-          <button className={styles.btnBack} onClick={() => setShowOverrideLog(false)}>
-            ← Back to Queue
-          </button>
+       
+       <div className={styles.overrideHeaderTop}>
+  <button className={styles.btnBack} onClick={() => setShowOverrideLog(false)}>
+    ← Back to Queue
+  </button>
+</div>
 
-          <div className={styles.searchBarOverride}>
-            <FiSearch className={styles.searchIcon} />
-            <input type="text" className={styles.searchInput} placeholder="Search logs..." />
-          </div>
-        </div>
+<div className={styles.overrideHeader}>
+  <h2 className={styles.overrideTitle}>KYC Management Override Log</h2>
 
-        <h2 className={styles.overrideTitle}>KYC Management Override Log</h2>
+  <div className={styles.searchBarOverride}>
+    <FiSearch className={styles.searchIcon} />
+    <input type="text" className={styles.searchInput} placeholder="Search logs..." />
+  </div>
+</div>
+
 
         <div className={styles.overrideTableContainer}>
           <table className={styles.overrideTable}>
@@ -169,11 +172,13 @@ export default function KYCManagement() {
                   <td>{log.time}</td>
                   <td>{log.user}</td>
                   <td>{log.admin}</td>
-                  <td>{log.action}</td>
+                 <td>
+  <button className={styles.btnViewDetailSmall} style={{color: "#264DAF", border: "1px solid #264DAF", backgroundColor: "white", padding: "4px 8px", borderRadius: "6px"}}>{log.action}</button>
+</td>
                   <td>{log.change}</td>
                   <td>{log.reason}</td>
                   <td>
-                    <button className={styles.btnViewDetailSmall}>View</button>
+ <button className={styles.btnViewDetailSmall} style={{color: "#264DAF", border: "1px solid #264DAF", backgroundColor: "white", padding: "4px 8px", borderRadius: "6px"}}>View</button>
                   </td>
                 </tr>
               ))}
@@ -186,17 +191,20 @@ export default function KYCManagement() {
     );
   }
 
-  // ------------------ MAIN SCREEN ------------------
   return (
     <div className={styles.wrapper}>
-      <div className={styles.headerBox}>
-        <h2>Welcome back</h2>
-        <h1>Admin, John Doe</h1>
-        <p>Manage your investments, savings and Loans</p>
-      </div>
+
 
       <div className={styles.contentPanel}>
         <div className={styles.kycPanelHeader}>
+<div className={styles.reminderRow}>
+  <span className={styles.reminderText}>Send Reminder</span>
+
+  <label className={styles.toggleWrapper}>
+    <input type="checkbox" className={styles.toggleInput} />
+    <span className={styles.toggleSlider}></span>
+  </label>
+</div>
           <h3>KYC Management</h3>
 
           <div className={styles.kycHeaderActions}>

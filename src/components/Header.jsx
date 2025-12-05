@@ -13,7 +13,9 @@ function Header({ activeTab }) {
             </p>
           </div>
         </div>
+
         <div className="header-right">
+
           {activeTab === "KYC Management" && (
             <span className="kyc-verified-badge">
               <svg
@@ -41,7 +43,19 @@ function Header({ activeTab }) {
               KYC Verified
             </span>
           )}
-          <button className="btn-header">Admin Panel</button>
+
+          {activeTab === "Loans" && (
+            <button className="btn-header loans-btn">
+              Loans
+            </button>
+          )}
+
+          
+          {activeTab !== "KYC Management" && activeTab !== "Loans" && (
+            <button className="btn-header">Admin Panel</button>
+          )}
+
+       
           <button className="btn-header btn-notification">
             <svg
               width="18"

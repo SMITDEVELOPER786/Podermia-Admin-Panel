@@ -6,15 +6,15 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ActivityLog from "./OverviewTabs/ActivityLog";
 import ManageUsers from "./OverviewTabs/ManageUsers";
 import AdminReferrals from "./OverviewTabs/AdminReferrals";
+import LoansPage from "../src/pages/Loans"; 
+
 
 import LoginPage from "./auth/Login";
 import TwoFactorPage from "./auth/Twofactorauth";
 
-// Auth checks
 const isAuthenticated = () => !!localStorage.getItem("token");
 const isTwoFAComplete = () => !!localStorage.getItem("2fa");
 
-// PrivateRoute using children
 const PrivateRoute = ({ children }) => {
   if (!isAuthenticated()) return <Navigate to="/login" replace />;
   if (!isTwoFAComplete()) return <Navigate to="/2fa" replace />;
@@ -24,11 +24,9 @@ const PrivateRoute = ({ children }) => {
 const App = () => {
   return (
     <Routes>
-      {/* AUTH ROUTES */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/2fa" element={<TwoFactorPage />} />
 
-      {/* DASHBOARD ROUTES */}
       <Route
         path="/"
         element={
@@ -61,8 +59,15 @@ const App = () => {
           </PrivateRoute>
         }
       />
+<Route
+  path="/loans"
+  element={
+    <PrivateRoute>
+      <LoansPage />
+    </PrivateRoute>
+  }
+/>
 
-      {/* Catch-all */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

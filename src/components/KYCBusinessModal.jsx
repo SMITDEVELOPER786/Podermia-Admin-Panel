@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../css/KYCBusinessModal.module.css";
 import { MdEdit } from "react-icons/md";
 import userIcon from "../assets/userIcon.png";
-
-// DOCUMENT IMAGES
+import uploadImg from "../assets/upload.png";
 import document1 from "../assets/document1.png";
 import document2 from "../assets/document2.png";
 import document3 from "../assets/document3.png";
@@ -57,7 +56,7 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
     { title: "Board Resolution", img: document1 },
   ];
 
-  // HARD-CODED STAKEHOLDERS
+  
   const stakeholders = {
     directors: [
       { name: "John Doe", role: "Director", bvn: "12345678", badge: "Verified", phone: "+234 801 111 1111", email: "john.doe@company.com", address: "Lagos, Nigeria" },
@@ -73,7 +72,6 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        {/* HEADER */}
         <div className={styles.header}>
           <span className={styles.title}>KYC Details — {form.name || "-"}</span>
           <button
@@ -88,20 +86,20 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
           </button>
         </div>
 
-        {/* TABS */}
-        <div className={styles.tabs}>
-          {["summary", "BVN/NIN", "documents", "business", "stakeholder"].map(
-            (tab) => (
-              <div
-                key={tab}
-                className={`${styles.tab} ${activeTab === tab ? styles.activeTab : ""}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </div>
-            )
-          )}
-        </div>
+       <div className={styles.tabs}>
+  {["summary", "bvn", "documents", "business", "stakeholder"].map((tab) => (
+    <div
+      key={tab}
+      className={`${styles.tab} ${activeTab === tab ? styles.activeTab : ""}`}
+      onClick={() => setActiveTab(tab)}
+    >
+      {tab === "bvn"
+        ? "BVN/NIN"
+        : tab.charAt(0).toUpperCase() + tab.slice(1)}
+    </div>
+  ))}
+</div>
+
 
         <div className={styles.modalContent}>
           {/* SUMMARY */}
@@ -111,7 +109,7 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                 <div className={styles.cardHeader}>
                   <div className={styles.avatarRow}>
                     <img src={userIcon} alt="user" className={styles.userIcon} />
-                    <span className={styles.cardTitle}>User Summary</span>
+                    <span className={styles.cardTitle} style={{color: "black"}}>User Summary</span>
                   </div>
 
                   {!edit ? (
@@ -204,13 +202,24 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                   <span>• Stakeholder Information</span>
                 </div>
               </div>
+               <div className={styles.footerButtons}>
+  <button className={styles.approve}>Approve</button>
+  <button className={styles.reject}>Reject</button>
+  <button className={styles.pending}>Mark as Pending</button>
+</div>
             </>
+            
           )}
+         
+
 
           {/* DOCUMENTS */}
           {activeTab === "documents" && (
-            <div className={styles.docCard}>
-              <h3 className={styles.docTitle}>📁 Upload Documents</h3>
+            <div className={styles.card}>
+                        <div className={styles.uploadRow}>
+                          <img src={uploadImg} className={styles.uploadIconImg} />
+                          <span className={styles.uploadText}>Upload Documents</span>
+                        </div>
               <div className={styles.docsGrid}>
                 {docs.map((d, i) => (
                   <div key={i} className={styles.docBox}>
@@ -229,7 +238,7 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
               <h3 className={styles.bvnTitle}>Business Verification</h3>
 
               <div className={styles.bvnGrid}>
-                <div>
+                <div style={{paddingLeft: "30px"}}>
                   <label className={styles.bvnLabel}>RC Number</label>
                   <p className={styles.bvnValue}>{form.rcNumber || "RC123456"}</p>
                   <span className={styles.bvnVerified}>Verified</span>

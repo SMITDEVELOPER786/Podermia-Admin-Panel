@@ -115,11 +115,11 @@
 }
 
 .btn-header {
-  background: #2563eb;
+  background: #264DAF;
   color: white;
   border: none;
-  padding: 0.625rem 1.25rem;
-  border-radius: 6px;
+  padding: 0.7rem 1.25rem;
+  border-radius: 18px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -135,34 +135,39 @@
 }
 
 .btn-notification {
-  background: white;
-  color: #1e3a5f;
-  border: 1px solid #1e3a5f;
+  align-items: center;
+  gap: 0.5rem;
+  background: #feffff;
+  color: #2563eb;
+  border:  1px solid #2563eb;
+  padding: 10px 20px;
+  border-radius: 18px;
+  font-size: 15px;
+  font-weight: 500;
 }
-
+.btn-notification:hover{
+  background-color: #fff;
+}
 .btn-notification svg {
-  color: #1e3a5f;
+  fill: #264DAF;
 }
 
 .kyc-verified-badge {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #dbeafe;
-  color: #1e40af;
+  background: #264DAF;
+  color: white;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 18px;
   font-size: 0.875rem;
   font-weight: 500;
 }
 
 .kyc-verified-badge svg {
-  color: #1e40af;
+  color: #fff;
 }
 
-.btn-notification:hover {
-  background: #f8fafc;
-}
 
 /* KPI Cards Section */
 .kpi-section {
@@ -262,7 +267,7 @@
   flex-wrap: wrap;
   padding: 0.5rem;
   background-color: #ECECF0;
-  border-radius: 5px;
+  border-radius: 22px;
   
 }
 
@@ -271,22 +276,24 @@
   border: none;
   padding: 0.625rem 1rem;
   font-size: 0.875rem;
-  color: #64748b;
+  color: #000000;
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s;
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .nav-tab:hover {
   background: #f1f5f9;
   color: #1e3a5f;
+  border-radius: 18px;
 }
 
 .nav-tab.active {
-  background: #1e3a5f;
-  color: white;
+  background: white;
+  color: black;
+  border-radius: 18px;
 }
 
 /* Alert Section */
@@ -804,7 +811,34 @@
   .kyc-table-container {
     overflow-x: scroll;
   }
-  .nav-tabs{
-    justify-content: flex-start;
+ 
+}
+@media (max-width: 768px) {
+  .nav-tabs {
+    display: flex;             
+    flex-wrap: nowrap;       
+    overflow-x: auto;        
+    -webkit-overflow-scrolling: touch; 
+    gap: 0.5rem;               
+    padding: 0.5rem 0;        
+    scrollbar-width: thin;    
+  }
+
+  .nav-tab {
+    flex: 0 0 auto;           
+    white-space: nowrap;     
+  }
+
+  .nav-tabs::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .nav-tabs::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+
+  .nav-tabs::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
