@@ -494,7 +494,7 @@ const AddProducts = () => {
                       ))}
                     </div>
                     <div className={styles.cardActions}>
-                      <button className={styles.editBtn}>Edit</button>
+                      <button className={styles.editBtn} onClick={() => handleEdit(item)}>Edit</button>
                       <button className={styles.deleteBtn} onClick={() => handleDelete(item)}>Delete</button>
                     </div>
                   </div>
@@ -609,8 +609,10 @@ const AddProducts = () => {
                   placeholder="Description"
                   value={formData.description}
                   onChange={handleInputChange}
+                  className={errors.description ? styles.inputError : ''}
                   rows="4"
                 />
+                {errors.description && <span className={styles.errorText}>{errors.description}</span>}
               </div>
             </div>
 
@@ -657,11 +659,11 @@ const AddProducts = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Total Coffering Amount</label>
+                <label>Total Offering Amount</label>
                 <input
                   type="text"
                   name="totalOffering"
-                  placeholder="Enter Total Coffering Amount*"
+                  placeholder="Enter Total Offering Amount"
                   value={formData.totalOffering}
                   onChange={handleInputChange}
                   className={errors.totalOffering ? styles.inputError : ''}
@@ -681,11 +683,7 @@ const AddProducts = () => {
                 />
                 {errors.availableAmount && <span className={styles.errorText}>{errors.availableAmount}</span>}
               </div>
-            </div>
 
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Terms & Condition</h3>
-              
               <div className={styles.formGroup}>
                 <label>Maturity Date</label>
                 <input
@@ -713,23 +711,29 @@ const AddProducts = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Coupon Frequency</label>
-                <input
-                  type="text"
-                  name="couponFrequency"
-                  placeholder="Enter Frequency"
-                  value={formData.couponFrequency}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
                 <label>Risk Rating</label>
                 <input
                   type="text"
                   name="riskRating"
                   placeholder="Enter risk rating"
                   value={formData.riskRating}
+                  onChange={handleInputChange}
+                  className={errors.riskRating ? styles.inputError : ''}
+                />
+                {errors.riskRating && <span className={styles.errorText}>{errors.riskRating}</span>}
+              </div>
+            </div>
+
+            <div className={styles.formSection}>
+              <h3 className={styles.sectionTitle}>Terms & Conditions</h3>
+              
+              <div className={styles.formGroup}>
+                <label>Coupon Frequency</label>
+                <input
+                  type="text"
+                  name="couponFrequency"
+                  placeholder="e.g Monthly"
+                  value={formData.couponFrequency}
                   onChange={handleInputChange}
                 />
               </div>
@@ -739,60 +743,58 @@ const AddProducts = () => {
                 <input
                   type="text"
                   name="creditRating"
-                  placeholder="e.g AAA, BBB"
+                  placeholder="Enter credit rating"
                   value={formData.creditRating}
                   onChange={handleInputChange}
                 />
               </div>
             </div>
 
-            {/* Document Upload Section */}
             <div className={styles.formSection}>
               <h3 className={styles.sectionTitle}>Document Upload</h3>
               
               <div className={styles.formGroup}>
-                <label>Term Sheet Upload</label>
+                <label>Term Sheet</label>
                 <div className={styles.uploadArea}>
                   <input
                     type="file"
                     id="termSheet"
+                    name="termSheet"
                     onChange={handleFileUpload}
-                    accept=".pdf,.docx,.doc"
+                    accept=".pdf,.doc,.docx"
                     style={{ display: 'none' }}
                   />
+                  <Upload size={20} className={styles.uploadIcon} />
                   <label htmlFor="termSheet" className={styles.uploadLabel}>
-                    <Upload size={40} className={styles.uploadIcon} />
-                    <p>Click to Upload drag and drop</p>
-                    <span>PDF, DOCX, MAX 10MB</span>
+                    
+                    {formData.termSheet ? formData.termSheet.name : 'Upload Term Sheet'}
                   </label>
-                  {formData.termSheet && (
-                    <p className={styles.fileName}>{formData.termSheet.name}</p>
-                  )}
                 </div>
-              </div>
-
-              <div className={styles.documentsChecklist}>
-                <h4>Required Documents Checklist</h4>
-                <ul>
-                  <li>Team Sheet</li>
-                  <li>Issuer Financial Statement</li>
-                  <li>Credit Rating Report</li>
-                  <li>Regulatory Approval</li>
-                </ul>
               </div>
             </div>
           </div>
 
-          {/* Form Actions */}
           <div className={styles.formActions}>
-            <button className={styles.cancelBtn} onClick={handleCancel}>Cancel</button>
-            <button className={styles.draftBtn} onClick={handleSaveDraft}>Save as draft</button>
+            <button className={styles.draftBtn} onClick={handleSaveDraft}>
+              Save Draft
+            </button>
             <button className={styles.createBtn} onClick={handleCreateProduct}>
               {editingItem ? 'Update Product' : 'Create Product'}
             </button>
           </div>
         </div>
       )}
+
+      {/* Edit Modal */}
+      <EditModal
+        isOpen={!!editingItem}
+        item={editingItem}
+        formData={formData}
+        errors={errors}
+        onInputChange={handleInputChange}
+        onUpdate={handleUpdateItem}
+        onCancel={handleCancelEdit}
+      />
 
       {/* Toast Notification */}
       {toast && (
@@ -801,11 +803,10 @@ const AddProducts = () => {
           title={toast.title}
           message={toast.message}
           onClose={() => setToast(null)}
-          duration={3000}
         />
       )}
 
-      {/* Confirm Dialog */}
+      {/* Confirmation Dialog */}
       {confirmDialog && (
         <ConfirmDialog
           type={confirmDialog.type}
@@ -815,18 +816,6 @@ const AddProducts = () => {
           cancelText={confirmDialog.cancelText}
           onConfirm={confirmDialog.onConfirm}
           onCancel={confirmDialog.onCancel}
-        />
-      )}
-
-      {/* Edit Modal */}
-      {editingItem && (
-        <EditModal
-          item={editingItem}
-          formData={formData}
-          errors={errors}
-          onInputChange={handleInputChange}
-          onUpdate={handleUpdateItem}
-          onCancel={handleCancelEdit}
         />
       )}
     </div>

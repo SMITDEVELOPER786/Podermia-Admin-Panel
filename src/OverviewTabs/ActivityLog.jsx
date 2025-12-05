@@ -35,38 +35,44 @@ const ActivityLog = () => {
   const [filteredLogs, setFilteredLogs] = useState(initialLogs);
   const [loadingCSV, setLoadingCSV] = useState(false);
   const [loadingPDF, setLoadingPDF] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleBack = () => navigate(-1);
 
   const applyFilters = (filters) => {
-    let data = [...initialLogs];
+    setLoading(true);
+    // Simulate API call delay
+    setTimeout(() => {
+      let data = [...initialLogs];
 
-    if (filters.search) {
-      const term = filters.search.toLowerCase();
-      data = data.filter(
-        (log) =>
-          log.action.toLowerCase().includes(term) ||
-          log.target.toLowerCase().includes(term) ||
-          log.admin.toLowerCase().includes(term)
-      );
-    }
+      if (filters.search) {
+        const term = filters.search.toLowerCase();
+        data = data.filter(
+          (log) =>
+            log.action.toLowerCase().includes(term) ||
+            log.target.toLowerCase().includes(term) ||
+            log.admin.toLowerCase().includes(term)
+        );
+      }
 
-    if (filters.module)
-      data = data.filter((log) => log.module === filters.module);
-    if (filters.admin) data = data.filter((log) => log.admin === filters.admin);
-    if (filters.severity)
-      data = data.filter(
-        (log) => log.severity.toLowerCase() === filters.severity.toLowerCase()
-      );
+      if (filters.module)
+        data = data.filter((log) => log.module === filters.module);
+      if (filters.admin) data = data.filter((log) => log.admin === filters.admin);
+      if (filters.severity)
+        data = data.filter(
+          (log) => log.severity.toLowerCase() === filters.severity.toLowerCase()
+        );
 
-    if (filters.date) {
-      const fDate = new Date(filters.date);
-      data = data.filter(
-        (log) => new Date(log.timestamp).toDateString() === fDate.toDateString()
-      );
-    }
+      if (filters.date) {
+        const fDate = new Date(filters.date);
+        data = data.filter(
+          (log) => new Date(log.timestamp).toDateString() === fDate.toDateString()
+        );
+      }
 
-    setFilteredLogs(data);
+      setFilteredLogs(data);
+      setLoading(false);
+    }, 500);
   };
 
   const columns = [
@@ -158,7 +164,7 @@ const ActivityLog = () => {
       link.setAttribute("download", `activity-log.csv`);
       link.click();
       setLoadingCSV(false);
-    }, 100);
+    }, 1000);
   };
 
   // Stylish PDF Export
@@ -199,7 +205,7 @@ const ActivityLog = () => {
 
       doc.save("activity-log.pdf");
       setLoadingPDF(false);
-    }, 100);
+    }, 1000);
   };
 
   return (
@@ -236,7 +242,12 @@ const ActivityLog = () => {
         />
 
         <Div className="activity-and-btns flexRow">
-          <h3>{filteredLogs.length} Activities Found</h3>
+          <Div className="table-header flexRow">
+            <h3>Activity Log</h3>
+            <span className={styles.recordCount}>
+              {filteredLogs.length} records
+            </span>
+          </Div>
           <Div className="buttons flexRow">
             <button
               className={styles.exportBtn}
@@ -270,7 +281,7 @@ const ActivityLog = () => {
           </Div>
         </Div>
 
-        <DataTable columns={columns} data={filteredLogs} scrollHeight={400} />
+        <DataTable columns={columns} data={filteredLogs} scrollHeight={400} onRowClick={(row) => console.log('Log clicked:', row)} loading={loading} />
       </Div>
 
       <Div className="action-details flexRow">

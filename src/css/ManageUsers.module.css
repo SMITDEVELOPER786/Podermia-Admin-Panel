@@ -4,6 +4,10 @@
   --btnHover: #1a3250;
   --txtLight: #675f5f;
   --lightBG: #f3f3f5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
 }
 * {
   box-sizing: border-box;
@@ -50,54 +54,76 @@
   font-size: 18px;
   font-weight: 500;
 }
-.table-wrapper {
-  margin-top: 20px;
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.table-header h3 {
+  margin: 0;
+  color: #295cbf;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.recordCount {
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
 }
 /* Account Type */
 .accountBasic, .accountPremium, .accountStandard {
-border: 1px solid var(--primary);
+  border: 1px solid var(--primary);
+  background-color: #dbeafe;
+  color: var(--primary);
+  font-weight: 500;
 }
-
 
 /* KYC */
 .kycVerified {
- background-color: #d1e7dd;
+  background-color: #d1e7dd;
   color: #0f5132;
   border-radius: 50px;
+  font-weight: 500;
 }
 .kycPending {
   background-color: #fff3cd;
   color: #664d03;
-
+  font-weight: 500;
 }
 .kycRejected {
   background-color: #f8d7da;
   color: #842029;
-
+  font-weight: 500;
 }
 
 /* Status */
 .statusActive {
   background-color: #d1e7dd;
   color: #0f5132;
-
+  font-weight: 500;
 }
 .statusFlagged {
   background-color: #fff3cd;
   color: #664d03;
-
+  font-weight: 500;
 }
 .statusInactive {
   background-color: #f8d7da;
   color: #842029;
-
+  font-weight: 500;
 }
 .exportBtn{
     background-color: var(--btnColor);
     color: #fff;
     border: none;
-    border-radius: 7px;
-    padding: 10px 20px;
+    border-radius: 6px;
+    padding: 10px 16px;
     cursor: pointer;
     transition: 0.3s ease-in-out;
     display: flex;
@@ -106,6 +132,8 @@ border: 1px solid var(--primary);
     margin-top: 20px;
     width: fit-content;
     align-self: flex-end;
+    font-size: 0.875rem;
+    font-weight: 500;
 }
 .exportBtn:hover {
   background-color: var(--btnHover);

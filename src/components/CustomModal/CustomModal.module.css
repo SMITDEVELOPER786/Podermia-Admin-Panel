@@ -15,7 +15,7 @@
   padding: 20px;
   position: relative;
   max-height: 90vh; /* modal height limit */
-  overflow-y: auto; /* modal scroll */
+  overflow-y: hidden; /* modal scroll */
   animation: fadeIn 0.25s ease-out;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
   scroll-behavior: smooth;
@@ -23,24 +23,6 @@
   max-width: 95%;    
 }
 
-/* Custom Scrollbar */
-.modalBox::-webkit-scrollbar {
-  width: 8px;
-}
-
-.modalBox::-webkit-scrollbar-track {
-  background: #e6e6e6;
-  border-radius: 10px;
-}
-
-.modalBox::-webkit-scrollbar-thumb {
-  background: #b5b5b5;
-  border-radius: 10px;
-}
-
-.modalBox::-webkit-scrollbar-thumb:hover {
-  background: #999999;
-}
 
 .header {
   display: flex;
@@ -74,7 +56,30 @@
 
 .content {
   font-size: 15px;
+  overflow-y: auto;
+  max-height: 400px;
+  padding-bottom: 50px;
 }
+
+/* Custom Scrollbar */
+.content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: #b5b5b5;
+  border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
+
 
 /* Animation */
 @keyframes fadeIn {

@@ -1,31 +1,31 @@
-import React from 'react';
-import { X } from 'lucide-react';
-import styles from './EditModal.module.css';
+import React from "react";
+import CustomModal from "../CustomModal/CustomModal";
+import styles from "./EditModal.module.css";
 
-const EditModal = ({ 
+const EditModal = ({
+  isOpen,
   item,
   formData,
   errors,
   onInputChange,
   onUpdate,
-  onCancel
+  onCancel,
 }) => {
   return (
-    <div className={styles.modalOverlay}>
+    <CustomModal
+      isOpen={isOpen}
+      onClose={onCancel}
+      title="✏️ Edit Investment Product"
+      width="800px"
+      showClose={true}
+    >
       <div className={styles.modalContainer}>
-        <div className={styles.modalHeader}>
-          <h2>✏️ Edit Investment Product</h2>
-          <button className={styles.closeBtn} onClick={onCancel}>
-            <X size={24} />
-          </button>
-        </div>
-
         <div className={styles.modalBody}>
           <div className={styles.formGrid}>
             {/* Basic Information */}
             <div className={styles.formSection}>
               <h3 className={styles.sectionTitle}>Basic Information</h3>
-              
+
               <div className={styles.formGroup}>
                 <label>Issuer Name</label>
                 <input
@@ -85,7 +85,7 @@ const EditModal = ({
             {/* Financial Details */}
             <div className={styles.formSection}>
               <h3 className={styles.sectionTitle}>Financial Details</h3>
-              
+
               <div className={styles.formGroup}>
                 <label>Interest Rate (%)</label>
                 <input
@@ -186,7 +186,7 @@ const EditModal = ({
           </button>
         </div>
       </div>
-    </div>
+    </CustomModal>
   );
 };
 

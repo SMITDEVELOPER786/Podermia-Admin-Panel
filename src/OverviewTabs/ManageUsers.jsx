@@ -21,6 +21,8 @@ const ManageUsers = () => {
   const [filtered, setFiltered] = useState([]);
   const [loadingPDF, setLoadingPDF] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   const handleBack = () => navigate(-1);
 
   const users = [
@@ -255,24 +257,29 @@ const ManageUsers = () => {
   );
 
   const onFilterChange = (filters) => {
-    let temp = [...users];
+    setLoading(true);
+    // Simulate API call delay
+    setTimeout(() => {
+      let temp = [...users];
 
-    if (filters.search) {
-      temp = temp.filter(
-        (u) =>
-          u.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-          u.email.toLowerCase().includes(filters.search.toLowerCase())
-      );
-    }
-    if (filters.type && filters.type !== "All")
-      temp = temp.filter((u) => u.type === filters.type);
-    if (filters.kyc && filters.kyc !== "All")
-      temp = temp.filter((u) => u.kyc === filters.kyc);
-    if (filters.status && filters.status !== "All")
-      temp = temp.filter((u) => u.status === filters.status);
-    if (filters.date) temp = temp.filter((u) => u.lastLogin === filters.date);
+      if (filters.search) {
+        temp = temp.filter(
+          (u) =>
+            u.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+            u.email.toLowerCase().includes(filters.search.toLowerCase())
+        );
+      }
+      if (filters.type && filters.type !== "All")
+        temp = temp.filter((u) => u.type === filters.type);
+      if (filters.kyc && filters.kyc !== "All")
+        temp = temp.filter((u) => u.kyc === filters.kyc);
+      if (filters.status && filters.status !== "All")
+        temp = temp.filter((u) => u.status === filters.status);
+      if (filters.date) temp = temp.filter((u) => u.lastLogin === filters.date);
 
-    setFiltered(temp);
+      setFiltered(temp);
+      setLoading(false);
+    }, 500);
   };
 
   // PDF Export
@@ -328,7 +335,7 @@ const ManageUsers = () => {
 
       doc.save("users.pdf");
       setLoadingPDF(false);
-    }, 100);
+    }, 1000);
   };
 
   return (
@@ -360,11 +367,18 @@ const ManageUsers = () => {
       />
 
       <Div className="table-wrapper">
-        <h3>User ({filtered.length > 0 ? filtered.length : users.length})</h3>
+        <Div className="table-header flexRow">
+          <h3>User Management</h3>
+          <span className={styles.recordCount}>
+            {filtered.length > 0 ? filtered.length : users.length} records
+          </span>
+        </Div>
         <DataTable
           columns={columns}
           data={filtered.length > 0 ? filtered : users}
           scrollHeight={500}
+          onRowClick={(row) => console.log('User clicked:', row)}
+          loading={loading}
         />
       </Div>
 

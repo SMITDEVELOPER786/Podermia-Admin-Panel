@@ -48,11 +48,35 @@
   font-weight: 500;
 }
 
-.activity-and-btns {
+.table-header {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  gap: 10px;
 }
+
+.table-header h3 {
+  margin: 0;
+  color: #295cbf;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.recordCount {
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.activity-and-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 25px 0 15px 0;
+}
+
 .buttons {
   gap: 10px;
   align-items: center;
@@ -60,87 +84,62 @@
 
 .exportBtn {
   background-color: var(--btnColor);
-  padding: 10px;
+  padding: 10px 16px;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .exportBtn:hover {
   background-color: var(--btnHover);
 }
 
-/* Table Styling */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: Arial, sans-serif;
-  background-color: white;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-}
-
-
-
-thead th {
-  text-align: left;
-  padding: 12px;
-  font-weight: 600;
-  color: #333;
-}
-
-tbody tr {
-  border-bottom: 1px solid #e0e0e0;
-  transition: background 0.2s;
-}
-
-tbody tr:hover {
-  background-color: #f9f9f9;
-}
-
-tbody td {
-  padding: 12px;
-  color: #555;
-  font-size: 14px;
-}
-
 /* Severity Colors */
 .severity-critical {
-  background-color: #f8d7da;
-  color: #842029;
+  background-color: #fee2e2;
+  color: #b91c1c;
   text-align: center;
   border-radius: 50px;
-  padding: 2px 15px;
+  padding: 4px 12px;
   height: fit-content;
+  font-weight: 500;
 }
 
 .severity-high {
-  background-color: #fff3cd;
-  color: #664d03;
+  background-color: #ffedd5;
+  color: #c2410c;
   text-align: center;
   border-radius: 50px;
-  padding: 2px 15px;
+  padding: 4px 12px;
   height: fit-content;
+  font-weight: 500;
 }
 
 .severity-medium {
-  background-color: #cff4fc;
-  color: #055160;
+  background-color: #dcfce7;
+  color: #15803d;
   text-align: center;
   border-radius: 50px;
-  padding: 2px 15px;
+  padding: 4px 12px;
   height: fit-content;
+  font-weight: 500;
 }
 
 .severity-low {
-  background-color: #d1e7dd;
-  color: #0f5132;
+  background-color: #dbeafe;
+  color: #1d4ed8;
   text-align: center;
   border-radius: 50px;
-  padding: 2px 15px;
+  padding: 4px 12px;
   height: fit-content;
+  font-weight: 500;
 }
 
 .severity-critical,
@@ -148,8 +147,7 @@ tbody td {
 .severity-medium,
 .severity-low {
   display: inline-block; 
-  
-
+  min-width: 80px;
 }
 
 .tableContainer {
