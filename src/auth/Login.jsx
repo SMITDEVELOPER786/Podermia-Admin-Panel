@@ -8,15 +8,15 @@ const LoginPage = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [password, setPassword] = useState("adminpassword");
   const [email, setEmail] = useState("admin@podermonie.com");
-  const [error, setError] = useState(""); // error state
+  const [error, setError] = useState(""); 
 
   const handleContinue = () => {
     if (email === "admin@podermonie.com" && password === "adminpassword") {
       localStorage.setItem("token", "auth_token_here");
-      setError(""); // clear error
+      setError(""); 
       navigate("/2fa", { replace: true });
     } else {
-      setError("Invalid email or password"); // show error
+      setError("Invalid email or password");
     }
   };
 

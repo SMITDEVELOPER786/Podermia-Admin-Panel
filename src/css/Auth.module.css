@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
-  background: linear-gradient(135deg, #e6f7fb 0%, #f6fbff 50%, #dff3fb 100%);
+  background: linear-gradient(135deg, #BFE0ED, #C7E4EF, #CEE7F1, #D7ECF4, #DCEEF5, #F4FAFC );
 }
 
 .card {
@@ -18,7 +18,7 @@
 }
 
 .brand {
-  color: #1b6fe8;
+  color: #264DAF;
   font-weight: 700;
   font-size: 22px;
   text-align: center;
@@ -84,7 +84,7 @@
   padding: 10px 14px;
   border-radius: 8px;
   border: none;
-  background: #1b6fe8;
+  background: #264DAF;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
@@ -97,7 +97,7 @@
   border-radius: 8px;
   border: 1px solid #d6e3fb;
   background: #fff;
-  color: #1b6fe8;
+  color: #264DAF;
   font-weight: 600;
   cursor: pointer;
 }
@@ -120,13 +120,25 @@
   color: #9aa1a8;
   margin-bottom: 12px;
 }
-
 @media (max-width: 420px) {
-  .card {
-    width: calc(100% - 32px);
+  .pageWrapper{
+    width: 100%;
     padding: 20px;
+  }
+  .card {
+    width: 100%;
+    max-width: 360px;
+    padding: 22px;
+    margin: 0 auto;
   }
   .brand {
     font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  button {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
   }
 }

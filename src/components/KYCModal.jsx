@@ -14,26 +14,24 @@ export default function KYCModal({ open, onClose, user, onSave }) {
   const [activeTab, setActiveTab] = useState("summary");
   const [form, setForm] = useState({ ...user });
 
-  // Load saved data from localStorage whenever modal opens
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}");
     setForm(saved[user.userId] || { ...user });
   }, [open, user]);
 
-  // Handle input changes
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Save form data: update localStorage & inform parent
   const saveForm = () => {
     const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}");
     saved[form.userId] = form;
     localStorage.setItem(LOCAL_KEY, JSON.stringify(saved));
     setEdit(false);
 
-    // Update table in parent
+   
     if (onSave) onSave(form);
   };
 
@@ -180,7 +178,7 @@ export default function KYCModal({ open, onClose, user, onSave }) {
                 <span className={styles.infoLabel}>Aggregate Net Worth:</span>
                 <br />
                 {!edit ? (
-                  <span className={styles.infoValue}>{form.netWorth || "-"}</span>
+                  <span className={styles.infoValue}>{form.netWorth || "$250,000"}</span>
                 ) : (
                   <input
                     name="netWorth"
@@ -195,7 +193,7 @@ export default function KYCModal({ open, onClose, user, onSave }) {
                 <span className={styles.infoLabel}>Sources of Investment Funds:</span>
                 <br />
                 {!edit ? (
-                  <span className={styles.infoValue}>{form.incomeSources || "-"}</span>
+                  <span className={styles.infoValue}>{form.incomeSources || "Salary, Business Income, Investments"}</span>
                 ) : (
                   <input
                     name="incomeSources"
@@ -210,7 +208,7 @@ export default function KYCModal({ open, onClose, user, onSave }) {
                 <span className={styles.infoLabel}>Purpose of Investment:</span>
                 <br />
                 {!edit ? (
-                  <span className={styles.infoValue}>{form.investmentPurpose || "-"}</span>
+                  <span className={styles.infoValue}>{form.investmentPurpose || "Long term wealth building and retirement planing"}</span>
                 ) : (
                   <input
                     name="investmentPurpose"
@@ -265,24 +263,19 @@ export default function KYCModal({ open, onClose, user, onSave }) {
             </div>
 
             <div className={styles.docsGrid}>
-              <div className={styles.docBox}>
-                <img src={document1Img} className={styles.docImg} />
-                <p className={styles.docName}>National ID</p>
-                <span className={styles.docStatus}>Uploaded</span>
-              </div>
+  {[ 
+    { img: document1Img, name: "National ID" },
+    { img: document2Img, name: "Passport Photo" },
+    { img: document3Img, name: "Utility Bills" }
+  ].map((doc, i) => (
+    <div key={i} className={styles.docBox}>
+      <img src={doc.img} className={styles.docImg} />
+      <p className={styles.docName}>{doc.name}</p>
+      <span className={styles.docStatus}>Uploaded</span>
+    </div>
+  ))}
+</div>
 
-              <div className={styles.docBox}>
-                <img src={document2Img} className={styles.docImg} />
-                <p className={styles.docName}>Passport Photo</p>
-                <span className={styles.docStatus}>Uploaded</span>
-              </div>
-
-              <div className={styles.docBox}>
-                <img src={document3Img} className={styles.docImg} />
-                <p className={styles.docName}>Utility Bills</p>
-                <span className={styles.docStatus}>Uploaded</span>
-              </div>
-            </div>
           </div>
         )}
       </div>

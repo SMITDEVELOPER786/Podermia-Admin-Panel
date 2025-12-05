@@ -1,25 +1,262 @@
 .wrapper {
-  padding: 16px;
-  font-family: Inter, sans-serif;
-  max-width: 1380px;
   width: 100%;
-  margin: auto;
+  padding: 20px;
+  min-height: 100vh;
   box-sizing: border-box;
 }
 
-
 .headerBox {
-  background: #bfe1ff;
-  padding: 28px;
-  border-radius: 8px;
-  margin-bottom: 24px;
+  background: #d9ecff;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  color: #000000;
 }
 
-.headerTitle {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 500;
+.headerBox h1 {
+  margin: 5px 0;
+  font-size: 26px;
+  font-weight: 700;
+    color: #000000;
 }
+
+.headerBox h2 {
+  font-size: 18px;
+  color: #3b3b3b;
+}
+
+.headerBox p {
+  margin-top: 4px;
+  color: #666;
+}
+
+.searchBar,
+.searchBarOverride {
+  display: flex;
+  align-items: center;
+  background: #ECECF0;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  padding: 12px 12px;
+  width: 300px;
+}
+
+.searchBarOverride {
+  margin-left: auto;
+}
+
+.searchIcon {
+  font-size: 18px;
+  color: #6a6a6a;
+  margin-right: 8px;
+}
+
+.searchInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+}
+
+.kycPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.kycHeaderActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.btnOverride {
+  background: #264DAF;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btnOverride:hover {
+  background: #0047d4;
+}
+
+.btnBack {
+  background: #fff;
+  border: 1px solid #0047d4;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+.kycTableContainer,
+.overrideTableContainer {
+  overflow-x: auto;
+  padding: 12px;
+   margin-top: 12px;
+ overflow-x: auto; 
+border-radius: 20px;
+border: #656363 1px solid;
+margin-left: -15px;
+overflow-y: auto;
+ overflow-x: auto;
+}
+
+.kycTable,
+.overrideTable {
+  width: 100%;
+  border-collapse: collapse;
+
+}
+.kycTable th,
+.overrideTable th {
+  padding: 20px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #888686;
+}
+
+.kycTable td,
+.overrideTable td {
+  padding: 20px;
+  border-bottom: 1px solid #888686;
+  font-size: 14px;
+}
+.overrideTable th{
+  padding-left: 30px;
+}
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-weight: 600;
+}
+
+.userEmail {
+  font-size: 12px;
+  color: #777;
+}
+
+.overrideTitle {
+  font-size: 22px;
+  margin: 15px 0;
+  font-weight: 700;
+  color: #000000;
+}
+.overrideTable td {
+  padding: 30px;
+}
+.adminBox {
+  background: white;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 12px;
+  border: 1px solid #e6e6e6;
+}
+
+.adminIconTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminIcon {
+  font-size: 28px;
+  fill: #000000;
+}
+
+.panelTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.restrictionsGrid {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checkboxLabel {
+  font-size: 14px;
+}
+
+.reminderRow {
+  width: 100%;
+  max-width: 1000%;
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  padding: 12px 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+margin-top: 0%;
+margin-bottom: 50px;
+
+}
+
+.reminderText {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.toggleWrapper {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  display: inline-block;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 34px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.3s;
+}
+
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.toggleInput:checked + .toggleSlider {
+  background-color: #264DAF;
+}
+
+.toggleInput:checked + .toggleSlider:before {
+  transform: translateX(22px);
+}
+
 
 .headerAdmin {
   margin: 2px 0;
@@ -31,71 +268,6 @@
   margin: 3px 0;
   font-size: 14px;
   color: #4a4a4a;
-}
-
-.sendReminderToggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; 
-  width: 100%;
-  border: 1px solid #dce0e5;
-  border-radius: 8px;
-  padding: 16px 12px;
-  background: white;
-  box-sizing: border-box;
-  margin-bottom: 12px;
-}
-
-.sendReminderToggle span {
-  font-size: 14px;
-  font-weight: 600;
-  color: black;
-}
-
-.toggleSwitch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 24px;
-}
-
-.toggleSwitch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggleSlider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  border-radius: 28px;
-  transition: 0.4s;
-}
-
-.toggleSlider::before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  border-radius: 50%;
-  transition: 0.4s;
-}
-
-.toggleSwitch input:checked + .toggleSlider {
-  background-color: #1a73e8;
-
-}
-
-.toggleSwitch input:checked + .toggleSlider::before {
-  transform: translateX(16px);
 }
 
 .contentPanel {
@@ -150,20 +322,11 @@
   width: 140px;
 }
 
-.btnOverride {
-  background: #264DAF;
-  border: none;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  cursor: pointer;
-}
 
-.kycTableContainer {
+.kycTableContainer
+.overrideTableContainer {
   margin-top: 12px;
  overflow-x: auto; 
- 
 border-radius: 20px;
 border: #656363 1px solid;
 margin-left: -15px;
@@ -233,18 +396,21 @@ padding: 18px;
   padding: 6px 26px;
   color: #264DAF;
   border-color: #264DAF;
+    border-radius: 6px;
 }
 
 .statusUnderReview {
   background: #D4183D;
   color: #ffffff;
     padding: 6px 12px;
+    border-radius: 6px;
 }
 
 .statusApproved {
   background: #264DAF;
   color: #ffffff;
     padding: 6px 26px;
+      border-radius: 6px;
 }
 
 
@@ -256,26 +422,6 @@ padding: 18px;
   border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
-}
-
-.adminBox {
-  background: #fff;
-  border: 1px solid #e2e2e2;
-  border-radius: 12px;
-  padding: 22px;
-padding-left: 30px;
-padding-right: 50px;
-}
-
-.adminIconTitle {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 12px;
-}
-
-.adminIcon {
-  font-size: 32px;
 }
 
 .restrictionsGrid {
@@ -310,7 +456,7 @@ padding-right: 50px;
 
 
 .checkboxLabel input[type="checkbox"]:checked {
-  background-color: #264DAF; /* box blue when checked */
+  background-color: #264DAF;
 
 }
 
@@ -322,7 +468,7 @@ padding-right: 50px;
   top: 0px;
   width: 6px;
   height: 12px;
-  border: 2px solid white; /* tick white on blue */
+  border: 2px solid white; 
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
@@ -334,6 +480,69 @@ padding-right: 50px;
   font-size: 22px;
   font-style: initial;
 }
+
+.overrideHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+
+@media (max-width: 900px) {
+  .kycPanelHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .kycHeaderActions {
+    width: 100%;
+  }
+
+  .searchBar,
+  .searchBarOverride {
+    width: 100%;
+  }
+
+  .restrictionsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .headerBox h1 {
+    font-size: 22px;
+  }
+  .headerBox h2 {
+    font-size: 16px;
+  }
+
+  .overrideHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .btnBack {
+    width: 100%;
+    text-align: center;
+  }
+
+  .searchBarOverride {
+    width: 100%;
+  }
+
+  .btnOverride {
+    width: 100%;
+  }
+
+  table th,
+  table td {
+    font-size: 12px;
+    padding: 10px;
+  }
+}
+
 
 @media (max-width: 600px) {
   .restrictionsGrid {
@@ -388,278 +597,21 @@ padding-right: 50px;
   }
 
  .checkboxLabel {
-    display: flex;          /* keep checkbox and text in same line */
-    align-items: center;    /* vertically center */
-    gap: 8px;               /* space between checkbox and text */
-    flex-wrap: nowrap;      /* prevent text from moving to next line */
+    display: flex;          
+    align-items: center;    
+    gap: 8px;            
+    flex-wrap: nowrap;      
     width: 100%;
   }
 
   .checkboxLabel input[type="checkbox"] {
-    flex-shrink: 0;         /* keep checkbox size fixed */
+    flex-shrink: 0;        
     width: 18px;
     height: 18px;
   }
 
   .checkboxLabel span,
   .checkboxLabel {
-    white-space: normal;    /* allow text to wrap but keep checkbox inline */
+    white-space: normal;    
   }
 }
-
-/* override logs  */
-/* ================================================
-   MAIN WRAPPER
-================================================ */
-.wrapper {
-  width: 100%;
-  padding: 20px;
-  background: #f8fafc;
-  min-height: 100vh;
-  box-sizing: border-box;
-}
-
-/* ================================================
-   HEADER SECTION
-================================================ */
-.headerBox {
-  background: #d9ecff;
-  padding: 25px;
-  border-radius: 12px;
-  margin-bottom: 25px;
-}
-
-.headerBox h1 {
-  margin: 5px 0;
-  font-size: 26px;
-  font-weight: 700;
-}
-
-.headerBox h2 {
-  font-size: 18px;
-  color: #3b3b3b;
-}
-
-.headerBox p {
-  margin-top: 4px;
-  color: #666;
-}
-
-.searchBar,
-.searchBarOverride {
-  display: flex;
-  align-items: center;
-  background: white;
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
-  padding: 8px 12px;
-  width: 260px;
-}
-
-.searchBarOverride {
-  margin-left: auto;
-}
-
-.searchIcon {
-  font-size: 18px;
-  color: #6a6a6a;
-  margin-right: 8px;
-}
-
-.searchInput {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 14px;
-}
-
-.kycPanelHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-}
-
-.kycHeaderActions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.btnOverride {
-  background: #005eff;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.btnOverride:hover {
-  background: #0047d4;
-}
-
-.btnBack {
-  background: #fff;
-  border: 1px solid #dcdcdc;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-
-.kycTableContainer,
-.overrideTableContainer {
-  overflow-x: auto;
-  background: white;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #e6e6e6;
-}
-
-.kycTable,
-.overrideTable {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.kycTable th,
-.overrideTable th {
-  background: #f1f5f9;
-  padding: 12px;
-  text-align: left;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.kycTable td,
-.overrideTable td {
-  padding: 12px;
-  border-bottom: 1px solid #eeeeee;
-  font-size: 14px;
-}
-
-.userInfo {
-  display: flex;
-  flex-direction: column;
-}
-
-.userName {
-  font-weight: 600;
-}
-
-.userEmail {
-  font-size: 12px;
-  color: #777;
-}
-
-
-
-
-.overrideTitle {
-  font-size: 22px;
-  margin: 15px 0;
-  font-weight: 700;
-}
-
-.adminBox {
-  background: white;
-  padding: 20px;
-  margin-top: 30px;
-  border-radius: 12px;
-  border: 1px solid #e6e6e6;
-}
-
-.adminIconTitle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.adminIcon {
-  font-size: 24px;
-  color: #005eff;
-}
-
-.panelTitle {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.restrictionsGrid {
-  margin-top: 15px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.checkboxLabel {
-  font-size: 14px;
-}
-
-
-.overrideHeader {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-@media (max-width: 900px) {
-  .kycPanelHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-
-  .kycHeaderActions {
-    width: 100%;
-  }
-
-  .searchBar,
-  .searchBarOverride {
-    width: 100%;
-  }
-
-  .restrictionsGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* MOBILE */
-@media (max-width: 600px) {
-  .headerBox h1 {
-    font-size: 22px;
-  }
-  .headerBox h2 {
-    font-size: 16px;
-  }
-
-  .overrideHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .btnBack {
-    width: 100%;
-    text-align: center;
-  }
-
-  .searchBarOverride {
-    width: 100%;
-  }
-
-  .btnOverride {
-    width: 100%;
-  }
-
-  table th,
-  table td {
-    font-size: 12px;
-    padding: 10px;
-  }
-}
-
