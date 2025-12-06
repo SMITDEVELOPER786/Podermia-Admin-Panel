@@ -41,13 +41,12 @@
 .closeBtn {
   background: none;
   border: none;
-  font-size: 20px;
   cursor: pointer;
   color: #666;
   transition: 0.2s;
   position: absolute;
-  right: 20px;
-  top: 20px;
+  right: 1%;
+  top: 2%;
 }
 
 .closeBtn:hover {
@@ -96,5 +95,10 @@
 @media (max-width: 768px) {
   .modalBox {
     width: 95%;
+  }
+
+  .closeBtn {
+    right: 2%;
+    top: 2%;
   }
 }

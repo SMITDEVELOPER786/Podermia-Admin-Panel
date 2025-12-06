@@ -217,6 +217,7 @@
   .mobileFilterBtn {
     display: block;
     margin-bottom: 12px;
+    width: 100%;
   }
 
   .filtersGrid {

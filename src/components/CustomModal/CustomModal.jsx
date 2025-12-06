@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import styles from "./CustomModal.module.css";
+import { CrossIcon, X } from "lucide-react";
 
 const CustomModal = ({
   isOpen,
@@ -46,7 +47,7 @@ const CustomModal = ({
             </h2>
             {showClose && (
               <button className={styles.closeBtn} onClick={onClose}>
-                ✕
+                 <X size={25} />
               </button>
             )}
           </div>

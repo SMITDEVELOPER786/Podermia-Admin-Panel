@@ -40,7 +40,7 @@ const AdminReferrals = () => {
     <>
       <Header/>
       <Div className="referrals-section">
-        <KPICards suspendedCard={false} />
+        <KPICards suspendedCard={false}  systemHealthCard={true}/>
         <Div className="admin-heading flexRow">
           <h3>Admin Referrals</h3>
           <p>Super Admin</p>
