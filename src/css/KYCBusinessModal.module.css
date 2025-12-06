@@ -190,6 +190,8 @@
   border-radius: 10px;
   padding: 22px;
   margin-top: 10px;
+  gap: 300px;
+
 }
 
 .bvnTitle {
@@ -203,7 +205,6 @@
 .bvnGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 300px;
 }
 
 .bvnLabel {
@@ -300,7 +301,7 @@
   background: white;
   padding: 18px 18px;
   border-radius: 18px;
-  border: 1px solid #e7e7e7;
+  border: 1px solid #264DAF;
 }
 
 .sectionTitle {
@@ -313,7 +314,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #e7e7e7;
+  border: 1px solid #264DAF;
   padding: 14px 16px;
   border-radius: 16px;
   margin-bottom: 14px;
@@ -334,23 +335,6 @@
   color: #777;
 }
 
-.badgeVerified {
-  background: #e7f0ff;
-  color: #0046cf;
-  font-size: 13px;
-  padding: 4px 12px;
-  border-radius: 25px;
-  font-weight: 500;
-}
-
-.badgeSignature {
-  background: #e7f0ff;
-  color: #0046cf;
-  font-size: 13px;
-  padding: 4px 12px;
-  border-radius: 25px;
-  font-weight: 500;
-}
 .popupOverlay {
   position: fixed;
   top: 0;
@@ -421,6 +405,141 @@
   margin-right: 6px;
 }
 
+.uboDetailWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.backBtn {
+  width: fit-content;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid #264daf;
+  background: white;
+  color: #264daf;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.uboCard {
+  width: 100%;
+  background: white;
+  border: 1px solid #264DAF;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.uboHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.uboName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+}
+
+.verifiedTag {
+  background: #264DAF;
+  color: white;
+  font-size: 11px;
+  padding: 6px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.uboOwnership {
+  font-size: 14px;
+  color: #333;
+}
+
+.uboGrid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  row-gap: 8px;
+  column-gap: 10px;
+  font-size: 13.5px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #0275d8;
+}
+
+.uboGrid strong {
+  color: #111;
+}
+
+.uboGrid span {
+  color: #444;
+}
+
+.uboDocsBox {
+ 
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.uboDocsBox strong {
+  display: block;
+  font-size: 13px;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.uboDocRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.docBadge {
+  background: white;
+  border: 1px solid #264DAF;
+  color: #264daf;
+  font-size: 11px;
+  padding: 6px 16px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.badgeVerified {
+  background: #264DAF;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  font-size: 14px;
+}
+
+.badgeSignature {
+  background: #264DAF;
+  color: #fff;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+   font-size: 14px;
+}
+
+
 
 @media (max-width: 650px) {
   .infoGrid { grid-template-columns: 1fr; }
@@ -445,7 +564,7 @@
   }
 
     .tabs::-webkit-scrollbar-thumb {
-    background-color: #264DAF; /* Blue scrollbar */
+    background-color: #264DAF; 
     border-radius: 10px;
   }
 
@@ -460,6 +579,12 @@
 
   .header {
     font-size: 16px;
+  }
+
+  .badgeSignature{
+    font-size: 10px;
+    font-weight: 500;
+    width: 10px;
   }
 }
 
@@ -504,7 +629,12 @@
     flex: 0 0 auto !important;
     min-width: 100px;
   }
-}
+.badgeSignature {
+  white-space: nowrap !important;
+  min-width: max-content;
+  line-height: 1;
+  text-align: center;
+}}
 @media (min-width: 481px) and (max-width: 768px) {
   .bigValue {
     font-size: 15px;
@@ -709,5 +839,38 @@
   .userImg {
     width: 60px;
     height: 60px;
+  }
+}
+
+@media (max-width: 600px) {
+  .uboCard {
+    padding: 14px;
+  }
+
+  .uboName {
+    font-size: 14px;
+  }
+
+  .uboGrid {
+    grid-template-columns: 1fr;
+    font-size: 13px;
+  }
+
+  .uboGrid strong {
+    margin-top: 6px;
+  }
+
+  .verifiedTag {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .uboDocsBox {
+    padding: 10px;
+  }
+
+  .docBadge {
+    font-size: 10px;
+    padding: 4px 8px;
   }
 }
