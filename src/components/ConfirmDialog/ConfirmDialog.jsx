@@ -3,7 +3,8 @@ import { AlertTriangle, Info, HelpCircle, X } from 'lucide-react';
 import styles from './ConfirmDialog.module.css';
 
 const ConfirmDialog = ({ 
-  type = 'warning', // 'warning', 'info', 'question'
+  isOpen,
+  type = 'warning',
   title, 
   message, 
   confirmText = 'Confirm',
@@ -12,6 +13,8 @@ const ConfirmDialog = ({
   onCancel,
   showIcon = true 
 }) => {
+  if (!isOpen) return null; 
+
   const getIcon = () => {
     switch (type) {
       case 'warning':
@@ -39,7 +42,6 @@ const ConfirmDialog = ({
         )}
         
         <h2 className={styles.title}>{title}</h2>
-        
         {message && <p className={styles.message}>{message}</p>}
 
         <div className={styles.actions}>

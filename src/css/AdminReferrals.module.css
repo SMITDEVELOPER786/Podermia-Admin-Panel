@@ -113,6 +113,13 @@
   background-color: #f3f3f5;
 }
 
+.errorText {
+  color: #e05a5a;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
 .infoText {
   font-size: 13px;
   opacity: 0.8;
@@ -309,9 +316,18 @@
   height: 250px;
 }
 
+.pending-card h4{
+  color: #16A34A;
+}
+
 .pending-card2{
     border: 1px solid #8A38F5;
   background-color: #F7F0FF;
+
+}
+
+.pending-card2 h4{
+  color: #8A38F5;
 }
 .pending-buttons{
   display: flex;

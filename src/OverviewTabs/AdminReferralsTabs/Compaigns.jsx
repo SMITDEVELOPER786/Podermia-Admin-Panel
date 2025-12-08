@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styles from '../../css/AdminReferrals.module.css'
 import { ChevronDown } from 'lucide-react'
+import Toast from '../../components/Toast/Toast'
 
 function Div({ className, ...props }) {
   const mappedClass = className
@@ -13,6 +14,11 @@ function Div({ className, ...props }) {
 const Compaigns = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [selected, setSelected] = useState("Ongoing");
+  const [referralBonus, setReferralBonus] = useState('');
+  const [inviteeBonus, setInviteeBonus] = useState('');
+  const [minInvestment, setMinInvestment] = useState('');
+  const [errors, setErrors] = useState({});
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
 
   const options = [
     "Ongoing",
@@ -24,6 +30,73 @@ const Compaigns = () => {
   const handleSelect = (value) => {
     setSelected(value);
     setOpenDropdown(false);
+  };
+
+  const validateField = (name, value) => {
+    if (!value || value.trim() === '') {
+      return 'This field is required';
+    }
+    if (!/^\d+$/.test(value)) {
+      return 'Please enter a valid numeric value';
+    }
+    if (parseFloat(value) <= 0) {
+      return 'Value must be greater than 0';
+    }
+    return '';
+  };
+
+  const handleInputChange = (name, value) => {
+    switch(name) {
+      case 'referralBonus':
+        setReferralBonus(value);
+        break;
+      case 'inviteeBonus':
+        setInviteeBonus(value);
+        break;
+      case 'minInvestment':
+        setMinInvestment(value);
+        break;
+    }
+    
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleBlur = (name, value) => {
+    const error = validateField(name, value);
+    if (error) {
+      setErrors(prev => ({ ...prev, [name]: error }));
+    }
+  };
+
+  const handleSubmit = () => {
+    const newErrors = {};
+    
+    const referralError = validateField('referralBonus', referralBonus);
+    if (referralError) newErrors.referralBonus = referralError;
+    
+    const inviteeError = validateField('inviteeBonus', inviteeBonus);
+    if (inviteeError) newErrors.inviteeBonus = inviteeError;
+    
+    const minInvestmentError = validateField('minInvestment', minInvestment);
+    if (minInvestmentError) newErrors.minInvestment = minInvestmentError;
+    
+    setErrors(newErrors);
+    
+    if (Object.keys(newErrors).length === 0) {
+      // Success - save configuration
+      setToast({ 
+        show: true, 
+        message: 'Campaign settings updated successfully!', 
+        type: 'success' 
+      });
+      
+      setTimeout(() => {
+        setToast({ show: false, message: '', type: '' });
+      }, 3000);
+    }
   };
 
   return (
@@ -47,13 +120,33 @@ const Compaigns = () => {
           <Div className="input-block">
             <label>Referral Bonus ₦</label>
             <span className={styles.smallText}>Amount for person who send invite</span>
-            <input type="text" placeholder="5000" className={styles.inputField} />
+            <input 
+              type="text" 
+              placeholder="5000" 
+              className={styles.inputField} 
+              value={referralBonus}
+              onChange={(e) => handleInputChange('referralBonus', e.target.value)}
+              onBlur={(e) => handleBlur('referralBonus', e.target.value)}
+            />
+            {errors.referralBonus && (
+              <span className={styles.errorText}>{errors.referralBonus}</span>
+            )}
           </Div>
 
           <Div className="input-block">
             <label>Invitee Bonus</label>
             <span className={styles.smallText}>Amount for new user who signup</span>
-            <input type="text" placeholder="5000" className={styles.inputField} />
+            <input 
+              type="text" 
+              placeholder="5000" 
+              className={styles.inputField} 
+              value={inviteeBonus}
+              onChange={(e) => handleInputChange('inviteeBonus', e.target.value)}
+              onBlur={(e) => handleBlur('inviteeBonus', e.target.value)}
+            />
+            {errors.inviteeBonus && (
+              <span className={styles.errorText}>{errors.inviteeBonus}</span>
+            )}
           </Div>
         </Div>
 
@@ -90,13 +183,31 @@ const Compaigns = () => {
 
         <Div className="input-block full-width">
           <label>Minimum Investment ₦</label>
-          <input type="text" placeholder="5000" className={styles.inputField} />
+          <input 
+            type="text" 
+            placeholder="5000" 
+            className={styles.inputField} 
+            value={minInvestment}
+            onChange={(e) => handleInputChange('minInvestment', e.target.value)}
+            onBlur={(e) => handleBlur('minInvestment', e.target.value)}
+          />
+          {errors.minInvestment && (
+            <span className={styles.errorText}>{errors.minInvestment}</span>
+          )}
         </Div>
 
-        <button className={styles.updateButton}>
+        <button className={styles.updateButton} onClick={handleSubmit}>
           Update Campaign Settings
         </button>
       </Div>
+      
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ show: false, message: '', type: '' })}
+        />
+      )}
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "../../css/AdminReferrals.module.css";
 import CustomModal from "../../components/CustomModal/CustomModal";
+import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
+import Toast from "../../components/Toast/Toast";
 
 function Div({ className, ...props }) {
   const mappedClass = className
@@ -14,8 +16,12 @@ const Payouts = () => {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [selected, setSelected] = useState(null);
-
-  const individualPayout = [
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingAmount, setPendingAmount] = useState(45000);
+  const [monthlyAmount, setMonthlyAmount] = useState(125000);
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [payouts, setPayouts] = useState([
     {
       id: 1,
       transId: "PAY001",
@@ -128,7 +134,7 @@ const Payouts = () => {
       date: "2023-05-19",
       validation: "Approved",
     },
-  ];
+  ]);
 
   const openDetails = (item) => {
     setSelected(item);
@@ -139,24 +145,103 @@ const Payouts = () => {
     setOpen2(false);
     setSelected(null);
   };
+
+  const handleProcessAll = () => {
+    setShowConfirm(true);
+  };
+
+  const confirmProcessAll = () => {
+    const amountToProcess = pendingAmount;
+    setMonthlyAmount(prev => prev + amountToProcess);
+    setPendingAmount(0);
+    setShowConfirm(false);
+    setToast({ 
+      show: true, 
+      message: `₦${amountToProcess.toLocaleString()} processed successfully!`, 
+      type: 'success' 
+    });
+    setTimeout(() => {
+      setToast({ show: false, message: '', type: '' });
+    }, 3000);
+  };
+
+  const filteredPayouts = payouts.filter(item => {
+    const query = searchQuery.toLowerCase();
+    return (
+      item.transId.toLowerCase().includes(query) ||
+      item.referrer.toLowerCase().includes(query) ||
+      item.Code.toLowerCase().includes(query) ||
+      item.invitee.toLowerCase().includes(query) ||
+      item.validation.toLowerCase().includes(query)
+    );
+  });
+
+  const pendingCount = payouts.filter(item => item.validation === 'Pending').length;
+
+  const handleApprove = () => {
+    if (selected) {
+      setPayouts(prev => 
+        prev.map(item => 
+          item.id === selected.id 
+            ? { ...item, validation: 'Approved' } 
+            : item
+        )
+      );
+      setToast({ 
+        show: true, 
+        message: `Payout ${selected.transId} approved successfully!`, 
+        type: 'success' 
+      });
+      setTimeout(() => {
+        setToast({ show: false, message: '', type: '' });
+      }, 3000);
+      closeDetails();
+    }
+  };
+
+  const handleReject = () => {
+    if (selected) {
+      setPayouts(prev => 
+        prev.map(item => 
+          item.id === selected.id 
+            ? { ...item, validation: 'Rejected' } 
+            : item
+        )
+      );
+      setToast({ 
+        show: true, 
+        message: `Payout ${selected.transId} rejected!`, 
+        type: 'error' 
+      });
+      setTimeout(() => {
+        setToast({ show: false, message: '', type: '' });
+      }, 3000);
+      closeDetails();
+    }
+  };
   return (
     <div className="content-panel">
       <h4 className={styles.payoutHead}>Payout Control</h4>
       <Div className="pending-cards">
         <Div className="pending-card">
           <h4>Pending Payouts</h4>
-          <h4>₦45,000</h4>
+          <h4>₦{pendingAmount.toLocaleString()}</h4>
           <p>9 users eligible</p>
         </Div>
         <Div className="pending-card pending-card2">
           <h4>This Month</h4>
-          <h4>₦125,000</h4>
+          <h4>₦{monthlyAmount.toLocaleString()}</h4>
           <p>25 payouts</p>
         </Div>
       </Div>
 
       <Div className="pending-buttons">
-        <button className={styles.payoutButton1}>
+        <button 
+          className={styles.payoutButton1} 
+          onClick={handleProcessAll}
+          disabled={pendingAmount === 0}
+          style={{ opacity: pendingAmount === 0 ? 0.5 : 1, cursor: pendingAmount === 0 ? 'not-allowed' : 'pointer' }}
+        >
           Process All Pending Payouts
         </button>
         <button className={styles.payoutButton2} onClick={() => setOpen(true)}>
@@ -175,12 +260,14 @@ const Payouts = () => {
             <input
               type="search"
               placeholder="Search User product, or transaction ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </Div>
-          <p>2 pending review</p>
+          <p>{pendingCount} pending review</p>
         </Div>
 
-        {individualPayout.map((item) => (
+        {filteredPayouts.map((item) => (
           <Div key={item.id} className="payout-card">
             <Div className="payout-head flexRow">
               <Div className="transId-flagged flexRow">
@@ -275,25 +362,44 @@ const Payouts = () => {
               </p>
             </div>
 
-            {/* <div className={styles.actionsRow}>
-              <button
-                className={`${styles.btn} ${styles.btnClose}`}
-                onClick={closeDetails}
-              >
-                Close
-              </button>
-              <button className={`${styles.btn} ${styles.btnApprove}`}>
-                Approve
-              </button>
-              <button className={`${styles.btn} ${styles.btnReject}`}>
-                Reject
-              </button>
-            </div> */}
+            {selected.validation === 'Pending' && (
+              <div className={styles.actionsRow}>
+          
+                <button 
+                  className={`${styles.btn} ${styles.btnApprove}`}
+                  onClick={handleApprove}
+                >
+                  Approve
+                </button>
+                <button 
+                  className={`${styles.btn} ${styles.btnReject}`}
+                  onClick={handleReject}
+                >
+                  Reject
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <p>No payout selected.</p>
         )}
       </CustomModal>
+
+      <ConfirmDialog
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={confirmProcessAll}
+        title="Process All Pending Payouts"
+        message={`Are you sure you want to process all pending payouts (₦${pendingAmount.toLocaleString()})? This action cannot be undone.`}
+      />
+
+      {toast.show && toast.message && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ show: false, message: '', type: '' })}
+        />
+      )}
     </div>
   );
 };
