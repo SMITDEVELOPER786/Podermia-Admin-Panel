@@ -137,7 +137,7 @@
 }
 
 @media (max-width: 768px) {
-  button {
+.secondary, .primary{
     padding-top: 14px !important;
     padding-bottom: 14px !important;
   }

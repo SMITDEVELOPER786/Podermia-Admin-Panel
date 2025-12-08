@@ -614,4 +614,8 @@ padding: 18px;
   .checkboxLabel {
     white-space: normal;    
   }
+  
+.btnViewDetail{
+  font-size: 10px !important;
+}
 }

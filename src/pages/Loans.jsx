@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import styles from "../css/LoansQueue.module.css";
+import { LoanBarChart, LoanPieChart, LoanLineChart } from  "../components/ReportCharts";
 
 import eyeIcon from "../assets/eye.png";
 import tickIcon from "../assets/tick.png";
 import crossIcon from "../assets/cross.png";
 import exportIcon from "../assets/export.png";
+
 
 function LoansQueueTab() {
   const initialRows = [
@@ -42,7 +44,7 @@ function LoansQueueTab() {
     setFilters({ date: "", minAmount: "", accountId: "", collateral: "All Product", status: "Status" });
     setRows(initialRows);
   };
-
+// loan queue tab
   return (
     <>
       <div className={styles.topBar}>
@@ -108,125 +110,31 @@ function LoansQueueTab() {
     </>
   );
 }
-function ReviewTab({ setActiveTab }) {
+// review tab
 
-  const stylesBox = {
-    border: "1px solid #E5E7EB",
-    borderRadius: "10px",
-    padding: "18px",
-    marginBottom: "20px",
-    width: "100%"
-  };
-
-  const stylesGrid = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "8px"
-  };
-
-  const stylesTitle = {
-    marginBottom: "10px",
-    fontWeight: "600"
-  };
-
-  const card = {
-    border: "1px solid #E5E7EB",
-    borderRadius: "10px",
-    padding: "15px"
-  };
-
-  const cardCenter = {
-    border: "1px solid #E5E7EB",
-    borderRadius: "10px",
-    padding: "15px",
-    textAlign: "center"
-  };
-
-  const verified = {
-    background: "#E8FFF1",
-    color: "#08A84A",
-    padding: "2px 8px",
-    borderRadius: "6px",
-    fontSize: "12px"
-  };
-
-  const btnGreen = {
-    width: "100%",
-    padding: "8px",
-    background: "#05A660",
-    color: "#fff",
-    borderRadius: "8px",
-    border: "none",
-    marginBottom: "8px",
-    cursor: "pointer"
-  };
-
-  const btnRed = {
-    width: "100%",
-    padding: "8px",
-    background: "#FF4D4F",
-    color: "#fff",
-    borderRadius: "8px",
-    border: "none",
-    marginBottom: "8px",
-    cursor: "pointer"
-  };
-
-  const btnGrey = {
-    width: "100%",
-    padding: "8px",
-    background: "#F1F3F5",
-    borderRadius: "8px",
-    border: "1px solid #D0D5DD",
-    cursor: "pointer"
-  };
-
+ function ReviewTab({ setActiveTab }) {
   return (
-    <div style={{ width: "100%", padding: "10px 0" }}>
+    <div className={styles.reviewTab}>
 
-    
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "25px",
-        width: "100%"
-      }}>
-        <button
-          onClick={() => setActiveTab("Loans Queue")}
-          style={{
-            background: "#F5F6FA",
-            border: "1px solid #DADCE3",
-            padding: "6px 18px",
-            borderRadius: "8px",
-            cursor: "pointer"
-          }}
-        >
-          Back to queue
+      {/* Top Header */}
+      <div className={styles.topHeader}>
+        <button className={styles.backBtn} onClick={() => setActiveTab("Loans Queue")}>
+          Back To Queue
         </button>
 
-        <h2 style={{ margin: 0, color: "#264DAF", paddingRight: "650px", fontSize: "26px"}}>Loan Application Review</h2>
+        <h2 className={styles.pageTitle}>Loan Application Review</h2>
 
-        <button style={{
-          background: "#264DAF",
-          color: "#fff",
-          padding: "8px 18px",
-          borderRadius: "18px",
-          border: "none",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          cursor: "pointer"
-        }}>
-          <img src={exportIcon} alt="export" style={{ width: "18px" }} />
+        <button className={styles.exportBtn}>
+          <img src={exportIcon} alt="" />
           Export Report
         </button>
       </div>
 
-    
-      <section style={stylesBox}>
-        <h3 style={stylesTitle}>Application User</h3>
-        <div style={stylesGrid}>
+      {/* Application User */}
+      <section className={styles.box}>
+        <h3 className={styles.boxTitle}>Application User</h3>
+
+        <div className={styles.grid2}>
           <p><strong>Name:</strong> John Smith</p>
           <p><strong>Account:</strong> ACC001</p>
           <p><strong>Email:</strong> John.doi@gmail.com</p>
@@ -234,9 +142,11 @@ function ReviewTab({ setActiveTab }) {
         </div>
       </section>
 
-      <section style={stylesBox}>
-        <h3 style={stylesTitle}>Loans Detail</h3>
-        <div style={stylesGrid}>
+      {/* Loan Details */}
+      <section className={styles.box}>
+        <h3 className={styles.boxTitle}>Loans Detail</h3>
+
+        <div className={styles.grid2}>
           <p><strong>Loan Amount:</strong> 500,000</p>
           <p><strong>Purpose:</strong> Business Expansion</p>
           <p><strong>Collateral:</strong> Saving Vault</p>
@@ -244,26 +154,25 @@ function ReviewTab({ setActiveTab }) {
         </div>
       </section>
 
-      <section style={stylesBox}>
-        <h3 style={stylesTitle}>AI Recommendation</h3>
-        <p style={{ fontSize: "14px", lineHeight: "1.5" }}>
-          Based on credit score, collateral value and payment history, 
-          application meets approval criteria, recommended rate: 15.4%, 
+      {/* AI Recommendation */}
+      <section className={styles.box}>
+        <h3 className={styles.boxTitle}>AI Recommendation</h3>
+
+        <p className={styles.aiText}>
+          Based on credit score, collateral value and payment history,
+          application meets approval criteria, recommended rate: 15.4%,
           with standard terms.
         </p>
       </section>
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        gap: "18px",
-        width: "100%"
-      }}>
+      {/* 4 Cards */}
+      <div className={styles.grid4}>
 
-        <div style={card}>
+        {/* KYC */}
+        <div className={styles.card}>
           <h4>KYC Verified</h4>
-          <span style={verified}>Verified</span>
-          <p style={{ marginTop: "10px", fontSize: "13px" }}>
+          <span className={styles.verified}>Verified</span>
+          <p className={styles.smallText}>
             <strong>Documents Verified:</strong><br />
             • National ID <br />
             • Utility Bill <br />
@@ -271,26 +180,32 @@ function ReviewTab({ setActiveTab }) {
           </p>
         </div>
 
-        <div style={cardCenter}>
+        {/* Credit Score */}
+        <div className={styles.cardCenter}>
           <h4>Credit Score</h4>
-          <h2 style={{ margin: "10px 0" }}>720</h2>
-          <p style={{ color: "#0A66FF" }}>Good</p>
+          <h2 className={styles.bigNumber}>720</h2>
+
+          <p className={styles.scoreBadge}>Good</p>
         </div>
 
-        <div style={cardCenter}>
+        {/* Risk */}
+        <div className={styles.cardCenter}>
           <h4>Risk Level</h4>
-          <h2 style={{ margin: "10px 0" }}>85/100</h2>
-          <p style={{ color: "#27AE60" }}>Low</p>
+          <h2 className={styles.bigNumber}>85/100</h2>
+
+          <p className={styles.riskBadge}>Low</p>
         </div>
 
-        <div style={cardCenter}>
+        {/* Action Buttons */}
+        <div className={styles.cardCenter}>
           <h4>Action</h4>
-          <button style={btnGreen}>Approve Loan</button>
-          <button style={btnRed}>Reject Application</button>
-          <button style={btnGrey}>Request Additional Info</button>
-        </div>
 
+          <button className={styles.btnGreen}>Approve Loan</button>
+          <button className={styles.btnRed}>Reject Application</button>
+          <button className={styles.btnGrey}>Request Additional Info</button>
+        </div>
       </div>
+
     </div>
   );
 }
@@ -349,7 +264,7 @@ function LoanListTab() {
 
         <div className={styles.filterButtons}>
           <button className={styles.clearBtn}>Clear Filters</button>
-          <button className={styles.applyBtn}>Apply Filters</button>
+          <button className={styles.apply}>Apply Filters</button>
         </div>
       </div>
 
@@ -366,7 +281,6 @@ function LoanListTab() {
               <th>Action</th>
             </tr>
           </thead>
-
           <tbody>
             {rows.map((row, i) => (
               <tr key={i}>
@@ -409,7 +323,6 @@ function LoanListTab() {
   return (
     <div className={styles.container}>
 
-      {/* TOP BAR */}
       <div className={styles.topBar}>
         <h2>Loan Setting & Configuration</h2>
         <button className={styles.exportBtn}>
@@ -417,11 +330,8 @@ function LoanListTab() {
           Export Reports
         </button>
       </div>
-
-      {/* TITLE */}
+<div style={{ border: "1px solid #246DAF", borderRadius: "10px", padding: "6px 10px", paddingBottom: "0%"}}>
       <h3 className={styles.sectionTitle}>Loan Product Configuration</h3>
-
-      {/* PRODUCT CARDS */}
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <h4>Personal Loan-Bronze</h4>
@@ -479,8 +389,7 @@ function LoanListTab() {
       </div>
 
       <button className={styles.addProductBtn}>Add New Loan Product</button>
-
-      {/* GLOBAL SETTINGS SECTION */}
+</div>
       <div className={styles.bigSection}>
         <h3>Global Interest Rate Setting</h3>
 
@@ -715,7 +624,6 @@ function CollateralTab() {
   return (
     <div className={styles.container}>
 
-      {/* TOP BAR */}
       <div className={styles.topBar}>
         <h2>Collateral</h2>
 
@@ -729,7 +637,6 @@ function CollateralTab() {
         </div>
       </div>
 
-      {/* FILTERS */}
       <div className={styles.filters}>
         <select name="collateralStatus" value={filters.collateralStatus} onChange={handleChange}>
           <option>Collateral Status</option>
@@ -758,7 +665,6 @@ function CollateralTab() {
         <button className={styles.applyBtn}>Apply Filters</button>
       </div>
 
-      {/* TABLE */}
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -786,21 +692,16 @@ function CollateralTab() {
                 <td>{row.asset}</td>
                 <td>{row.value}</td>
 
-                {/* FIXED: NO ERROR */}
                 <td className={row.status === "Released" ? styles.green : styles.red}>
                   {row.locked}
                 </td>
 
                 <td>{row.ltv}</td>
-
-                {/* Collateral Status */}
                 <td>
                   <span className={`${styles.badge} ${styles[row.status.replace(" ", "").toLowerCase()]}`}>
                     {row.status}
                   </span>
                 </td>
-
-                {/* Loan Status */}
                 <td>
                   <span className={`${styles.badgeStatus} ${styles[row.loanStatus.replace(" ", "").toLowerCase()]}`}>
                     {row.loanStatus}
@@ -820,8 +721,132 @@ function CollateralTab() {
     </div>
   );
 }
+// reports tab
+function ReportsTab() {
+  return (
+    <div className={styles.reportsContainer}>
 
-function ReportsTab() { return <h2>Reports Tab Content</h2>; }
+      <div className={styles.reportsHeader}>
+        <h2>Loan Reports & Analytics</h2>
+
+        <div className={styles.reportsActions}>
+          <select className={styles.reportSelect}>
+            <option>Monthly</option>
+            <option>Weekly</option>
+            <option>Yearly</option>
+          </select>
+
+          <button className={styles.exportBtn}>
+            <img src={exportIcon} alt="export" />
+            Export PDF
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.metricsGrid}>
+        <div className={styles.metricCard}>
+          <p>Total Disbursed</p>
+          <h3>283 M</h3>
+          <span className={styles.blueText}>+12.5% from last month</span>
+        </div>
+
+        <div className={styles.metricCard}>
+          <p>Total Repaid</p>
+          <h3>215 M</h3>
+          <span className={styles.greenText}>+12.3% from last month</span>
+        </div>
+
+        <div className={styles.metricCard}>
+          <p>Portfolio at Risk</p>
+          <h3>8.5%</h3>
+          <span className={styles.redText}>0.83% from last month</span>
+        </div>
+
+        <div className={styles.metricCard}>
+          <p>Total Customers</p>
+          <h3>1,247</h3>
+          <span className={styles.blueText}>+156 this month</span>
+        </div>
+      </div>
+
+      <div className={styles.chartsGrid}>
+
+        <div className={styles.chartBox}>
+          <h4>Loan Performance Trends</h4>
+            <LoanBarChart />
+        </div>
+
+        <div className={styles.chartBox}>
+          <h4>Portfolio Composition</h4>
+            <LoanPieChart />
+        </div>
+
+        <div className={styles.chartBox}>
+          <h4>Repayment Rate Trend</h4>
+          <div style={{ height: "180px" }}>
+  <LoanLineChart />
+</div>
+
+        </div>
+
+        <div className={styles.chartBox}>
+          <h4>Risk Distribution</h4>
+
+          <div className={styles.riskRow}>
+            <p>Low Risk</p>
+            <span>55%</span>
+          </div>
+
+          <div className={styles.riskRow}>
+            <p>Medium Risk</p>
+            <span>40%</span>
+          </div>
+
+          <div className={styles.riskRow}>
+            <p>High Risk</p>
+            <span>5%</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div className={styles.bottomGrid}>
+
+        <div className={styles.bottomCard}>
+          <h4>Key Financial Metrics</h4>
+          <p>Default Rate <span>3.2%</span></p>
+          <p>Average Loan Size <span>450,000</span></p>
+          <p>Interest Income <span>28.4M</span></p>
+          <p>Outstanding Balance <span>68M</span></p>
+        </div>
+
+        <div className={styles.bottomCard}>
+          <h4>This Month Summary</h4>
+          <p>New Loans <span>89</span></p>
+          <p>Completed Repayment <span>156</span></p>
+          <p>New Default <span>7</span></p>
+        </div>
+
+        <div className={styles.bottomCard}>
+          <h4>Portfolio Health</h4>
+          <p>Healthy Loans <span>92.1%</span></p>
+          <p>At Risk Loans <span>5.4%</span></p>
+          <p>Defaulted Loans <span>2.5%</span></p>
+        </div>
+
+        <div className={styles.bottomCard}>
+          <h4>Revenue Performance</h4>
+          <p>Interest Revenue <span>2.4%</span></p>
+          <p>Fee Income <span>480k</span></p>
+          <p>Total Revenue <span>2.68M</span></p>
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
 
 export default function LoansPage() {
 
