@@ -115,8 +115,6 @@ function LoansQueueTab() {
  function ReviewTab({ setActiveTab }) {
   return (
     <div className={styles.reviewTab}>
-
-      {/* Top Header */}
       <div className={styles.topHeader}>
         <button className={styles.backBtn} onClick={() => setActiveTab("Loans Queue")}>
           Back To Queue
@@ -129,8 +127,6 @@ function LoansQueueTab() {
           Export Report
         </button>
       </div>
-
-      {/* Application User */}
       <section className={styles.box}>
         <h3 className={styles.boxTitle}>Application User</h3>
 
@@ -142,7 +138,6 @@ function LoansQueueTab() {
         </div>
       </section>
 
-      {/* Loan Details */}
       <section className={styles.box}>
         <h3 className={styles.boxTitle}>Loans Detail</h3>
 
@@ -153,8 +148,6 @@ function LoansQueueTab() {
           <p><strong>LTV Ratio:</strong> 80%</p>
         </div>
       </section>
-
-      {/* AI Recommendation */}
       <section className={styles.box}>
         <h3 className={styles.boxTitle}>AI Recommendation</h3>
 
@@ -165,11 +158,8 @@ function LoansQueueTab() {
         </p>
       </section>
 
-      {/* 4 Cards */}
       <div className={styles.grid4}>
-
-        {/* KYC */}
-        <div className={styles.card}>
+        <div className={styles.card} style={{height: "300px"}}>
           <h4>KYC Verified</h4>
           <span className={styles.verified}>Verified</span>
           <p className={styles.smallText}>
