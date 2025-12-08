@@ -398,7 +398,7 @@ const WalletAdjustment = () => {
             </div>
 
             <div className={styles.warningAlert}>
-              <AlertTriangle size={20} />
+              <AlertTriangle size={24} color="#dc2626" />
               <div>
                 <strong>This adjustment will result in a negative balance</strong>
                 <p>

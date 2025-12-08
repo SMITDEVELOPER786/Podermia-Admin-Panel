@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom"
 function SystemMetrics() {
+  const navigate = useNavigate()
   return (
     <div className="content-panel">
       <h3 className="panel-title">System Matrics</h3>
@@ -20,7 +22,7 @@ function SystemMetrics() {
           <span className="metric-value">0</span>
         </div>
       </div>
-      <button className="btn-view-all">View System Logs</button>
+      <button className="btn-view-all" onClick={()=> navigate('/logs')}>View System Logs</button>
     </div>
   )
 }

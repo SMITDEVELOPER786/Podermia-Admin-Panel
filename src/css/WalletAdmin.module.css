@@ -739,7 +739,7 @@
 
 /* Warning Modal Styles */
 .warningModalContent {
-  padding: 24px;
+  padding: 10px;
 }
 
 .warningHeader {
@@ -1049,6 +1049,10 @@
   }
   .reconciliationActions button{
     width: 100%;
+  }
+
+  .warningActions{
+    flex-direction: column;
   }
 }
 

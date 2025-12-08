@@ -1,6 +1,6 @@
 function NavigationTabs({ activeTab, onTabChange }) {
   const tabs = [
-    'Overiew',
+    'Overview',
     'KYC Management',
     'Investment',
     'Loans',

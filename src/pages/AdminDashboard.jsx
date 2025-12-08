@@ -13,11 +13,11 @@ import SystemSetting from './SystemSetting'
 import Report from './Report'
 
 function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('OverView')
+  const [activeTab, setActiveTab] = useState('Overview')
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'OverView':
+      case 'Overview':
         return <Overview />
       case 'KYC Management':
         return <KYCManagement />
