@@ -1,0 +1,221 @@
+.page {
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+.tabs {
+ display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  padding: 0.5rem;
+  background-color: #ECECF0;
+  border-radius: 22px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.tabs button {
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #000000;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tabs button.active {
+  background: white;
+  color: black;
+  border-radius: 18px;
+}
+
+/* financial tab */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.headerRow h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.exportBtn {
+  background: #246daf;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.icon{
+    width: 16px;
+    color: white;
+    height: 16px;
+}
+.cards {
+  display: grid;
+   grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: #ffffff;
+  border: 2px solid #264DAF;
+  border-radius: 12px;
+  padding: 18px;
+  color: #000000;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  color: #222;
+  font-weight: 500;
+}
+
+.card h3 {
+  margin: 8px 0 5px;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.green {
+  color: #18a865;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.red {
+  color: #d93025;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.card small {
+  display: block;
+  margin-top: 4px;
+  color: #777;
+  font-size: 12px;
+}
+
+.sectionTitle {
+
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.chartBox {
+  border: 2px solid #264DAF;
+  height: 230px;
+  border-radius: 12px;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.chartIcon {
+  width: 38px;
+  opacity: 0.6;
+  margin-bottom: 8px;
+}
+
+.chartBox p {
+  text-align: center;
+  font-size: 13px;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs,
+  .tabRow {
+    overflow-x: auto;        
+    white-space: nowrap;     
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    flex-wrap: nowrap;      
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .tabs button,
+  .inactiveTab,
+  .activeTab {
+    flex: 0 0 auto;        
+    white-space: nowrap;     
+  }
+
+  .tabs::-webkit-scrollbar,
+  .tabRow::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .tabs::-webkit-scrollbar-thumb,
+  .tabRow::-webkit-scrollbar-thumb {
+    background-color: #264DAF;
+    border-radius: 3px;
+  }
+
+  .tabs::-webkit-scrollbar-track,
+  .tabRow::-webkit-scrollbar-track {
+    background: transparent;
+  }
+ 
+  .headerRow {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .exportBtn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .headerRow h2 {
+    font-size: 20px;
+  }
+
+  .card h3 {
+    font-size: 22px;
+  }
+
+  .card p,
+  .green,
+  .red {
+    font-size: 13px;
+  }
+
+  .sectionTitle {
+    font-size: 14px;
+  }
+
+  .chartBox {
+    height: 200px;
+  }
+
+  .chartBox p {
+    font-size: 12px;
+  }
+}
