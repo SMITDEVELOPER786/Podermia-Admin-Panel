@@ -136,9 +136,6 @@
   color: white;
 }
 
-.statusActive:hover {
-  background-color: #059669;
-}
 
 .statusSoldOut {
   background-color: #ef4444;
@@ -402,6 +399,15 @@
 }
 
 .statusBadgeAttention {
+  padding: 4px 12px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusBadgeInactive {
   padding: 4px 12px;
   background: #fef3c7;
   color: #92400e;

@@ -80,6 +80,20 @@ const EditModal = ({
                   rows="4"
                 />
               </div>
+
+              <div className={styles.formGroup}>
+                <label>Status</label>
+                <select
+                  name="status"
+                  value={formData.status || 'Active'}
+                  onChange={onInputChange}
+                  className={styles.selectField}
+                >
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Error">Error</option>
+                </select>
+              </div>
             </div>
 
             {/* Financial Details */}

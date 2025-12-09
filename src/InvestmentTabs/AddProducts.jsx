@@ -67,6 +67,7 @@ const AddProducts = () => {
     couponFrequency: '',
     riskRating: '',
     creditRating: '',
+    status: 'Active',
     
     // Document Upload
     termSheet: [],
@@ -373,6 +374,7 @@ const AddProducts = () => {
       couponFrequency: '',
       riskRating: item.risk,
       creditRating: '',
+      status: item.status || 'Active',
       termSheet: null,
     });
   };
@@ -391,6 +393,8 @@ const AddProducts = () => {
       maturity: formData.maturityDate?.trim() ? formData.maturityDate : editingItem.maturity,
       risk: formData.riskRating?.trim() ? formData.riskRating : editingItem.risk,
       description: formData.description?.trim() ? formData.description : editingItem.description,
+      status: formData.status ? formData.status : editingItem.status,
+      badges: formData.status ? [formData.status] : editingItem.badges,
     };
 
     console.log('Updating item:', updatedItem);
@@ -423,6 +427,7 @@ const AddProducts = () => {
       couponFrequency: '',
       riskRating: '',
       creditRating: '',
+      status: 'Active',
       termSheet: null,
     });
     setErrors({});
@@ -965,7 +970,7 @@ const AddProducts = () => {
                   <span className={styles.uploadHint}>PDF, DOCS, (MAX 108M)</span>
                 </div>
                 
-                {formData.termSheet.length > 0 && (
+                {formData.termSheet && formData.termSheet.length > 0 && (
                   <div className={styles.uploadedFiles}>
                     {formData.termSheet.map((file, index) => (
                       <div key={index} className={styles.fileItem}>

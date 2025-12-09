@@ -81,7 +81,7 @@ const UserInvestments = () => {
   // Filter configuration
   const filterConfig = {
     showSearch: true,
-    searchPlaceholder: 'Search User product, or transaction ID...',
+    searchPlaceholder: 'Search User or product',
     dropdowns: [
       {
         key: 'status',
