@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./DataTable.module.css";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 /**
  * DataTable
@@ -12,8 +13,33 @@ import styles from "./DataTable.module.css";
  *  - scrollHeight: height of table container
  *  - onRowClick: function to handle row clicks
  *  - loading: boolean to show loading state
+ *  - rowsPerPage: number of rows per page (default: 5)
+ *  - showPagination: boolean to enable pagination (default: true)
  */
-const DataTable = ({ columns, data, scrollHeight = 400, onRowClick, loading }) => {
+const DataTable = ({ 
+  columns, 
+  data, 
+  scrollHeight = 400, 
+  onRowClick, 
+  loading,
+  rowsPerPage = 5,
+  showPagination = true 
+}) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Pagination logic
+  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedData = showPagination ? data.slice(startIndex, endIndex) : data;
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
   if (loading) {
     return (
       <div className={styles.responsiveWrapper}>
@@ -54,7 +80,7 @@ const DataTable = ({ columns, data, scrollHeight = 400, onRowClick, loading }) =
     <div className={styles.responsiveWrapper}>
       <div
         className={styles.tableContainer}
-        style={{ maxHeight: `${scrollHeight}px` }}
+        style={showPagination ? {} : { maxHeight: `${scrollHeight}px` }}
       >
         <table className={styles.dataTable}>
           <thead>
@@ -72,7 +98,7 @@ const DataTable = ({ columns, data, scrollHeight = 400, onRowClick, loading }) =
             </tr>
           </thead>
           <tbody>
-            {data.map((row, i) => (
+            {paginatedData.map((row, i) => (
               <tr 
                 key={i} 
                 className={`${styles.tableRow} ${onRowClick ? styles.clickableRow : ''}`}
@@ -97,16 +123,7 @@ const DataTable = ({ columns, data, scrollHeight = 400, onRowClick, loading }) =
 
                   return (
                     <td key={idx} className={styles.tableCell}>
-                      <span
-                        className={`${styles.badge} ${className}`}
-                        style={col.styleMap ? {
-                          borderRadius: "50px",
-                          padding: "4px 12px",
-                          textAlign: "center",
-                          display: "inline-block",
-                          minWidth: "80px",
-                        } : {}}
-                      >
+                      <span className={`${styles.badge} ${className}`}>
                         {cellValue}
                       </span>
                     </td>
@@ -117,6 +134,43 @@ const DataTable = ({ columns, data, scrollHeight = 400, onRowClick, loading }) =
           </tbody>
         </table>
       </div>
+      
+      {showPagination && data.length > 0 && (
+        <div className={styles.paginationContainer}>
+          <div className={styles.paginationInfo}>
+            Showing {startIndex + 1} to {Math.min(endIndex, data.length)} of {data.length} entries
+          </div>
+          <div className={styles.paginationControls}>
+            <button 
+              className={styles.paginationBtn}
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={18} />
+              Previous
+            </button>
+            <div className={styles.pageNumbers}>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  className={`${styles.pageBtn} ${currentPage === page ? styles.pageActive : ''}`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+            <button 
+              className={styles.paginationBtn}
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

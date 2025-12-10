@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import FilterSearch from '../components/FilterSearch/FilterSearch';
 import styles from '../css/Investment.module.css';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const InvestmentProducts = () => {
   const [filters, setFilters] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 4;
 
   // Sample product data
   const products = [
@@ -75,6 +78,7 @@ const InvestmentProducts = () => {
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filters change
   };
 
   // Filter products based on active filters
@@ -116,6 +120,20 @@ const InvestmentProducts = () => {
     return true;
   });
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
   return (
     <div className={styles.investmentProductsContainer}>
       <FilterSearch 
@@ -124,7 +142,7 @@ const InvestmentProducts = () => {
       />
 
       <div className={styles.productsListContainer}>
-        {filteredProducts.map((product, index) => (
+        {paginatedProducts.map((product, index) => (
           <div key={index} className={styles.productCard}>
             <div className={styles.productInfo}>
               <div className={styles.productField}>
@@ -166,9 +184,42 @@ const InvestmentProducts = () => {
         ))}
       </div>
 
-      <div className={styles.productsFooter}>
-        <span>Showing {filteredProducts.length} of {products.length} Products</span>
-      </div>
+      {filteredProducts.length > 0 && (
+        <div className={styles.paginationContainer}>
+          <div className={styles.paginationInfo}>
+            Showing {startIndex + 1} to {Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} entries
+          </div>
+          <div className={styles.paginationControls}>
+            <button 
+              className={styles.paginationBtn}
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={18} />
+              Previous
+            </button>
+            <div className={styles.pageNumbers}>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  className={`${styles.pageBtn} ${currentPage === page ? styles.pageActive : ''}`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+            <button 
+              className={styles.paginationBtn}
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

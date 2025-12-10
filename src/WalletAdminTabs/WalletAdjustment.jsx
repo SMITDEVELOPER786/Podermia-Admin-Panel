@@ -151,20 +151,15 @@ const WalletAdjustment = () => {
   };
 
   const handleReject = (id) => {
-    const filtered = adjustmentHistory.filter((adj) => adj.id !== id);
-
-    const reIndexed = filtered.map((item, index) => ({
-      ...item,
-      userId: `USER${String(index + 1).padStart(3, "0")}`,
-    }));
-
-    setAdjustmentHistory(reIndexed);
-    setUserIdCounter(reIndexed.length + 1);
-
+    setAdjustmentHistory(
+      adjustmentHistory.map((adj) =>
+        adj.id === id ? { ...adj, status: "Rejected" } : adj
+      )
+    );
     setToast({
       type: "error",
       title: "Rejected",
-      message: "Adjustment has been rejected and removed",
+      message: "Adjustment has been rejected",
     });
   };
 
@@ -310,7 +305,8 @@ const WalletAdjustment = () => {
               key: 'status',
               styleMap: {
                 'Approved': styles.statusApproved,
-                'Pending': styles.statusPending
+                'Pending': styles.statusPending,
+                'Rejected': styles.statusRejected
               }
             },
             { header: 'Created', key: 'created' },

@@ -34,7 +34,6 @@ function WalletAdmin() {
     <div className="content-panel">
        <Div className="title-and-exportBtn flexRow">
           <h3 className={styles.title}>Wallet Administration</h3>
-         <button className={styles.exportBtn}>Export</button>
        </Div>
 
       <WalletNavTabs activeTab={activeTab} onTabChange={setActiveTab} />

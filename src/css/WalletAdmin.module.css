@@ -67,10 +67,32 @@
   margin-bottom: 20px;
 }
 
+.headerButtons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
 .pageTitle {
   font-size: 24px;
   font-weight: 600;
   color: #1a1a1a;
+}
+
+.exportBtn {
+  padding: 10px 20px;
+  background-color: var(--btnColor);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exportBtn:hover {
+  background-color: var(--btnHover);
 }
 
 .pendingBankBtn {
@@ -668,6 +690,11 @@
 .statusPending {
   background-color: #fef3c7;
   color: #92400e;
+}
+
+.statusRejected {
+  background-color: #fee2e2;
+  color: #991b1b;
 }
 
 .actionButtons {

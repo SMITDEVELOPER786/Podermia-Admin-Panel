@@ -6,6 +6,7 @@ import SystemHealth from "../SystemSettingsTabs/SystemHealth";
 import SystemSettingsNav from "../SystemSettingsTabs/SystemSettingsNavigations";
 import { useState } from "react";
 import styles from "../css/SystemSetting.module.css";
+import SupportSystem from "../SystemSettingsTabs/SupportSystem";
 
 function Div({ className, ...props }) {
   const mappedClass = className
@@ -16,7 +17,7 @@ function Div({ className, ...props }) {
 }
 function SystemSetting() {
   const [activeTab, setActiveTab] = useState("General Settings");
-
+  const [supportTab, setSupportTab] = useState(false);
   const renderContent = () => {
     switch (activeTab) {
       case "General Settings":
@@ -33,15 +34,21 @@ function SystemSetting() {
         return <GeneralSetting />;
     }
   };
-
+  if (supportTab)
+    return (
+      <div className="content-panel">
+        <SupportSystem onBack={() => setSupportTab(false)} />
+      </div>
+    );
   return (
     <div className="content-panel">
       <Div className="button-and-head">
         <h3>System Settings</h3>
-        <button>Support System</button>
+        <button onClick={() => setSupportTab(true)}>Support System</button>
       </Div>
 
       <SystemSettingsNav activeTab={activeTab} onTabChange={setActiveTab} />
+
       {renderContent()}
     </div>
   );

@@ -388,6 +388,7 @@ const Payouts = () => {
       <ConfirmDialog
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
+        onCancel={() => setShowConfirm(false)}
         onConfirm={confirmProcessAll}
         title="Process All Pending Payouts"
         message={`Are you sure you want to process all pending payouts (₦${pendingAmount.toLocaleString()})? This action cannot be undone.`}

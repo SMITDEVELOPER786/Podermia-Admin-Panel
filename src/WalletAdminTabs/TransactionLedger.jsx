@@ -219,7 +219,10 @@ const TransactionLedger = () => {
     <div className={styles.transactionLedgerContainer}>
       <div className={styles.headerSection}>
         <h2 className={styles.pageTitle}>Transaction Ledger</h2>
-        <button className={styles.pendingBankBtn} onClick={() => setModalOpen(true)}>Pending Bank Transfer</button>
+        <div className={styles.headerButtons}>
+          <button className={styles.exportBtn}>Export</button>
+          <button className={styles.pendingBankBtn} onClick={() => setModalOpen(true)}>Pending Bank Transfer</button>
+        </div>
       </div>
 
       {/* Filter & Search */}
