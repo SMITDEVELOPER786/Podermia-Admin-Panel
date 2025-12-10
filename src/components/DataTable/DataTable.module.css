@@ -235,4 +235,27 @@
     min-width: 60px;
     font-size: 11px;
   }
+
+  .paginationContainer {
+    flex-direction: column;
+    gap: 12px;
+    position: static;
+  }
+
+  .paginationControls {
+    position: static;
+    transform: none;
+  }
+
+  .paginationInfo {
+    text-align: center;
+  }
+
+  .paginationBtnText {
+    display: none;
+  }
+
+  .paginationBtn {
+    padding: 8px 12px;
+  }
 }

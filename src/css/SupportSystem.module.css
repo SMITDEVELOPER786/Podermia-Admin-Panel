@@ -57,6 +57,15 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .queueHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .queueTitle {

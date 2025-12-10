@@ -147,25 +147,37 @@ const DataTable = ({
               disabled={currentPage === 1}
             >
               <ChevronLeft size={18} />
-              Previous
+              <span className={styles.paginationBtnText}>Previous</span>
             </button>
             <div className={styles.pageNumbers}>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  className={`${styles.pageBtn} ${currentPage === page ? styles.pageActive : ''}`}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </button>
-              ))}
+              {Array.from({ length: Math.min(totalPages, 4) }, (_, i) => {
+                let pageNum;
+                if (totalPages <= 4) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 2) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 1) {
+                  pageNum = totalPages - 3 + i;
+                } else {
+                  pageNum = currentPage - 1 + i;
+                }
+                return (
+                  <button
+                    key={pageNum}
+                    className={`${styles.pageBtn} ${currentPage === pageNum ? styles.pageActive : ''}`}
+                    onClick={() => setCurrentPage(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
             </div>
             <button 
               className={styles.paginationBtn}
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
-              Next
+              <span className={styles.paginationBtnText}>Next</span>
               <ChevronRight size={18} />
             </button>
           </div>
