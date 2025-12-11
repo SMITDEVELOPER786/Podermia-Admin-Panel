@@ -220,7 +220,7 @@ const ReplyThreads = () => {
         <h2><MessageCircle size={18} className={styles.headerIcon} /> In- App Communication & Reply Thread Management</h2>
         
         <div className={styles.ticketSelector}>
-          <h3>Select Astive Ticket</h3>
+          <h3>Select Active Ticket</h3>
           <div className={styles.ticketSelectRow}>
             <div className={styles.customDropdownWrapper} ref={ticketDropdownRef}>
               <div 

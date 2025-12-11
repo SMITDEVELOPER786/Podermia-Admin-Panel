@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from '../../css/SupportSystem.module.css';
 import { ChevronDown, Eye, Star, X } from 'lucide-react';
 import Toast from '../../components/Toast/Toast';
+import DataTables from '../../components/DataTable/DataTables';
 import jsPDF from 'jspdf';
 
 const TicketResolution = () => {
@@ -849,83 +850,63 @@ const TicketResolution = () => {
       {/* Tickets Pending Resolution */}
       <div className={styles.pendingTicketsSection}>
         <h3>Tickets Pending Resolution</h3>
-        <table className={styles.resolutionTable}>
-          <thead>
-            <tr>
-              <th><input type="checkbox" /></th>
-              <th>Ticket ID</th>
-              <th>Subject</th>
-              <th>Customer</th>
-              <th>Category</th>
-              <th>Agent</th>
-              <th>Time Spent</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pendingTickets.map((ticket) => (
-              <tr key={ticket.id}>
-                <td><input type="checkbox" /></td>
-                <td>{ticket.id}</td>
-                <td>{ticket.subject}</td>
-                <td>{ticket.customer}</td>
-                <td>{ticket.category}</td>
-                <td>{ticket.agent}</td>
-                <td>{ticket.timeSpent}</td>
-                <td>
-                  <span className={ticket.priority === 'Critical' ? styles.priorityCritical : styles.priorityMedium}>
-                    {ticket.priority}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTables
+          columns={[
+            { header: 'Ticket ID', key: 'id' },
+            { header: 'Subject', key: 'subject' },
+            { header: 'Customer', key: 'customer' },
+            { header: 'Category', key: 'category' },
+            { header: 'Agent', key: 'agent' },
+            { header: 'Time Spent', key: 'timeSpent' },
+            { 
+              header: 'Priority', 
+              key: 'priority',
+              render: (row) => (
+                <span className={row.priority === 'Critical' ? styles.priorityCritical : styles.priorityMedium}>
+                  {row.priority}
+                </span>
+              )
+            }
+          ]}
+          data={pendingTickets}
+          rowsPerPage={5}
+        />
       </div>
 
       {/* Recently Resolved - Audit Trail */}
       <div className={styles.resolvedTicketsSection}>
         <h3>Recently Resolved - Temper-Proof Audit Trail</h3>
-        <table className={styles.resolutionTable}>
-          <thead>
-            <tr>
-              <th><input type="checkbox" /></th>
-              <th>Ticket ID</th>
-              <th>Customer</th>
-              <th>Category</th>
-              <th>Agent</th>
-              <th>Resolution Type</th>
-              <th>Time</th>
-              <th>Satisfaction</th>
-              <th>Audit Health</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {resolvedTickets.map((ticket) => (
-              <tr key={ticket.id}>
-                <td><input type="checkbox" /></td>
-                <td>{ticket.id}</td>
-                <td>{ticket.customer}</td>
-                <td>{ticket.category}</td>
-                <td>{ticket.agent}</td>
-                <td>{ticket.resolutionType}</td>
-                <td>{ticket.time}</td>
-                <td>
-                  <span className={styles.satisfactionStars}>
-                    {renderStars(ticket.satisfaction.split('/')[0])} {ticket.satisfaction}
-                  </span>
-                </td>
-                <td>{ticket.auditHealth}</td>
-                <td>
-                  <button className={styles.viewBtn} onClick={() => handleViewTicket(ticket)}>
-                    <Eye size={14} /> View
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTables
+          columns={[
+            { header: 'Ticket ID', key: 'id' },
+            { header: 'Customer', key: 'customer' },
+            { header: 'Category', key: 'category' },
+            { header: 'Agent', key: 'agent' },
+            { header: 'Resolution Type', key: 'resolutionType' },
+            { header: 'Time', key: 'time' },
+            { 
+              header: 'Satisfaction', 
+              key: 'satisfaction',
+              render: (row) => (
+                <span className={styles.satisfactionStars}>
+                  {renderStars(row.satisfaction.split('/')[0])} {row.satisfaction}
+                </span>
+              )
+            },
+            { header: 'Audit Health', key: 'auditHealth' },
+            { 
+              header: 'Actions', 
+              key: 'actions',
+              render: (row) => (
+                <button className={styles.viewBtn} onClick={() => handleViewTicket(row)}>
+                  <Eye size={14} /> View
+                </button>
+              )
+            }
+          ]}
+          data={resolvedTickets}
+          rowsPerPage={5}
+        />
       </div>
 
       {/* Audit & Compliance Reporting */}

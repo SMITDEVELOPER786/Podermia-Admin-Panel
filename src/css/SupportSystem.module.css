@@ -755,6 +755,25 @@
   gap: 12px;
 }
 
+@media (max-width: 768px) {
+  .escalationActions {
+    flex-direction: column;
+  }
+  
+  .resetRulesBtn,
+  .saveSettingsBtn {
+    width: 100%;
+  }
+  
+  .autoConfigSection {
+    padding: 10px;
+  }
+  
+  .escalationSection {
+    padding: 10px;
+  }
+}
+
 .resetRulesBtn {
   padding: 10px 20px;
   background: white;
@@ -887,6 +906,13 @@
   min-width: 300px;
 }
 
+@media (max-width: 768px) {
+  .customDropdownWrapper {
+    min-width: 100%;
+    width: 100%;
+  }
+}
+
 .customDropdownSelected {
   padding: 10px 14px;
   background: #FEF2F2;
@@ -959,6 +985,21 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .threadActions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .refreshThreadBtn,
+  .exportChatBtn,
+  .escalateCallBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .refreshThreadBtn {
@@ -1350,6 +1391,14 @@
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .textareaFooter {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 12px;
+  }
+}
+
 .charCounter {
   font-size: 12px;
   color: #6b7280;
@@ -1358,6 +1407,20 @@
 .messageActions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .messageActions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .saveDraftBtn,
+  .previewBtn,
+  .sendCustomerBtn {
+    width: 100%;
+  }
 }
 
 .saveDraftBtn {
@@ -1490,6 +1553,17 @@
   gap: 12px;
   padding-top: 24px;
   border-top: 1px solid #e5e7eb;
+}
+
+@media (max-width: 768px) {
+  .settingsActions {
+    flex-direction: column;
+  }
+  
+  .resetSettingsBtn,
+  .saveCommSettingsBtn {
+    width: 100%;
+  }
 }
 
 .resetSettingsBtn {
@@ -2149,8 +2223,18 @@
     grid-template-columns: 1fr;
   }
   
+  .satisfactionRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
   .resolutionActions,
   .finalActions {
     flex-direction: column;
   }
+
+  .conversationStatus{
+    flex-direction: column;
+  }
+
 }
