@@ -3,12 +3,7 @@ import styles from "../css/Reports.module.css";
 export default function TransactionExport() {
   return (
     <div className={styles.container}>
-      <div className={styles.tabRow}>
-        <button className={styles.tab}>Financial Reports</button>
-        <button className={styles.tab}>User Analytics</button>
-        <button className={styles.tab}>Transaction Report</button>
-        <button className={`${styles.tab} ${styles.activeTab}`}>Export Tools</button>
-      </div>
+     
 
       <div className={styles.sectionTitle}>
         Transaction Reports
