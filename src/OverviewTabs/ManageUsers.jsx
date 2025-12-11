@@ -206,6 +206,51 @@ const ManageUsers = () => {
       lastLogin: "2024-12-25",
       wallet: "₦55,000",
     },
+    {
+      name: "Harper Scott",
+      email: "harper.scott@gmail.com",
+      type: "Premium",
+      kyc: "Verified",
+      status: "Active",
+      lastLogin: "2025-03-10",
+      wallet: "₦280,000",
+    },
+    {
+      name: "Mia Wilson",
+      email: "mia.wilson@gmail.com",
+      type: "Standard",
+      kyc: "Pending",
+      status: "Active",
+      lastLogin: "2024-11-25",
+      wallet: "₦50,000",
+    },
+    {
+      name: "Ethan Martinez",
+      email: "ethan.martinez@gmail.com",
+      type: "Basic",
+      kyc: "Verified",
+      status: "Inactive",
+      lastLogin: "2024-09-05",
+      wallet: "₦11,000",
+    },
+    {
+      name: "Ava Baker",
+      email: "ava.baker@gmail.com",
+      type: "Premium",
+      kyc: "Verified",
+      status: "Active",
+      lastLogin: "2025-02-15",
+      wallet: "₦230,000",
+    },
+    {
+      name: "Mason Taylor",
+      email: "mason.taylor@gmail.com",
+      type: "Standard",
+      kyc: "Verified",
+      status: "Active",
+      lastLogin: "2024-12-10",
+      wallet: "₦70,000",
+    },
   ];
 
   const columns = [
@@ -323,7 +368,6 @@ const ManageUsers = () => {
         bodyStyles: { fontSize: 10 },
         alternateRowStyles: { fillColor: [240, 240, 240] },
         didParseCell: (data) => {
-          // Apply colors for KYC/Status/AccountType columns
           const colKey = columns[data.column.index]?.key;
           const row =
             filtered.length > 0

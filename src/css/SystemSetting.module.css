@@ -1081,3 +1081,170 @@
   padding-top: 16px;
   border-top: 1px solid #e5e7eb;
 }
+
+/* System Health Styles */
+.systemHealthContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.healthHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+}
+
+.healthHeader h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.healthCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.healthCard {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.healthCard h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.statusOnline,
+.statusHealthy,
+.statusConnected,
+.statusSecure {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2563eb;
+}
+
+.healthBar {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.healthFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.healthPercent {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.configBox {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.configBox h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 20px 0;
+}
+
+.ratesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.loanGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.inputGroup input {
+  padding: 10px 14px;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  background: white;
+  border-color: #9ca3af;
+}
+
+@media (max-width: 1024px) {
+  .healthCardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .ratesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .loanGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .healthHeader {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .healthCardsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ratesGrid,
+  .loanGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .headerActions {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .resetBtn,
+  .saveBtn {
+    width: 100%;
+  }
+}

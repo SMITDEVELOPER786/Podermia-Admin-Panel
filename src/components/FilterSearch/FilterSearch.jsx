@@ -1,13 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./FilterSearch.module.css";
 import { Search, SlidersHorizontal, Calendar, RotateCcw, ChevronDown } from "lucide-react";
 
 // ===== Reusable Dropdown Component =====
 const CustomSelect = ({ label, value, onChange, options }) => {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
 
   return (
-    <div className={styles.customSelect}>
+    <div className={styles.customSelect} ref={dropdownRef}>
       <div className={styles.selected} onClick={() => setOpen((p) => !p)}>
         {value || label}
         <ChevronDown
