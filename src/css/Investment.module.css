@@ -1728,22 +1728,13 @@
 }
 
 .backButton {
-  padding: 8px;
   background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
   color: #374151;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: all 0.2s ease;
+  border: none;
 }
 
-.backButton:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-}
 
 .backAndExport{
   display: flex;

@@ -17,7 +17,6 @@ const TransactionLedger = () => {
     {
       id: 1,
       user: 'Mike Wilson',
-      userId: 'USER003',
       amount: '75.00',
       date: 'Jan 14, 2024',
       bank: '**** 4567',
@@ -29,7 +28,6 @@ const TransactionLedger = () => {
     {
       id: 2,
       user: 'Alice Johnson',
-      userId: 'USER006',
       amount: '1,200.00',
       date: 'Jan 16 2024',
       bank: '**** 8912',
@@ -41,7 +39,6 @@ const TransactionLedger = () => {
     {
       id: 3,
       user: 'Robert Davis',
-      userId: 'USER006',
       amount: '450.00',
       date: 'Jan 16, 2024',
       bank: '**** 3456',
@@ -63,7 +60,6 @@ const TransactionLedger = () => {
     {
       transactionId: 'TXN001',
       user: 'John Smith',
-      userId: 'USER001',
       type: 'Credit',
       amount: '$500.00',
       status: 'Completed',
@@ -74,7 +70,6 @@ const TransactionLedger = () => {
     {
       transactionId: 'TXN002',
       user: 'Sarah Johnson',
-      userId: 'USER002',
       type: 'Debit',
       amount: '$150.00',
       status: 'Completed',
@@ -85,7 +80,6 @@ const TransactionLedger = () => {
     {
       transactionId: 'TXN003',
       user: 'Mike Wilson',
-      userId: 'USER003',
       type: 'Transfer',
       amount: '$75.00',
       status: 'Pending',
@@ -96,7 +90,6 @@ const TransactionLedger = () => {
     {
       transactionId: 'TXN004',
       user: 'Emily Davis',
-      userId: 'USER004',
       type: 'Debit',
       amount: '$200.00',
       status: 'Failed',
@@ -107,7 +100,6 @@ const TransactionLedger = () => {
     {
       transactionId: 'TXN005',
       user: 'David Brown',
-      userId: 'USER005',
       type: 'Credit',
       amount: '$1000.00',
       status: 'Completed',
@@ -138,16 +130,7 @@ const TransactionLedger = () => {
   // Table columns
   const columns = [
     { header: 'Transaction ID', key: 'transactionId' },
-    { 
-      header: 'User', 
-      key: 'user',
-      render: (row) => (
-        <div>
-          <div>{row.user}</div>
-          <div style={{ fontSize: '12px', color: '#888' }}>{row.userId}</div>
-        </div>
-      )
-    },
+    { header: 'User', key: 'user' },
     { 
       header: 'Type', 
       key: 'type',
@@ -177,7 +160,6 @@ const TransactionLedger = () => {
     return mockData.filter(item => {
       const searchMatch = !filters.search || 
         item.user.toLowerCase().includes(filters.search.toLowerCase()) ||
-        item.userId.toLowerCase().includes(filters.search.toLowerCase()) ||
         item.transactionId.toLowerCase().includes(filters.search.toLowerCase()) ||
         item.reference.toLowerCase().includes(filters.search.toLowerCase())
       
@@ -305,7 +287,6 @@ const TransactionLedger = () => {
               <div className={styles.transferHeader}>
                 <div>
                   <h4>{transfer.user}</h4>
-                  <span className={styles.userId}>{transfer.userId}</span>
                 </div>
                 <div className={styles.transferActions}>
                   <span 

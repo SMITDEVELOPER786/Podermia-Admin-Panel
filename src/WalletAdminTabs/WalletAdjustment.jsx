@@ -16,7 +16,6 @@ const WalletAdjustment = () => {
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [warningData, setWarningData] = useState(null);
 
-  // Mock existing users database
   const existingUsers = [
     { id: "ADJ001", name: "Max Martin", balance: 627.11 },
     { id: "ADJ002", name: "Alicia Keys", balance: 450.5 },
@@ -25,12 +24,10 @@ const WalletAdjustment = () => {
     { id: "AD3002", name: "Sarah Johnson", balance: 320.4 },
   ];
 
-  // Mock adjustment history data
   const [adjustmentHistory, setAdjustmentHistory] = useState([
     {
       id: "AD3001",
       user: "John Smith",
-      userId: "USER001",
       type: "Credit",
       amount: "$500.00",
       reason: "Compensation for system downtime",
@@ -41,7 +38,6 @@ const WalletAdjustment = () => {
     {
       id: "AD3002",
       user: "Sarah Johnson",
-      userId: "USER002",
       type: "Debit",
       amount: "$150.00",
       reason: "Correction for duplicate payment",
@@ -50,9 +46,6 @@ const WalletAdjustment = () => {
       created: "01/14/2024",
     },
   ]);
-
-  // Counter for generating sequential user IDs
-  const [userIdCounter, setUserIdCounter] = useState(3);
 
   const handleSearch = () => {
     const user = existingUsers.find(
@@ -104,13 +97,10 @@ const WalletAdjustment = () => {
   };
 
   const processAdjustment = () => {
-    const newUserId = `USER${String(userIdCounter).padStart(3, "0")}`;
-
     // Add to adjustment history with pending status
     const newAdjustment = {
       id: selectedUser.id,
       user: selectedUser.name,
-      userId: newUserId,
       type: adjustmentType.includes("Credit") ? "Credit" : "Debit",
       amount: `$${amount}`,
       reason: reason,
@@ -133,7 +123,6 @@ const WalletAdjustment = () => {
     setAmount("");
     setReason("");
     setUserNotFound(false);
-    setUserIdCounter((prev) => prev + 1);
     setShowWarningModal(false);
   };
 
@@ -279,16 +268,7 @@ const WalletAdjustment = () => {
         <DataTable 
           columns={[
             { header: 'ID', key: 'id' },
-            { 
-              header: 'User', 
-              key: 'user',
-              render: (row) => (
-                <div className={styles.userCell}>
-                  <span className={styles.userName}>{row.user}</span>
-                  <span className={styles.userId}>{row.userId}</span>
-                </div>
-              )
-            },
+            { header: 'User', key: 'user' },
             { 
               header: 'Type', 
               key: 'type',
