@@ -54,6 +54,7 @@ export default function KYCManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
   const [showOverrideLog, setShowOverrideLog] = useState(false);
+  const [overrideSearch, setOverrideSearch] = useState("");
 
   const overrideLogs = [
     {
@@ -131,11 +132,15 @@ export default function KYCManagement() {
       </div>
     </div>
   );
+const filteredOverrideLogs = overrideLogs.filter((log) =>
+  log.user.toLowerCase().includes(overrideSearch.toLowerCase()) ||
+  log.admin.toLowerCase().includes(overrideSearch.toLowerCase()) ||
+  log.action.toLowerCase().includes(overrideSearch.toLowerCase())
+);
 
   if (showOverrideLog) {
     return (
-      <div className={styles.wrapper}>
-       
+      <div className={styles.wrapper}> 
        <div className={styles.overrideHeaderTop}>
   <button className={styles.btnBack} onClick={() => setShowOverrideLog(false)}>
     ← Back to Queue
@@ -147,10 +152,15 @@ export default function KYCManagement() {
 
   <div className={styles.searchBarOverride}>
     <FiSearch className={styles.searchIcon} />
-    <input type="text" className={styles.searchInput} placeholder="Search logs..." />
+   <input
+  type="text"
+  className={styles.searchInput}
+  placeholder="Search users, admin, action..."
+  value={overrideSearch}
+  onChange={(e) => setOverrideSearch(e.target.value)}
+/>
   </div>
 </div>
-
 
         <div className={styles.overrideTableContainer}>
           <table className={styles.overrideTable}>
@@ -167,7 +177,7 @@ export default function KYCManagement() {
             </thead>
 
             <tbody>
-              {overrideLogs.map((log, i) => (
+              {filteredOverrideLogs.map((log, i) => (
                 <tr key={i}>
                   <td>{log.time}</td>
                   <td>{log.user}</td>
@@ -178,7 +188,7 @@ export default function KYCManagement() {
                   <td>{log.change}</td>
                   <td>{log.reason}</td>
                   <td>
- <button className={styles.btnViewDetailSmall} style={{color: "#264DAF", border: "1px solid #264DAF", backgroundColor: "white", padding: "4px 8px", borderRadius: "6px"}}>View</button>
+ <button className={styles.btnViewDetail}>View</button>
                   </td>
                 </tr>
               ))}

@@ -1,5 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../css/LoansQueue.module.css";
+import CriticalActionModal from "../components/CriticalActionModal";
+import CollateralLiquidationNotice from "../components/CollateralLiquidationNotice";
+import AutoDebitFailedModal from "../components/AutoDebitFailedModal";
+
 import { LoanBarChart, LoanPieChart, LoanLineChart } from  "../components/ReportCharts";
 
 import eyeIcon from "../assets/eye.png";
@@ -17,48 +21,83 @@ function LoansQueueTab() {
   ];
 
   const [rows, setRows] = useState(initialRows);
-  const [filters, setFilters] = useState({
-    date: "",
-    minAmount: "",
-    accountId: "",
-    collateral: "All Product",
-    status: "Status"
-  });
+ const [filters, setFilters] = useState({
+  user: "",
+  minAmount: "",
+  collateral: "All Product",
+  status: "Status"
+});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
+ const applyFilters = () => {
+  let filtered = initialRows;
+  if (filters.minAmount !== "") {
+    filtered = filtered.filter(
+      r => r.amount >= Number(filters.minAmount)
+    );
+  }
+  if (filters.user) {
+    filtered = filtered.filter(r =>
+      r.user.toLowerCase().includes(filters.user.toLowerCase())
+    );
+  }
+  if (filters.collateral !== "All Product") {
+    filtered = filtered.filter(
+      r => r.collateral === filters.collateral
+    );
+  }
+  if (filters.status !== "Status") {
+    filtered = filtered.filter(
+      r => r.status === filters.status
+    );
+  }
+  setRows(filtered);
+};
 
-  const applyFilters = () => {
-    let filtered = initialRows;
-    if (filters.date) filtered = filtered.filter(r => r.date === filters.date);
-    if (filters.minAmount) filtered = filtered.filter(r => r.amount >= Number(filters.minAmount));
-    if (filters.accountId) filtered = filtered.filter(r => r.accountId.toLowerCase().includes(filters.accountId.toLowerCase()));
-    if (filters.collateral !== "All Product") filtered = filtered.filter(r => r.collateral === filters.collateral);
-    if (filters.status !== "Status") filtered = filtered.filter(r => r.status === filters.status);
-    setRows(filtered);
-  };
-
-  const clearFilters = () => {
-    setFilters({ date: "", minAmount: "", accountId: "", collateral: "All Product", status: "Status" });
-    setRows(initialRows);
-  };
+ const clearFilters = () => {
+  setFilters({
+    user: "",
+    minAmount: "",
+    collateral: "All Product",
+    status: "Status"
+  });
+  setRows(initialRows);
+};
 // loan queue tab
+  const [showCriticalModal, setShowCriticalModal] = useState(false);
+  const [selectedLoan, setSelectedLoan] = useState(null);
+
+  const openModal = (loan) => {
+    setSelectedLoan(loan);
+    setShowCriticalModal(true);
+  };
+
   return (
     <>
       <div className={styles.topBar}>
         <h2>Loan Applications Queue</h2>
         <div className={styles.rightBtns}>
-          <button className={styles.criticalBtn}>Critical Action</button>
-          <button className={styles.exportBtn}><img src={exportIcon} alt="export" /> Export Reports</button>
+          <button
+            className={styles.criticalBtn}
+            onClick={() => {
+              setSelectedLoan(rows[0]);
+              setShowCriticalModal(true);
+            }}
+          >
+            Critical Action
+          </button>
+          <button className={styles.exportBtn}>
+            <img src={exportIcon} alt="export" /> Export Reports
+          </button>
         </div>
       </div>
 
       <div className={styles.filters}>
-        <input type="date" name="date" value={filters.date} onChange={handleInputChange} />
-        <input type="number" name="minAmount" value={filters.minAmount} onChange={handleInputChange} placeholder="Min Amount" />
-        <input type="text" name="accountId" value={filters.accountId} onChange={handleInputChange} placeholder="User Account ID" />
+        <input type="number" name="minAmount" value={filters.minAmount} onChange={handleInputChange} placeholder="Min Amount" /> 
+        <input type="text" name="user" value={filters.user} onChange={handleInputChange} placeholder="User Name" />
         <select name="collateral" value={filters.collateral} onChange={handleInputChange}>
           <option>All Product</option>
           <option>Savings Vault</option>
@@ -74,7 +113,6 @@ function LoansQueueTab() {
         <button className={styles.applyBtn} onClick={applyFilters}>Apply Filters</button>
         <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
       </div>
-
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -107,6 +145,13 @@ function LoansQueueTab() {
           </tbody>
         </table>
       </div>
+      {showCriticalModal && selectedLoan && (
+        <CriticalActionModal
+          isOpen={showCriticalModal}
+          onClose={() => setShowCriticalModal(false)}
+          loan={selectedLoan}
+        />
+      )}
     </>
   );
 }
@@ -119,9 +164,7 @@ function LoansQueueTab() {
         <button className={styles.backBtn} onClick={() => setActiveTab("Loans Queue")}>
           Back To Queue
         </button>
-
         <h2 className={styles.pageTitle}>Loan Application Review</h2>
-
         <button className={styles.exportBtn}>
           <img src={exportIcon} alt="" />
           Export Report
@@ -129,7 +172,6 @@ function LoansQueueTab() {
       </div>
       <section className={styles.box}>
         <h3 className={styles.boxTitle}>Application User</h3>
-
         <div className={styles.grid2}>
           <p><strong>Name:</strong> John Smith</p>
           <p><strong>Account:</strong> ACC001</p>
@@ -137,10 +179,8 @@ function LoansQueueTab() {
           <p><strong>Phone:</strong> +234 801234</p>
         </div>
       </section>
-
       <section className={styles.box}>
         <h3 className={styles.boxTitle}>Loans Detail</h3>
-
         <div className={styles.grid2}>
           <p><strong>Loan Amount:</strong> 500,000</p>
           <p><strong>Purpose:</strong> Business Expansion</p>
@@ -150,14 +190,12 @@ function LoansQueueTab() {
       </section>
       <section className={styles.box}>
         <h3 className={styles.boxTitle}>AI Recommendation</h3>
-
         <p className={styles.aiText}>
           Based on credit score, collateral value and payment history,
           application meets approval criteria, recommended rate: 15.4%,
           with standard terms.
         </p>
       </section>
-
       <div className={styles.grid4}>
         <div className={styles.card} style={{height: "300px"}}>
           <h4>KYC Verified</h4>
@@ -169,95 +207,89 @@ function LoansQueueTab() {
             • Bank Statement
           </p>
         </div>
-
-        {/* Credit Score */}
         <div className={styles.cardCenter}>
           <h4>Credit Score</h4>
           <h2 className={styles.bigNumber}>720</h2>
 
           <p className={styles.scoreBadge}>Good</p>
         </div>
-
-        {/* Risk */}
         <div className={styles.cardCenter}>
           <h4>Risk Level</h4>
           <h2 className={styles.bigNumber}>85/100</h2>
-
           <p className={styles.riskBadge}>Low</p>
         </div>
-
-        {/* Action Buttons */}
         <div className={styles.cardCenter}>
           <h4>Action</h4>
-
           <button className={styles.btnGreen}>Approve Loan</button>
           <button className={styles.btnRed}>Reject Application</button>
           <button className={styles.btnGrey}>Request Additional Info</button>
         </div>
       </div>
-
     </div>
   );
 }
 
 function LoanListTab() {
-  const rows = [
-    {
-      user: "John Doe",
-      amount: 500000,
-      balance: 350000,
-      status: "Active",
-      rate: "15.5%",
-      maturity: "7/1/2025"
-    },
-    {
-      user: "Jahn Smith",
-      amount: 500000,
-      balance: 0,
-      status: "Repaid",
-      rate: "12%",
-      maturity: "8/15/2024"
-    },
-    {
-      user: "Mike Johnson",
-      amount: 750000,
-      balance: 800000,
-      status: "Overdue",
-      rate: "85%",
-      maturity: "6/1/2025"
-    },
-    {
-      user: "Sarah Wilson",
-      amount: 500000,
-      balance: 180000,
-      status: "Defaulted",
-      rate: "20% 70%",
-      maturity: "6/2/2024"
-    }
+  const initialRows = [
+    { user: "John Doe", amount: 500000, balance: 350000, status: "Active", rate: "15.5%", maturity: "7/1/2025" },
+    { user: "Jahn Smith", amount: 500000, balance: 0, status: "Repaid", rate: "12%", maturity: "8/15/2024" },
+    { user: "Mike Johnson", amount: 750000, balance: 800000, status: "Overdue", rate: "85%", maturity: "6/1/2025" },
+    { user: "Sarah Wilson", amount: 500000, balance: 180000, status: "Defaulted", rate: "20% 70%", maturity: "6/2/2024" }
   ];
 
+  const [rows, setRows] = useState(initialRows);
+  const [filters, setFilters] = useState({
+    user: "",
+    minAmount: "",
+    date: ""
+  });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+ const applyFilters = () => {
+  let filtered = initialRows;
+
+  if (filters.user) {
+    filtered = filtered.filter(r =>
+      r.user.toLowerCase().includes(filters.user.toLowerCase())
+    );
+  }
+  if (filters.minAmount !== "") {
+    filtered = filtered.filter(r => r.amount >= Number(filters.minAmount));
+  }
+  if (filters.date) {
+    filtered = filtered.filter(r => {
+      const [month, day, year] = r.maturity.split("/"); // "7/1/2025"
+      const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      return formattedDate === filters.date;
+    });
+  }
+  setRows(filtered);
+};
+  const clearFilters = () => {
+    setFilters({ user: "", minAmount: "", date: "" });
+    setRows(initialRows);
+  };
   return (
     <>
       <div className={styles.topBar}>
         <h2>All Loans - Master List</h2>
-
         <button className={styles.exportBtn}>
-          <img src={exportIcon} alt="export" />
+          <img src={eyeIcon} alt="export" />
           Export Reports
         </button>
       </div>
-
       <div className={styles.filtersRow}>
-        <input type="date" placeholder="Filter by date" />
-        <input type="number" placeholder="Min Amount" />
-        <input type="text" placeholder="User Account ID" />
+        <input type="date" name="date" value={filters.date} onChange={handleInputChange} />
+        <input type="number" name="minAmount" value={filters.minAmount} onChange={handleInputChange} placeholder="Min Amount" />
+        <input type="text" name="user" value={filters.user} onChange={handleInputChange} placeholder="User Name" />
 
         <div className={styles.filterButtons}>
-          <button className={styles.clearBtn}>Clear Filters</button>
-          <button className={styles.apply}>Apply Filters</button>
+          <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
+          <button className={styles.apply} onClick={applyFilters}>Apply Filters</button>
         </div>
       </div>
-
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -277,7 +309,6 @@ function LoanListTab() {
                 <td>{row.user}</td>
                 <td>₦ {row.amount.toLocaleString()}</td>
                 <td>₦ {row.balance.toLocaleString()}</td>
-
                 <td>
                   <span
                     className={`${styles.status} ${
@@ -293,7 +324,6 @@ function LoanListTab() {
                     {row.status}
                   </span>
                 </td>
-
                 <td>{row.rate}</td>
                 <td>{row.maturity}</td>
                 <td>
@@ -309,10 +339,80 @@ function LoanListTab() {
     </>
   );
 }
- function SettingTab() {
+
+function SettingTab() {
+  const [products, setProducts] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    amountRange: "",
+    tenorRange: "",
+    interestRate: "",
+    maxLTV: "",
+    globalInterestRate: { base: "", max: "", min: "" },
+    ltvSetting: { conservative: "", standard: "", highest: "" },
+    penaltySetting: { penalty: "", defaultCharge: "", overdue: "" },
+    tenorSetting: { min: "", max: "", step: "" }
+  });
+  const [editingIndex, setEditingIndex] = useState(null);
+
+  // Load from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("loanProducts");
+    if (stored) setProducts(JSON.parse(stored));
+  }, []);
+
+  // Save to localStorage
+  const saveProducts = (updated) => {
+    setProducts(updated);
+    localStorage.setItem("loanProducts", JSON.stringify(updated));
+  };
+
+  const openModal = (index = null) => {
+    if (index !== null) {
+      setNewProduct(products[index]);
+      setEditingIndex(index);
+    } else {
+      setNewProduct({
+        name: "",
+        amountRange: "",
+        tenorRange: "",
+        interestRate: "",
+        maxLTV: "",
+        globalInterestRate: { base: "", max: "", min: "" },
+        ltvSetting: { conservative: "", standard: "", highest: "" },
+        penaltySetting: { penalty: "", defaultCharge: "", overdue: "" },
+        tenorSetting: { min: "", max: "", step: "" }
+      });
+      setEditingIndex(null);
+    }
+    setModalOpen(true);
+  };
+
+  const handleChange = (field, value, section = null) => {
+    if (section) {
+      setNewProduct((prev) => ({
+        ...prev,
+        [section]: { ...prev[section], [field]: value }
+      }));
+    } else {
+      setNewProduct((prev) => ({ ...prev, [field]: value }));
+    }
+  };
+
+  const handleSave = () => {
+    if (editingIndex !== null) {
+      const updated = [...products];
+      updated[editingIndex] = newProduct;
+      saveProducts(updated);
+    } else {
+      saveProducts([...products, newProduct]);
+    }
+    setModalOpen(false);
+  };
+
   return (
     <div className={styles.container}>
-
       <div className={styles.topBar}>
         <h2>Loan Setting & Configuration</h2>
         <button className={styles.exportBtn}>
@@ -320,9 +420,10 @@ function LoanListTab() {
           Export Reports
         </button>
       </div>
-<div style={{ border: "1px solid #246DAF", borderRadius: "10px", padding: "6px 10px", paddingBottom: "0%"}}>
-      <h3 className={styles.sectionTitle}>Loan Product Configuration</h3>
-      <div className={styles.card}>
+
+      <div style={{ border: "1px solid #246DAF", borderRadius: "10px", padding: "6px 10px", paddingBottom: "0%" }}>
+        <h3 className={styles.sectionTitle}>Loan Product Configuration</h3>
+ <div className={styles.card}>
         <div className={styles.cardHeader}>
           <h4>Personal Loan-Bronze</h4>
           <button className={styles.editBtn}>Edit</button>
@@ -378,99 +479,166 @@ function LoanListTab() {
         </div>
       </div>
 
-      <button className={styles.addProductBtn}>Add New Loan Product</button>
-</div>
-      <div className={styles.bigSection}>
-        <h3>Global Interest Rate Setting</h3>
+        {products.map((p, i) => (
+          <div className={styles.card} key={i}>
+            <div className={styles.cardHeader}>
+              <h4>{p.name}</h4>
+              <button className={styles.editBtn} onClick={() => openModal(i)}>Edit</button>
+            </div>
+            <div className={styles.cardGrid}>
+              <p><strong>Amount Range:</strong> {p.amountRange}</p>
+              <p><strong>Tenor Range:</strong> {p.tenorRange}</p>
+              <p><strong>Interest Rate:</strong> {p.interestRate}</p>
+              <p><strong>MAX LTV:</strong> {p.maxLTV}</p>
+            </div>
+          </div>
+        ))}
 
-        <div className={styles.inputRow}>
-          <input placeholder="Base Rate (%)" />
-          <input placeholder="max Rate (%)" />
-          <input placeholder="min Rate (%)" />
-        </div>
+        <button className={styles.addProductBtn} onClick={() => openModal()}>Add New Loan Product</button>
       </div>
 
-      <div className={styles.bigSection}>
-        <h3>LTV Ratio Setting</h3>
+      {/* Modal */}
+      {modalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>{editingIndex !== null ? "Edit Loan Product" : "Add New Loan Product"}</h3>
 
-        <div className={styles.inputRow}>
-          <input placeholder="Conservative LTV (%)" />
-          <input placeholder="Standard LTV (%)" />
-          <input placeholder="Highest LTV (%)" />
+            <input
+              placeholder="Loan Product Name"
+              value={newProduct.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+            />
+            <input
+              placeholder="Amount Range"
+              value={newProduct.amountRange}
+              onChange={(e) => handleChange("amountRange", e.target.value)}
+            />
+            <input
+              placeholder="Tenor Range"
+              value={newProduct.tenorRange}
+              onChange={(e) => handleChange("tenorRange", e.target.value)}
+            />
+            <input
+              placeholder="Interest Rate"
+              value={newProduct.interestRate}
+              onChange={(e) => handleChange("interestRate", e.target.value)}
+            />
+            <input
+              placeholder="Max LTV"
+              value={newProduct.maxLTV}
+              onChange={(e) => handleChange("maxLTV", e.target.value)}
+            />
+
+            <h4>Global Interest Rate Setting</h4>
+            <input
+              placeholder="Base Rate (%)"
+              value={newProduct.globalInterestRate.base}
+              onChange={(e) => handleChange("base", e.target.value, "globalInterestRate")}
+            />
+            <input
+              placeholder="Max Rate (%)"
+              value={newProduct.globalInterestRate.max}
+              onChange={(e) => handleChange("max", e.target.value, "globalInterestRate")}
+            />
+            <input
+              placeholder="Min Rate (%)"
+              value={newProduct.globalInterestRate.min}
+              onChange={(e) => handleChange("min", e.target.value, "globalInterestRate")}
+            />
+
+            <h4>LTV Ratio Setting</h4>
+            <input
+              placeholder="Conservative LTV (%)"
+              value={newProduct.ltvSetting.conservative}
+              onChange={(e) => handleChange("conservative", e.target.value, "ltvSetting")}
+            />
+            <input
+              placeholder="Standard LTV (%)"
+              value={newProduct.ltvSetting.standard}
+              onChange={(e) => handleChange("standard", e.target.value, "ltvSetting")}
+            />
+            <input
+              placeholder="Highest LTV (%)"
+              value={newProduct.ltvSetting.highest}
+              onChange={(e) => handleChange("highest", e.target.value, "ltvSetting")}
+            />
+
+            <h4>Penalty & Default Setting</h4>
+            <input
+              placeholder="Penalty Rate (%)"
+              value={newProduct.penaltySetting.penalty}
+              onChange={(e) => handleChange("penalty", e.target.value, "penaltySetting")}
+            />
+            <input
+              placeholder="Default Charge (%)"
+              value={newProduct.penaltySetting.defaultCharge}
+              onChange={(e) => handleChange("defaultCharge", e.target.value, "penaltySetting")}
+            />
+            <input
+              placeholder="Overdue Interest (%)"
+              value={newProduct.penaltySetting.overdue}
+              onChange={(e) => handleChange("overdue", e.target.value, "penaltySetting")}
+            />
+
+            <h4>Tenor Setting</h4>
+            <input
+              placeholder="Min Tenor (Months)"
+              value={newProduct.tenorSetting.min}
+              onChange={(e) => handleChange("min", e.target.value, "tenorSetting")}
+            />
+            <input
+              placeholder="Max Tenor (Months)"
+              value={newProduct.tenorSetting.max}
+              onChange={(e) => handleChange("max", e.target.value, "tenorSetting")}
+            />
+            <input
+              placeholder="Interval Step (Months)"
+              value={newProduct.tenorSetting.step}
+              onChange={(e) => handleChange("step", e.target.value, "tenorSetting")}
+            />
+
+            <div className={styles.modalButtons}>
+              <button onClick={() => setModalOpen(false)}>Cancel</button>
+              <button onClick={handleSave}>Save</button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className={styles.bigSection}>
-        <h3>Penalty & Default Setting</h3>
-
-        <div className={styles.inputRow}>
-          <input placeholder="Penalty Rate (%)" />
-          <input placeholder="Default Charge (%)" />
-          <input placeholder="Overdue Interest (%)" />
-        </div>
-      </div>
-
-      <div className={styles.bigSection}>
-        <h3>Tenor Setting</h3>
-
-        <div className={styles.inputRow}>
-          <input placeholder="Min Tenor (Months)" />
-          <input placeholder="Max Tenor (Months)" />
-          <input placeholder="Interval Step (Months)" />
-        </div>
-      </div>
-
-      <button className={styles.saveBtn}>Save All settings</button>
+      )}
     </div>
   );
 }
-// default tab
 function DefaultManagementTab() {
   const [risk, setRisk] = useState("Risk Level");
   const [recovery, setRecovery] = useState("Recovery Status");
 
-  const rows = [
-    {
-      user: "Emma Devis",
-      acc: "ACC006",
-      outstanding: "180,000",
-      days: 45,
-      risk: "High",
-      status: "In Progress",
-      collateral: "Savings Vault",
-      collateralValue: "150,000"
-    },
-    {
-      user: "Michael Brown",
-      acc: "ACC007",
-      outstanding: "320,000",
-      days: 90,
-      risk: "Critical",
-      status: "Legal Action",
-      collateral: "Fixed Saving",
-      collateralValue: "280,000"
-    },
-    {
-      user: "Lisa Wilson",
-      acc: "ACC008",
-      outstanding: "95,000",
-      days: 15,
-      risk: "Medium",
-      status: "Initial",
-      collateral: "Investment Portfolio",
-      collateralValue: "120,000"
-    },
-    {
-      user: "Robert Johnson",
-      acc: "ACC008",
-      outstanding: "450,000",
-      days: 120,
-      risk: "Critical",
-      status: "Write-off",
-      collateral: "Real Estate",
-      collateralValue: "800,000"
-    }
+  const initialRows = [
+    { user: "Emma Devis", acc: "ACC006", outstanding: 180000, days: 45, risk: "High", status: "In Progress", collateral: "Savings Vault", collateralValue: 150000 },
+    { user: "Michael Brown", acc: "ACC007", outstanding: 320000, days: 90, risk: "Critical", status: "Legal Action", collateral: "Fixed Saving", collateralValue: 280000 },
+    { user: "Lisa Wilson", acc: "ACC008", outstanding: 95000, days: 15, risk: "Medium", status: "Initial", collateral: "Investment Portfolio", collateralValue: 120000 },
+    { user: "Robert Johnson", acc: "ACC008", outstanding: 450000, days: 120, risk: "Critical", status: "Write-off", collateral: "Real Estate", collateralValue: 800000 }
   ];
+
+  const [rows, setRows] = useState(initialRows);
+
+  const applyFilters = () => {
+    let filtered = initialRows;
+
+    if (risk !== "Risk Level") {
+      filtered = filtered.filter(r => r.risk === risk);
+    }
+
+    if (recovery !== "Recovery Status") {
+      filtered = filtered.filter(r => r.status === recovery);
+    }
+
+    setRows(filtered);
+  };
+
+  const clearFilters = () => {
+    setRisk("Risk Level");
+    setRecovery("Recovery Status");
+    setRows(initialRows);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -492,7 +660,8 @@ function DefaultManagementTab() {
           <option>Write-off</option>
         </select>
 
-        <button className={styles.applyBtn}>Apply Filters</button>
+        <button className={styles.applyBtn} onClick={applyFilters}>Apply Filters</button>
+        <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
       </div>
 
       <div className={styles.tableWrapper}>
@@ -516,35 +685,23 @@ function DefaultManagementTab() {
                   <br />
                   <span className={styles.acc}>{row.acc}</span>
                 </td>
-
-                <td>₦{row.outstanding}</td>
+                <td>₦{row.outstanding.toLocaleString()}</td>
                 <td>{row.days} days</td>
-
                 <td>
-                  <span
-                    className={`${styles.badge} ${
-                      styles[row.risk.toLowerCase()]
-                    }`}
-                  >
+                  <span className={`${styles.badge} ${styles[row.risk.toLowerCase()]}`}>
                     {row.risk}
                   </span>
                 </td>
-
                 <td>
-                  <span
-                    className={`${styles.badgeStatus} ${
-                      styles[row.status.replace(" ", "").toLowerCase()]
-                    }`}
-                  >
+                  <span className={`${styles.badgeStatus} ${styles[row.status.replace(" ", "").toLowerCase()]}`}>
                     {row.status}
                   </span>
                 </td>
-
                 <td>
                   {row.collateral}
                   <br />
                   <span className={styles.collateralValue}>
-                    {row.collateralValue}
+                    ₦{row.collateralValue.toLocaleString()}
                   </span>
                 </td>
               </tr>
@@ -555,6 +712,7 @@ function DefaultManagementTab() {
     </div>
   );
 }
+
 // collateral
 function CollateralTab() {
   const [filters, setFilters] = useState({
@@ -563,53 +721,53 @@ function CollateralTab() {
     loanStatus: "Loan Status"
   });
 
-  const rows = [
-    {
-      user: "Jhon Doi",
-      acc: "ACC001",
-      asset: "Saving Vault",
-      value: "₦625,000",
-      locked: "₦500,000",
-      ltv: "80%",
-      status: "Locked",
-      loanStatus: "Active"
-    },
-    {
-      user: "Sarah Wilson",
-      acc: "ACC004",
-      asset: "Investment Portfolio",
-      value: "₦1,200,000",
-      locked: "₦875,000",
-      ltv: "70%",
-      status: "Released",
-      loanStatus: "Repaid"
-    },
-    {
-      user: "Mike Johnson",
-      acc: "ACC003",
-      asset: "Fixed Savings",
-      value: "₦400,000",
-      locked: "₦350,000",
-      ltv: "85%",
-      status: "Secured",
-      loanStatus: "Defaulted"
-    },
-    {
-      user: "Emma Davis",
-      acc: "ACC005",
-      asset: "Real State",
-      value: "₦2,00,000",
-      locked: "₦225,000",
-      ltv: "60%",
-      status: "Partial Release",
-      loanStatus: "Overdue"
-    }
-  ];
+  const initialRows = [
+  { user: "Jhon Doi", acc: "ACC001", asset: "Saving Vault", value: 625000, locked: 500000, ltv: "80%", status: "Locked", loanStatus: "Active" },
+  { user: "Sarah Wilson", acc: "ACC004", asset: "Investment Portfolio", value: 1200000, locked: 875000, ltv: "70%", status: "Released", loanStatus: "Repaid" },
+  { user: "Mike Johnson", acc: "ACC003", asset: "Fixed Savings", value: 400000, locked: 350000, ltv: "85%", status: "Secured", loanStatus: "Defaulted" },
+  { user: "Emma Davis", acc: "ACC005", asset: "Real Estate", value: 200000, locked: 225000, ltv: "60%", status: "Partial Release", loanStatus: "Overdue" }
+];
+
+const [showLiquidation, setShowLiquidation] = useState(false);
+const [rows, setRows] = useState(initialRows);
+const [showAutoDebitModal, setShowAutoDebitModal] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
+  const applyFilters = () => {
+  let filtered = initialRows;
+
+  if (filters.collateralStatus !== "Collateral Status") {
+    filtered = filtered.filter(r => r.status === filters.collateralStatus);
+  }
+  if (filters.assetType !== "Asset Type") {
+    filtered = filtered.filter(r => r.asset === filters.assetType);
+  }
+  if (filters.loanStatus !== "Loan Status") {
+    filtered = filtered.filter(r => r.loanStatus === filters.loanStatus);
+  }
+
+  setRows(filtered);
+};
+
+const clearFilters = () => {
+  setFilters({
+    collateralStatus: "Collateral Status",
+    assetType: "Asset Type",
+    loanStatus: "Loan Status"
+  });
+  setRows(initialRows);
+};
+
+if (showLiquidation) {
+  return (
+    <CollateralLiquidationNotice
+      onBack={() => setShowLiquidation(false)}
+    />
+  );
+}
 
   return (
     <div className={styles.container}>
@@ -621,12 +779,20 @@ function CollateralTab() {
           <button className={styles.exportBtn}>
             <img src={exportIcon} alt="" /> Export Reports
           </button>
-
-          <button className={styles.alertBtn}>Test Auto-Debit Alert</button>
-          <button className={styles.liquidationBtn}>Test Liquidation Notice</button>
+<button
+  className={styles.alertBtn}
+  onClick={() => setShowAutoDebitModal(true)}
+>
+  Test Auto-Debit Alert
+</button>
+    <button
+  className={styles.liquidationBtn}
+  onClick={() => setShowLiquidation(true)}
+>
+  Test Liquidation Notice
+</button>
         </div>
       </div>
-
       <div className={styles.filters}>
         <select name="collateralStatus" value={filters.collateralStatus} onChange={handleChange}>
           <option>Collateral Status</option>
@@ -651,8 +817,8 @@ function CollateralTab() {
           <option>Defaulted</option>
           <option>Overdue</option>
         </select>
-
-        <button className={styles.applyBtn}>Apply Filters</button>
+<button className={styles.applyBtn} onClick={applyFilters}>Apply Filters</button>
+<button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
       </div>
 
       <div className={styles.tableWrapper}>
@@ -707,7 +873,11 @@ function CollateralTab() {
           </tbody>
         </table>
       </div>
-
+{showAutoDebitModal && (
+  <AutoDebitFailedModal
+    onClose={() => setShowAutoDebitModal(false)}
+  />
+)}
     </div>
   );
 }

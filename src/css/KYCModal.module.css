@@ -393,7 +393,7 @@ border: 1px solid #264daf;
   .modal {
     width: 95%;
     padding: 14px;
-    max-height: 95vh;
+    max-height: 75vh;
   }
 
   .header h3 {

@@ -1,0 +1,293 @@
+.container {
+  padding: 24px;
+  font-family: "Inter", sans-serif;
+  color: #0f172a;
+}
+
+.backBtn {
+  background: #fff;
+  border: 1px solid #888888;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #000000;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.backIcon {
+  width: 12px;
+  height: 12px;
+  padding-right: 2px;
+  padding-top: 3px;
+  object-fit: contain;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.subTitle {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.statusBadge {
+  background: #D4183D;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metricCard {
+  background: #fff;
+  border: 1px solid #19191a;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.metricCard p {
+  font-size: 13px;
+  color: #000000;
+  font-weight: 600;
+}
+
+.metricCard h3 {
+  font-size: 22px;
+  margin: 6px 0;
+  color: #000000;
+}
+
+.metricCard span {
+  font-size: 12px;
+  color: #353030;
+}
+
+.progressGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.box {
+  background: #fff;
+  border: 1px solid #020202;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+  margin-top: 10px;
+}
+
+.progressBar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progressFill {
+  height: 100%;
+  background: #295CBF;
+}
+
+.progressFillBlue {
+  height: 100%;
+  background: #295CBF;
+}
+
+.detailsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detailsList li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.red {
+  color: #dc2626;
+}
+
+.impactGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.impactCard {
+  border-radius: 12px;
+  padding: 24px;
+  font-size: 13px;
+}
+
+.impactCard h4 {
+  margin-bottom: 8px;
+}
+
+.danger {
+  background: #FFEFF0;
+  border: 1px solid #D4183D;
+}
+
+.info {
+  background: #EBF2FA;
+  border: 1px solid #264DAF;
+}
+
+.warning {
+  background: #FFF0DF;
+  border: 1px solid #FF9010;
+}
+
+
+.footerBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.primary {
+  background: #264DAF;
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+}
+
+.secondary {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  padding: 12px 18px;
+  border-radius: 10px;
+}
+
+@media (max-width: 1200px) {
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .impactGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .statusBadge {
+    align-self: flex-start;
+  }
+
+  .progressGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .impactGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .footerBtns {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .metricCard {
+    padding: 14px;
+  }
+
+  .box {
+    padding: 14px;
+  }
+
+  .impactCard {
+    padding: 20px;
+  }
+
+  .footerBtns {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .primary,
+  .secondary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 18px;
+  }
+
+  .subTitle {
+    font-size: 13px;
+  }
+
+  .backBtn {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .backIcon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .metricCard h3 {
+    font-size: 18px;
+  }
+
+  .progressLabel {
+    font-size: 12px;
+  }
+
+  .detailsList li {
+    font-size: 12px;
+  }
+
+  .impactCard h4 {
+    font-size: 14px;
+  }
+}
