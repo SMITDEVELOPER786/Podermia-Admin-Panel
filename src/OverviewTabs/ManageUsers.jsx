@@ -20,8 +20,8 @@ const ManageUsers = () => {
   const navigate = useNavigate();
   const [filtered, setFiltered] = useState([]);
   const [loadingPDF, setLoadingPDF] = useState(false);
-
   const [loading, setLoading] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const handleBack = () => navigate(-1);
 
@@ -253,7 +253,53 @@ const ManageUsers = () => {
     },
   ];
 
+  const handleSelectUser = (user, isSelected) => {
+    if (isSelected) {
+      setSelectedUsers(prev => [...prev, user]);
+    } else {
+      setSelectedUsers(prev => prev.filter(u => u.email !== user.email));
+    }
+  };
+
+  const handleSelectAll = (isSelected) => {
+    const dataToSelect = filtered.length > 0 ? filtered : users;
+    if (isSelected) {
+      setSelectedUsers([...dataToSelect]);
+    } else {
+      setSelectedUsers([]);
+    }
+  };
+
+  const handleClearSelection = () => {
+    setSelectedUsers([]);
+  };
+
+  const isUserSelected = (user) => {
+    return selectedUsers.some(u => u.email === user.email);
+  };
+
+  const isAllSelected = () => {
+    const dataToCheck = filtered.length > 0 ? filtered : users;
+    return dataToCheck.length > 0 && selectedUsers.length === dataToCheck.length;
+  };
+
   const columns = [
+    {
+      header: "Select",
+      key: "checkbox",
+      render: (row) => (
+        <input
+          type="checkbox"
+          checked={isUserSelected(row)}
+          onChange={(e) => {
+            e.stopPropagation();
+            handleSelectUser(row, e.target.checked);
+          }}
+          onClick={(e) => e.stopPropagation()}
+          style={{ cursor: 'pointer' }}
+        />
+      )
+    },
     { header: "Name", key: "name" },
     { header: "Email", key: "email" },
     {
@@ -348,11 +394,22 @@ const ManageUsers = () => {
     setTimeout(() => {
       const doc = new jsPDF();
       doc.setFontSize(18);
-      doc.text("User Data", 14, 15);
+      const exportTitle = selectedUsers.length > 0 ? "Selected Users Data" : "All Users Data";
+      doc.text(exportTitle, 14, 15);
 
-      const tableColumn = columns.map((c) => c.header);
-      const tableRows = (filtered.length > 0 ? filtered : users).map((u) =>
-        columns.map((c) => u[c.key])
+      // Filter out checkbox column for export
+      const exportColumns = columns.filter(c => c.key !== "checkbox");
+      const tableColumn = exportColumns.map((c) => {
+        if (typeof c.header === 'function') return '';
+        return c.header;
+      }).filter(Boolean);
+
+      // Get data to export
+      const dataToExport = selectedUsers.length > 0 ? selectedUsers : (filtered.length > 0 ? filtered : users);
+      const tableRows = dataToExport.map((u) =>
+        exportColumns
+          .filter(c => c.key !== "checkbox")
+          .map((c) => u[c.key] || '')
       );
 
       autoTable(doc, {
@@ -417,6 +474,39 @@ const ManageUsers = () => {
             {filtered.length > 0 ? filtered.length : users.length} records
           </span>
         </Div>
+        
+        {/* Selection Info */}
+        {selectedUsers.length > 0 && (
+          <Div className="selection-info flexRow" style={{ 
+            marginTop: '12px', 
+            marginBottom: '12px',
+            padding: '8px 16px',
+            backgroundColor: '#eff6ff',
+            borderRadius: '6px',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <span style={{ fontSize: '14px', color: '#295cbf', fontWeight: '500' }}>
+              {selectedUsers.length} user{selectedUsers.length !== 1 ? 's' : ''} selected
+            </span>
+            <button
+              onClick={handleClearSelection}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#295cbf',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500',
+                textDecoration: 'underline',
+                padding: '4px 8px'
+              }}
+            >
+              Clear selection
+            </button>
+          </Div>
+        )}
+
         <DataTable
           columns={columns}
           data={filtered.length > 0 ? filtered : users}
@@ -435,7 +525,8 @@ const ManageUsers = () => {
           <Loader2 className={styles.spin} size={16} />
         ) : (
           <>
-            <UploadIcon size={20} color="#fff" /> Export All Users
+            <UploadIcon size={20} color="#fff" /> 
+            {selectedUsers.length > 0 ? `Export Selected Users (${selectedUsers.length})` : 'Export All Users'}
           </>
         )}
       </button>

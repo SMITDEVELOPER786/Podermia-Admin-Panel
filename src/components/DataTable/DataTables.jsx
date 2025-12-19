@@ -56,7 +56,9 @@ const DataTable = ({
                     className={styles.tableHeader}
                   >
                     <div className={styles.headerContent}>
-                      <span>{col.header}</span>
+                      {typeof col.header === 'function' || React.isValidElement(col.header) 
+                        ? col.header 
+                        : <span>{col.header}</span>}
                     </div>
                   </th>
                 ))}
@@ -91,7 +93,9 @@ const DataTable = ({
                   className={styles.tableHeader}
                 >
                   <div className={styles.headerContent}>
-                    <span>{col.header}</span>
+                    {typeof col.header === 'function' || React.isValidElement(col.header) 
+                      ? col.header 
+                      : <span>{col.header}</span>}
                   </div>
                 </th>
               ))}
