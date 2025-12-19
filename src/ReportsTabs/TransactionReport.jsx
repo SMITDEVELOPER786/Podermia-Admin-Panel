@@ -1,149 +1,190 @@
+import { useState } from "react";
 import styles from "../css/Reports.module.css";
+import filterIcon from "../assets/filter.png";
+import exportIcon from "../assets/export.png";
 
-export default function TransactionExport() {
+const DATA = [
+  { name: "John Doe", type: "Investment", txn: "TXN001", amount: 500000, status: "Completed", time: "2 hour ago", date: "2025-08-02" },
+  { name: "Jane Smith", type: "Withdrawal", txn: "TXN002", amount: 150000, status: "Pending", time: "3 hour ago", date: "2025-08-01" },
+  { name: "Mike Johnson", type: "Loan", txn: "TXN003", amount: 1200000, status: "Approved", time: "5 hour ago", date: "2025-08-03" },
+  { name: "Sara Wilson", type: "Deposit", txn: "TXN004", amount: 750000, status: "Completed", time: "8 hour ago", date: "2025-08-04" },
+];
+
+export default function TransactionReports() {
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+  const [user, setUser] = useState("");
+
+  const filteredData = DATA.filter((tx) => {
+    if (fromDate && tx.date < fromDate) return false;
+    if (toDate && tx.date > toDate) return false;
+    if (type && tx.type !== type) return false;
+    if (status && tx.status !== status) return false;
+    if (user && !tx.name.toLowerCase().includes(user.toLowerCase())) return false;
+    return true;
+  });
+
+  const clearFilters = () => {
+    setFromDate("");
+    setToDate("");
+    setType("");
+    setStatus("");
+    setUser("");
+  };
+
   return (
-    <div className={styles.container}>
-     
-
-      <div className={styles.sectionTitle}>
-        Transaction Reports
+    <div className={styles.wrapper}>
+      <div className={styles.header}>
+        <h2>Transaction Reports</h2>
+       <button className={styles.exportBtn}>
+                 <img src={exportIcon} alt="" className={styles.icon} />
+                 Export
+               </button>
       </div>
-
-      <div className={styles.reportGrid}>
+<div className={styles.reportGrid}>
         <div className={styles.reportCard}>
-          <div className={styles.label}>Investment</div>
-          <div className={styles.amount}>45,450,000</div>
-          <div className={styles.bottomRow}>
-            <span className={styles.growth}>+8.3% Growth</span>
-            <span className={styles.badgeBlue}>Processed</span>
-          </div>
-        </div>
-
-        <div className={styles.reportCard}>
-          <div className={styles.label}>Loan Disbursement</div>
-          <div className={styles.amount}>28,850,000</div>
-          <div className={styles.bottomRow}>
-            <span className={styles.growth}>+12.7% Growth</span>
-            <span className={styles.badgeGreen}>Completed</span>
+          <p>Investment</p>
+          <h3>45,450,000</h3>
+          <div className={styles.row}>
+            <span className={styles.green}>+8.3% Growth</span>
+            <span className={styles.tagBlue}>Processed</span>
           </div>
         </div>
 
         <div className={styles.reportCard}>
-          <div className={styles.label}>Withdrawal</div>
-          <div className={styles.amount}>15,220,000</div>
-          <div className={styles.bottomRow}>
-            <span className={styles.growth}>+6.8% Growth</span>
-            <span className={styles.badgeBlue}>Processed</span>
+          <p>Loan Disbursement</p>
+          <h3>28,850,000</h3>
+          <div className={styles.row}>
+            <span className={styles.green}>+12.7% Growth</span>
+            <span className={styles.tagGreen}>Completed</span>
           </div>
         </div>
 
         <div className={styles.reportCard}>
-          <div className={styles.label}>Deposits</div>
-          <div className={styles.amount}>38,750,000</div>
-          <div className={styles.bottomRow}>
-            <span className={styles.growth}>+13.5% Growth</span>
-            <span className={styles.badgeGreen}>Completed</span>
+          <p>Withdrawal</p>
+          <h3>15,220,000</h3>
+          <div className={styles.row}>
+            <span className={styles.green}>+6.8% Growth</span>
+            <span className={styles.tagBlue}>Processed</span>
           </div>
         </div>
 
         <div className={styles.reportCard}>
-          <div className={styles.label}>Savings</div>
-          <div className={styles.amount}>22,340,000</div>
-          <div className={styles.bottomRow}>
-            <span className={styles.growth}>+22.1% Growth</span>
-            <span className={styles.badgeYellow}>Active</span>
+          <p>Deposits</p>
+          <h3>38,750,000</h3>
+          <div className={styles.row}>
+            <span className={styles.green}>+13.5% Growth</span>
+            <span className={styles.tagGreen}>Completed</span>
           </div>
         </div>
 
         <div className={styles.reportCard}>
-          <div className={styles.label}>Loan Repayment</div>
-          <div className={styles.amount}>18,560,000</div>
-          <div className={styles.bottomRow}>
-            <span className={styles.growth}>+6.9% Growth</span>
-            <span className={styles.badgeGreen}>Completed</span>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.sectionTitle}>
-        Regularly & Compliance Export
-      </div>
-
-      <div className={styles.exportGrid}>
-        <div className={styles.exportCard}>
-          <div className={styles.heading}>CBN Regulatory Report</div>
-          <p className={styles.desc}>
-            Compliance report including transaction logs, AML compliance and KYC validation details.
-          </p>
-          <div className={styles.btnRow}>
-            <button className={styles.btnPrimary}>Export PDF</button>
-            <button className={styles.btnOutline}>Export CSV</button>
+          <p>Savings</p>
+          <h3>22,340,000</h3>
+          <div className={styles.row}>
+            <span className={styles.green}>+22.1% Growth</span>
+            <span className={styles.tagYellow}>Active</span>
           </div>
         </div>
 
-        <div className={styles.exportCard}>
-          <div className={styles.heading}>Internal Audit Report</div>
-          <p className={styles.desc}>
-            Includes system logs, user activity tracking and performance insights.
-          </p>
-          <div className={styles.btnRow}>
-            <button className={styles.btnPrimary}>Export PDF</button>
-            <button className={styles.btnOutline}>Export CSV</button>
-          </div>
-        </div>
-
-        <div className={styles.exportCard}>
-          <div className={styles.heading}>KYC Compliance Report</div>
-          <p className={styles.desc}>
-            Contains user identity validation, document verification results and screening checks.
-          </p>
-          <div className={styles.btnRow}>
-            <button className={styles.btnPrimary}>Export PDF</button>
-            <button className={styles.btnOutline}>Export CSV</button>
-          </div>
-        </div>
-
-        <div className={styles.exportCard}>
-          <div className={styles.heading}>Financial Summary Report</div>
-          <p className={styles.desc}>
-            Breakdown of revenue, investment, loan performance and repayments summary.
-          </p>
-          <div className={styles.btnRow}>
-            <button className={styles.btnPrimary}>Export PDF</button>
-            <button className={styles.btnOutline}>Export CSV</button>
+        <div className={styles.reportCard}>
+          <p>Loan Repayment</p>
+          <h3>18,560,000</h3>
+          <div className={styles.row}>
+            <span className={styles.green}>+6.9% Growth</span>
+            <span className={styles.tagGreen}>Completed</span>
           </div>
         </div>
       </div>
 
-      <div className={styles.sectionTitle}>
-        Custom Export Builder
-      </div>
+      <div className={styles.filterBox}>
+        <div className={styles.filterHeader}>
+  <div className={styles.filterTitle}>
+    <img src={filterIcon} alt="Filter" className={styles.filterIcon} />
+    <span style={{fontSize: "16px"}}>Filter & Search</span>
+  </div>
+  <button onClick={clearFilters} className={styles.clearBtn}>
+    Clear Filter
+  </button>
+</div>
 
-      <div className={styles.builder}>
-        <div className={styles.builderGrid}>
-          <div className={styles.box}>
-            <label>Report Type</label>
-            <select>
-              <option>Select Report Type</option>
+
+        <div className={styles.filterGrid}>
+          <div>
+            <label>From Date</label>
+            <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+          </div>
+
+          <div>
+            <label>To Date</label>
+            <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+          </div>
+
+          <div>
+            <label>Transaction Type</label>
+            <select value={type} onChange={(e) => setType(e.target.value)}>
+              <option value="">All</option>
+              <option>Investment</option>
+              <option>Withdrawal</option>
+              <option>Deposit</option>
+              <option>Loan</option>
             </select>
           </div>
 
-          <div className={styles.box}>
-            <label>Date Range</label>
-            <select>
-              <option>Last 30 Days</option>
+          <div>
+            <label>Status</label>
+            <select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="">All</option>
+              <option>Completed</option>
+              <option>Pending</option>
+              <option>Approved</option>
             </select>
           </div>
 
-          <div className={styles.box}>
-            <label>Export Format</label>
-            <select>
-              <option>PDF Report</option>
-            </select>
+          <div>
+            <label>User</label>
+            <input
+              type="text"
+              placeholder="Search user"
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
+            />
           </div>
         </div>
+      </div>
 
-        <button className={styles.generateBtn}>Generate Export</button>
+      {/* Recent Transactions */}
+      <div className={styles.recentBox}>
+        <h3>Recent Transaction</h3>
+
+        {filteredData.map((tx) => (
+          <div key={tx.txn} className={styles.txItem}>
+            <div>
+              <div className={styles.txName}>{tx.name}</div>
+              <div className={styles.txMeta}>
+                {tx.type} {tx.txn}
+              </div>
+            </div>
+
+            <div className={styles.txRight}>
+              <div className={styles.txAmount}>{tx.amount.toLocaleString()}</div>
+              <span
+                className={`${styles.txStatus} ${
+                  tx.status === "Completed"
+                    ? styles.green
+                    : tx.status === "Pending"
+                    ? styles.yellow
+                    : styles.blue
+                }`}
+              >
+                {tx.status}
+              </span>
+              <div className={styles.txTime}>{tx.time}</div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

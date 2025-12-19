@@ -183,14 +183,16 @@ small {
   font-size: 12px;
   color: #777;
 }
-
+.segment{
+  border: 1px solid #0d6efd !important;
+}
 .segmentTitle {
   font-size: 20px;
   margin: 20px 0 12px 0;
 }
 
 .segmentBox {
-  border: 1px solid #e5e5e5;
+  border: 1px solid #656363;
   border-radius: 14px;
   padding: 18px;
   display: flex;
@@ -201,6 +203,7 @@ small {
 
 .segmentBox h4 {
   font-size: 20px;
+  color: #000000;
 }
 
 .segmentBox h4 span{
@@ -208,204 +211,180 @@ small {
   display: block;
 }
 /* transaction report tab */
-
-.page {
-  width: 100%;
-  padding: 25px 35px;
-  font-family: "Inter", sans-serif;
-  background: #f5f6fa;
+.wrapper {
+  padding: 24px;
+  font-family: Inter, sans-serif;
 }
 
-.headerRow {
+.header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 25px;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
-.headerRow h2 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #1b1b1b;
+.exportBtn {
+  background: #2746d3;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 18px;
+  font-size: 13px;
+  cursor: pointer;
 }
 
-
-.reportGrid {
+.cardsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 30px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
-.reportCard {
-  background: #fff;
-  padding: 18px 20px;
+.card {
+  border: 1px solid #c7d2fe;
   border-radius: 12px;
-  border: 1px solid #e3e6ee;
+  padding: 14px;
+}
+
+.cardTop {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.reportCard p {
-  font-size: 14px;
-  color: #555;
-}
-
-.reportCard h3 {
-  font-size: 22px;
-  margin-top: 5px;
-  font-weight: 700;
-  color: #1a1a1a;
-}
-
-.statusRow {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
 }
 
-.green {
-  font-size: 12px;
-  color: #1ebf61;
-  font-weight: 600;
-}
-
-.statusProcessed,
-.statusCompleted,
-.statusActive {
-  background: #e9f0ff;
-  padding: 4px 10px;
-  border-radius: 5px;
+.badge {
   font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.blue {
+  background: #e0e7ff;
+  color: #2746d3;
+}
+
+.gray {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.amount {
+  font-size: 18px;
   font-weight: 600;
-  color: #3a6ff8;
 }
 
-.statusCompleted {
-  background: #e8f9ef;
-  color: #1ebf61;
+.meta {
+  font-size: 11px;
+  color: #64748b;
 }
 
-.statusActive {
-  background: #fff4e5;
-  color: #ff9f1c;
+.growth {
+  font-size: 11px;
+  color: #16a34a;
+  margin-top: 4px;
 }
 
 .filterBox {
-  background: #fff;
-  padding: 20px;
+  border: 1px solid #c7d2fe;
   border-radius: 12px;
-  border: 1px solid #e3e6ee;
-  margin-bottom: 25px;
+  padding: 12px;
+  margin-bottom: 18px;
 }
 
 .filterHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
-}
-
-.filterHeader p {
-  font-size: 17px;
-  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 13px;
 }
 
 .clearBtn {
-  background: transparent;
-  border: none;
-  color: #0d6efd;
-  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #264DAF;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
   cursor: pointer;
 }
 
 .filterGrid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 18px;
+  gap: 10px;
 }
 
 .filterGrid label {
-  font-size: 13px;
-  color: #555;
-  margin-bottom: 5px;
-  display: block;
+  font-size: 11px;
+  color: #64748b;
 }
 
-.filterGrid input,
 .filterGrid select {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid sss#d5d9e3;
-  border-radius: 8px;
-  font-size: 13px;
+  padding: 6px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
 }
 
-.recentTitle {
-  margin: 20px 0 12px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.transactionList {
-  background: #dddddd;
-
-  padding: 10px 0;
+.recentBox {
+  border: 1px solid #c7d2fe;
   border-radius: 12px;
-  border: 1px solid #e3e6ee;
+  padding: 12px;
 }
-.box{
-  border: 1px solid rgb(207, 207, 13);
-}
-.item {
-  padding: 18px 22px;
+
+.txItem {
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 12px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #f0f0f0;
+  margin-top: 10px;
 }
 
-.item:last-child {
-  border-bottom: none;
+.txName {
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.item h4 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 4px;
+.txMeta {
+  font-size: 11px;
+  color: #64748b;
 }
 
-.item small {
-  font-size: 12px;
-  color: #888;
-}
-
-.amountBox {
+.txRight {
   text-align: right;
 }
 
-.amountBox h4 {
-  font-size: 17px;
-  font-weight: 700;
-  margin-bottom: 3px;
-}
-
-.statusPending {
-  background: #fff4d6;
-  color: #f6a400;
-  padding: 4px 10px;
-  border-radius: 5px;
-  font-size: 11px;
+.txAmount {
+  font-size: 14px;
   font-weight: 600;
 }
 
-.statusApproved {
-  background: #e5f0ff;
-  color: #3b6df7;
-  padding: 4px 10px;
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 600;
+.txStatus {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 2px;
+}
+
+.green { color: #16a34a; }
+.yellow { background: #fef9c3; color: #ca8a04; }
+.blue { background: #e0e7ff; color: #2746d3; }
+
+.txTime {
+  font-size: 10px;
+  color: #64748b;
+}
+
+@media (max-width: 900px) {
+  .cardsGrid { grid-template-columns: repeat(2, 1fr); }
+  .filterGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .cardsGrid { grid-template-columns: 1fr; }
 }
 
 /* export tools tab */
@@ -445,13 +424,14 @@ small {
 }
 
 .pdf {
-  background: #0d6efd;
+  background: #264DAF !important;
   color: #fff;
 }
 
 .csv {
-  background: #e9f0ff;
-  color: #0d6efd;
+  background: #ffffff;
+  color: #264DAF;
+  border: 1px solid #264DAF;
 }
 
 .reportGrid {
@@ -588,7 +568,7 @@ small {
 
 .generateBtn {
   margin-top: 30px;
-  background: #0d6efd;
+  background: #264DAF;
   padding: 10px 18px;
   border-radius: 8px;
   color: #fff;
@@ -741,5 +721,32 @@ small {
 
   .chartBox p {
     font-size: 12px;
+  }
+}
+.filterGrid input {
+  width: 100%;
+  padding: 6px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+.filterIcon {
+  width: 20px; 
+  height: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@media (max-width: 1024px) {
+  .filterGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .filterGrid {
+    grid-template-columns: 1fr; 
+    gap: 10px;
   }
 }

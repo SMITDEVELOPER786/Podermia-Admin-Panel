@@ -27,21 +27,29 @@ export function LoanBarChart() {
   const data = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
     datasets: [
-      {
-        label: "Disbursed",
-        data: [20, 40, 60, 80, 100, 120, 140],
-        backgroundColor: "#264DAF"
-      },
-      {
-        label: "Repaid",
-        data: [10, 30, 50, 70, 90, 110, 130],
-        backgroundColor: "#27AE60"
-      }
+      { label: "Disbursed", data: [20,40,60,80,100,120,140], backgroundColor: "#264DAF" },
+      { label: "Repaid", data: [10,30,50,70,90,110,130], backgroundColor: "#27AE60" }
     ]
   };
 
-  return <Bar data={data} />;
+  const options = {
+    maintainAspectRatio: false,
+    plugins: { legend: { display: true } },
+    scales: { y: { beginAtZero: true } }
+  };
+
+  return (
+    <div style={{
+  width: "100%",     
+  maxWidth: "800px", 
+  height: "40vh"     
+}}>
+      
+      <Bar data={data} options={options} />
+    </div>
+  );
 }
+
 export function LoanPieChart() {
   const data = {
     labels: ["Personal Loans", "Business Loans", "Mortgage", "Investment"],
@@ -55,13 +63,20 @@ export function LoanPieChart() {
   };
 
   const options = {
-    rotation: -2.2, 
-    plugins: {
-      legend: { display: false }
-    }
+    maintainAspectRatio: false,
+    rotation: -2.2,
+    plugins: { legend: { display: false } }
   };
 
-  return <Pie data={data} options={options} />;
+  return (
+  <div style={{
+  width: "100%",     
+  maxWidth: "800px", 
+  height: "40vh"     
+}}>
+      <Pie data={data} options={options} />
+    </div>
+  );
 }
 
 export function LoanLineChart() {
@@ -83,51 +98,33 @@ export function LoanLineChart() {
   };
 
   const options = {
-    plugins: {
-      legend: { display: false }
-    },
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
     scales: {
       y: {
         min: 0,
         max: 40,
-        ticks: {
-          callback: v => v + "M",
-          color: "#888",
-          font: { size: 11 }
-        },
-        grid: {
-          display: false
-        },
-        border: {
-          display: true,
-          color: "#bbb",
-          width: 1
-        }
+        ticks: { callback: v => v + "M", color: "#888", font: { size: 11 } },
+        grid: { display: false },
+        border: { display: true, color: "#bbb", width: 1 }
       },
       x: {
-        ticks: {
-          color: "#888",
-          font: { size: 11 }
-        },
-        grid: {
-          display: false
-        },
-        border: {
-          display: true,
-          color: "#bbb",
-          width: 1
-        }
+        ticks: { color: "#888", font: { size: 11 } },
+        grid: { display: false },
+        border: { display: true, color: "#bbb", width: 1 }
       }
     },
-    elements: {
-      point: {
-        hoverRadius: 5
-      }
-    },
-    responsive: true,
-    maintainAspectRatio: false
+    elements: { point: { hoverRadius: 5 } },
+    responsive: true
   };
 
-  return <Line data={data} options={options} />;
+  return (
+    <div style={{
+  width: "100%",    
+  maxWidth: "800px",
+  height: "30vh"     
+}}>
+      <Line data={data} options={options} />
+    </div>
+  );
 }
-

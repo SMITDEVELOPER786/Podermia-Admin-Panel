@@ -1,6 +1,6 @@
 import styles from "../css/SavingGoals.module.css";
 
-export default function FixedSavings() {
+export default function FixedSavings({ data }) {
   return (
     <div className={styles.tableBox}>
       <table>
@@ -17,26 +17,18 @@ export default function FixedSavings() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>FS001</td>
-            <td>Alice Brown</td>
-            <td>₦100,000</td>
-            <td>12 months</td>
-            <td className={styles.activeBadge}>Active</td>
-            <td>15%</td>
-            <td>2024-12-15</td>
-            <td className={styles.link}>View Detail</td>
-          </tr>
-          <tr>
-            <td>FS002</td>
-            <td>Bob Wilson</td>
-            <td>₦250,000</td>
-            <td>6 months</td>
-            <td className={styles.maturedBadge}>Matured</td>
-            <td>12%</td>
-            <td>2024-01-10</td>
-            <td className={styles.link}>View Detail</td>
-          </tr>
+          {data.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td>{item.user}</td>
+              <td>₦{item.amount.toLocaleString()}</td>
+              <td>{item.duration}</td>
+              <td className={styles[`${item.status.toLowerCase()}Badge`]}>{item.status}</td>
+              <td>{item.interest}</td>
+              <td>{item.maturity}</td>
+              <td className={styles.link}>View Detail</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

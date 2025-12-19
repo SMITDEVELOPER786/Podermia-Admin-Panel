@@ -1,0 +1,178 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+}
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  margin: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.headerLeft {
+  display: flex;
+  gap: 12px;
+}
+
+.alertIcon {
+  color: #dc2626;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: #D4183D;
+}
+
+.header p {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 2px 0 0;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.riskCard {
+  margin: 16px 20px;
+  padding: 14px 16px;
+  border: 1px solid #fee2e2;
+  background: #F6F6F6;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.riskCard h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.riskCard p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #675F5F;
+}
+
+.activeBadge {
+  background: #000000;
+  color: #ffffff;
+  font-size: 11px;
+  padding: 2px 14px;
+  border-radius: 999px;
+}
+
+.body {
+  padding: 0 20px 16px;
+}
+
+.body h5 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 12px 0 8px;
+}
+
+.body ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.body li {
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.pauseBtn {
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.blackWarning {
+  color: #000000;
+  font-weight: 600;
+}
+
+.closeBtnSecondary {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.resumeBtn {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pausedBadge {
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+@media (max-width: 480px) {
+  .modal {
+    max-width: 100%;
+  }
+  .header {
+    padding: 14px 16px;
+  }
+  .riskCard,
+  .body,
+  .footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

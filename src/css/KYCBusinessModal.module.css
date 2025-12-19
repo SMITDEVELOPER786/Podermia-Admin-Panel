@@ -571,6 +571,7 @@
   .modal {
     width: 96%;
     padding: 14px;
+    height: 75vh;
   }
 
   .infoGrid {

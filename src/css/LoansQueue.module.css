@@ -204,7 +204,6 @@
   margin-left: auto;   
 }
 
-
 .filtersRow input {
   padding: 8px 12px;
   border: 1px solid #d0d5dd;
@@ -590,7 +589,6 @@ font-weight: 600;
     width: 100%;
   }
 }
-
 
 @media (max-width: 576px) {
 
@@ -1093,7 +1091,7 @@ color: #9F0712 !important;
   }
 
   .chartBox {
-    width: 94% !important;
+    width: 96% !important;
     padding: 12px !important;
   }
 
@@ -1255,6 +1253,10 @@ color: #9F0712 !important;
 }
 
 @media (max-width: 768px) {
+.backBtn{
+  width: 100%;
+  justify-content: center;
+}
   .topHeader {
     flex-direction: column;
     gap: 10px;
@@ -1278,7 +1280,136 @@ color: #9F0712 !important;
   .cardCenter {
     text-align: center;
   }
-  .backBtn{
-margin-right: 210px;
+
+}
+/* SettingsTab modal*/
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background-color: #fff;
+  width: 600px;
+  max-width: 95%;
+  border-radius: 12px;
+  padding: 30px 20px 20px 20px;
+  overflow-y: auto;
+  max-height: 90vh;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease-in-out;
+}
+
+.modalContent h3 {
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  color: #264DAF;
+}
+
+.modalContent h4 {
+  margin-top: 15px;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.modalContent input {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.2s ease-in-out;
+}
+
+.modalContent input:focus {
+  border-color: #264DAF;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modalButtons button {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.modalButtons button:hover {
+  opacity: 0.9;
+}
+
+.modalButtons button:first-child {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modalButtons button:last-child {
+  background-color: #264DAF;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .modalContent {
+    width: 90%;
+    padding: 20px 15px;
   }
+
+  .modalContent input {
+    padding: 8px 10px;
+  }
+
+  .modalButtons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modalButtons button {
+    width: 100%;
+  }
+}
+@media (max-width: 1200px) {
+  .card {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 992px) {
+  .card {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    min-height: 100px !important;
+    padding: 150px;
+    padding-bottom: 250px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .card {
+    min-height: auto;
+    padding: 10px;
+  }
+ 
 }

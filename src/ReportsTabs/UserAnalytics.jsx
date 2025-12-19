@@ -74,7 +74,7 @@ export default function FinancialReports() {
           <small>30 day retention</small>
         </div>
       </div>
-
+<div className="segment">
       <h3 className={styles.segmentTitle}>User Segments</h3>
 
       <div className={styles.segmentBox}>
@@ -107,6 +107,7 @@ export default function FinancialReports() {
           800,000
            <span>Revenue Generated</span>
         </h4>
+      </div>
       </div>
     </div>
   );
