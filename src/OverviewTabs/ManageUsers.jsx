@@ -3,7 +3,10 @@ import styles from "../css/ManageUsers.module.css";
 import KPICards from "../components/KPICards";
 import FilterSearch from "../components/FilterSearch/FilterSearch";
 import DataTable from "../components/DataTable/DataTables";
-import { ArrowLeftIcon, UploadIcon, Loader2 } from "lucide-react";
+import CustomModal from "../components/CustomModal/CustomModal";
+import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
+import Toast from "../components/Toast/Toast";
+import { ArrowLeftIcon, UploadIcon, Loader2, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -22,242 +25,301 @@ const ManageUsers = () => {
   const [loadingPDF, setLoadingPDF] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(null);
+  const [toast, setToast] = useState(null);
 
   const handleBack = () => navigate(-1);
 
-  const users = [
+  // Generate unique user IDs
+  const generateUserId = (index) => {
+    return `USR${String(index + 1).padStart(6, '0')}`;
+  };
+
+  const [users, setUsers] = useState([
     {
+      id: generateUserId(0),
       name: "John Doi",
       email: "john.doi@gmail.com",
-      type: "Premium",
+      type: "Individual",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-01-15",
       lastLogin: "2025-01-15",
       wallet: "₦125,000",
     },
     {
+      id: generateUserId(1),
       name: "Jane Smith",
       email: "jane.smith@gmail.com",
-      type: "Standard",
+      type: "Business",
       kyc: "Pending",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-02-20",
       lastLogin: "2024-08-31",
       wallet: "₦50,000",
     },
     {
+      id: generateUserId(2),
       name: "Mike Jhon",
       email: "mike.jhon@gmail.com",
-      type: "Basic",
+      type: "Individual",
       kyc: "Rejected",
-      status: "Flagged",
+      accountStatus: "Suspended",
+      dateCreated: "2024-03-10",
       lastLogin: "2024-08-30",
       wallet: "₦5,000",
     },
     {
+      id: generateUserId(3),
       name: "Alice Brown",
       email: "alice.brown@gmail.com",
-      type: "Premium",
+      type: "Business",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-01-25",
       lastLogin: "2025-02-10",
       wallet: "₦200,000",
     },
     {
+      id: generateUserId(4),
       name: "Robert Green",
       email: "robert.green@gmail.com",
-      type: "Standard",
+      type: "Individual",
       kyc: "Verified",
-      status: "Inactive",
+      accountStatus: "Frozen",
+      dateCreated: "2024-04-05",
       lastLogin: "2024-12-15",
       wallet: "₦75,000",
     },
     {
+      id: generateUserId(5),
       name: "Emma White",
       email: "emma.white@gmail.com",
-      type: "Basic",
+      type: "Business",
       kyc: "Pending",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-05-12",
       lastLogin: "2024-11-20",
       wallet: "₦10,000",
     },
     {
+      id: generateUserId(6),
       name: "David Black",
       email: "david.black@gmail.com",
-      type: "Premium",
+      type: "Individual",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-01-10",
       lastLogin: "2025-01-28",
       wallet: "₦300,000",
     },
     {
+      id: generateUserId(7),
       name: "Sophia Gray",
       email: "sophia.gray@gmail.com",
-      type: "Standard",
+      type: "Business",
       kyc: "Rejected",
-      status: "Flagged",
+      accountStatus: "Suspended",
+      dateCreated: "2024-06-18",
       lastLogin: "2024-10-05",
       wallet: "₦25,000",
     },
     {
+      id: generateUserId(8),
       name: "James Blue",
       email: "james.blue@gmail.com",
-      type: "Basic",
+      type: "Individual",
       kyc: "Verified",
-      status: "Inactive",
+      accountStatus: "Closed",
+      dateCreated: "2024-02-28",
       lastLogin: "2024-09-18",
       wallet: "₦7,500",
     },
     {
+      id: generateUserId(9),
       name: "Olivia King",
       email: "olivia.king@gmail.com",
-      type: "Premium",
+      type: "Business",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-01-05",
       lastLogin: "2025-03-01",
       wallet: "₦150,000",
     },
     {
+      id: generateUserId(10),
       name: "Liam Scott",
       email: "liam.scott@gmail.com",
-      type: "Standard",
+      type: "Individual",
       kyc: "Pending",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-07-22",
       lastLogin: "2024-12-01",
       wallet: "₦60,000",
     },
     {
+      id: generateUserId(11),
       name: "Mia Adams",
       email: "mia.adams@gmail.com",
-      type: "Basic",
+      type: "Business",
       kyc: "Rejected",
-      status: "Flagged",
+      accountStatus: "Frozen",
+      dateCreated: "2024-03-15",
       lastLogin: "2024-08-25",
       wallet: "₦8,000",
     },
     {
+      id: generateUserId(12),
       name: "Ethan Carter",
       email: "ethan.carter@gmail.com",
-      type: "Premium",
+      type: "Individual",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-01-20",
       lastLogin: "2025-02-20",
       wallet: "₦220,000",
     },
     {
+      id: generateUserId(13),
       name: "Ava Lewis",
       email: "ava.lewis@gmail.com",
-      type: "Standard",
+      type: "Business",
       kyc: "Verified",
-      status: "Inactive",
+      accountStatus: "Closed",
+      dateCreated: "2024-04-30",
       lastLogin: "2024-11-11",
       wallet: "₦45,000",
     },
     {
+      id: generateUserId(14),
       name: "Noah Hill",
       email: "noah.hill@gmail.com",
-      type: "Basic",
+      type: "Individual",
       kyc: "Pending",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-08-10",
       lastLogin: "2024-10-30",
       wallet: "₦12,500",
     },
     {
+      id: generateUserId(15),
       name: "Isabella Young",
       email: "isabella.young@gmail.com",
-      type: "Premium",
+      type: "Business",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-01-12",
       lastLogin: "2025-01-05",
       wallet: "₦180,000",
     },
     {
+      id: generateUserId(16),
       name: "Lucas Walker",
       email: "lucas.walker@gmail.com",
-      type: "Standard",
+      type: "Individual",
       kyc: "Rejected",
-      status: "Flagged",
+      accountStatus: "Suspended",
+      dateCreated: "2024-05-25",
       lastLogin: "2024-09-15",
       wallet: "₦20,000",
     },
     {
+      id: generateUserId(17),
       name: "Charlotte Hall",
       email: "charlotte.hall@gmail.com",
-      type: "Basic",
+      type: "Business",
       kyc: "Verified",
-      status: "Inactive",
+      accountStatus: "Frozen",
+      dateCreated: "2024-06-05",
       lastLogin: "2024-08-20",
       wallet: "₦6,500",
     },
     {
+      id: generateUserId(18),
       name: "Mason Allen",
       email: "mason.allen@gmail.com",
-      type: "Premium",
+      type: "Individual",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-01-08",
       lastLogin: "2025-03-05",
       wallet: "₦250,000",
     },
     {
+      id: generateUserId(19),
       name: "Amelia Wright",
       email: "amelia.wright@gmail.com",
-      type: "Standard",
+      type: "Business",
       kyc: "Pending",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-09-15",
       lastLogin: "2024-12-25",
       wallet: "₦55,000",
     },
     {
+      id: generateUserId(20),
       name: "Harper Scott",
       email: "harper.scott@gmail.com",
-      type: "Premium",
+      type: "Individual",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-01-03",
       lastLogin: "2025-03-10",
       wallet: "₦280,000",
     },
     {
+      id: generateUserId(21),
       name: "Mia Wilson",
       email: "mia.wilson@gmail.com",
-      type: "Standard",
+      type: "Business",
       kyc: "Pending",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-10-20",
       lastLogin: "2024-11-25",
       wallet: "₦50,000",
     },
     {
+      id: generateUserId(22),
       name: "Ethan Martinez",
       email: "ethan.martinez@gmail.com",
-      type: "Basic",
+      type: "Individual",
       kyc: "Verified",
-      status: "Inactive",
+      accountStatus: "Closed",
+      dateCreated: "2024-07-08",
       lastLogin: "2024-09-05",
       wallet: "₦11,000",
     },
     {
+      id: generateUserId(23),
       name: "Ava Baker",
       email: "ava.baker@gmail.com",
-      type: "Premium",
+      type: "Business",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-02-14",
       lastLogin: "2025-02-15",
       wallet: "₦230,000",
     },
     {
+      id: generateUserId(24),
       name: "Mason Taylor",
       email: "mason.taylor@gmail.com",
-      type: "Standard",
+      type: "Individual",
       kyc: "Verified",
-      status: "Active",
+      accountStatus: "Active",
+      dateCreated: "2024-11-30",
       lastLogin: "2024-12-10",
       wallet: "₦70,000",
     },
-  ];
+  ]);
 
   const handleSelectUser = (user, isSelected) => {
     if (isSelected) {
       setSelectedUsers(prev => [...prev, user]);
     } else {
-      setSelectedUsers(prev => prev.filter(u => u.email !== user.email));
+      setSelectedUsers(prev => prev.filter(u => u.id !== user.id));
     }
   };
 
@@ -275,7 +337,87 @@ const ManageUsers = () => {
   };
 
   const isUserSelected = (user) => {
-    return selectedUsers.some(u => u.email === user.email);
+    return selectedUsers.some(u => u.id === user.id);
+  };
+
+  const handleViewUser = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleAccountAction = (action) => {
+    const actionMessages = {
+      suspend: {
+        title: "Suspend Account",
+        message: `Are you sure you want to suspend ${selectedUser.name}'s account? This will prevent them from accessing their account.`,
+        confirmText: "Yes, Suspend Account"
+      },
+      freeze: {
+        title: "Freeze Account",
+        message: `Are you sure you want to freeze ${selectedUser.name}'s account? This will temporarily restrict account activities.`,
+        confirmText: "Yes, Freeze Account"
+      },
+      close: {
+        title: "Close Account",
+        message: `Are you sure you want to close ${selectedUser.name}'s account? This action cannot be undone.`,
+        confirmText: "Yes, Close Account"
+      }
+    };
+
+    const actionData = actionMessages[action];
+    setConfirmDialog({
+      type: "warning",
+      title: actionData.title,
+      message: actionData.message,
+      confirmText: actionData.confirmText,
+      cancelText: "Cancel",
+      onConfirm: () => {
+        // Update account status
+        const newStatus = action === 'suspend' ? 'Suspended' : action === 'freeze' ? 'Frozen' : 'Closed';
+        
+        // Update in users array
+        setUsers(prevUsers => 
+          prevUsers.map(u => 
+            u.id === selectedUser.id ? { ...u, accountStatus: newStatus } : u
+          )
+        );
+        
+        // Update filtered if needed
+        if (filtered.length > 0) {
+          setFiltered(prevFiltered => 
+            prevFiltered.map(u => 
+              u.id === selectedUser.id ? { ...u, accountStatus: newStatus } : u
+            )
+          );
+        }
+
+        // Update selected user
+        setSelectedUser({ ...selectedUser, accountStatus: newStatus });
+
+        // Show toast
+        const toastMessages = {
+          suspend: {
+            type: "warning",
+            title: "Account Suspended",
+            message: `${selectedUser.name}'s account has been suspended successfully.`
+          },
+          freeze: {
+            type: "warning",
+            title: "Account Frozen",
+            message: `${selectedUser.name}'s account has been frozen successfully.`
+          },
+          close: {
+            type: "error",
+            title: "Account Closed",
+            message: `${selectedUser.name}'s account has been closed successfully.`
+          }
+        };
+
+        setToast(toastMessages[action]);
+        setConfirmDialog(null);
+      },
+      onCancel: () => setConfirmDialog(null)
+    });
   };
 
   const isAllSelected = () => {
@@ -300,15 +442,15 @@ const ManageUsers = () => {
         />
       )
     },
+    { header: "User ID", key: "id" },
     { header: "Name", key: "name" },
     { header: "Email", key: "email" },
     {
       header: "Account Type",
       key: "type",
       styleMap: {
-        Basic: styles.accountBasic,
-        Standard: styles.accountStandard,
-        Premium: styles.accountPremium,
+        Individual: styles.accountIndividual,
+        Business: styles.accountBusiness,
       },
     },
     {
@@ -321,16 +463,34 @@ const ManageUsers = () => {
       },
     },
     {
-      header: "Status",
-      key: "status",
+      header: "Account Status",
+      key: "accountStatus",
       styleMap: {
         Active: styles.statusActive,
-        Flagged: styles.statusFlagged,
-        Inactive: styles.statusInactive,
+        Suspended: styles.statusSuspended,
+        Frozen: styles.statusFrozen,
+        Closed: styles.statusClosed,
       },
     },
+    { header: "Date Created", key: "dateCreated" },
     { header: "Last Login", key: "lastLogin" },
     { header: "Wallet Balance", key: "wallet" },
+    {
+      header: "Actions",
+      key: "actions",
+      render: (row) => (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleViewUser(row);
+          }}
+          className={styles.viewDetailsBtn}
+          title="View User Details"
+        >
+          <Eye size={18} />
+        </button>
+      )
+    },
   ];
 
   // Filters
@@ -342,8 +502,8 @@ const ManageUsers = () => {
     () => ["All", ...new Set(users.map((u) => u.kyc))],
     [users]
   );
-  const statuses = useMemo(
-    () => ["All", ...new Set(users.map((u) => u.status))],
+  const accountStatuses = useMemo(
+    () => ["All", ...new Set(users.map((u) => u.accountStatus))],
     [users]
   );
 
@@ -365,7 +525,7 @@ const ManageUsers = () => {
       if (filters.kyc && filters.kyc !== "All")
         temp = temp.filter((u) => u.kyc === filters.kyc);
       if (filters.status && filters.status !== "All")
-        temp = temp.filter((u) => u.status === filters.status);
+        temp = temp.filter((u) => u.accountStatus === filters.status);
       if (filters.date) temp = temp.filter((u) => u.lastLogin === filters.date);
 
       setFiltered(temp);
@@ -376,15 +536,15 @@ const ManageUsers = () => {
   // PDF Export
   const hexToRgb = (hexClass) => {
     const colors = {
-      [styles.accountBasic]: [214, 158, 46],
-      [styles.accountStandard]: [49, 130, 206],
-      [styles.accountPremium]: [56, 161, 105],
+      [styles.accountIndividual]: [49, 130, 206],
+      [styles.accountBusiness]: [56, 161, 105],
       [styles.kycVerified]: [56, 161, 105],
       [styles.kycPending]: [214, 158, 46],
       [styles.kycRejected]: [229, 62, 62],
       [styles.statusActive]: [56, 161, 105],
-      [styles.statusFlagged]: [229, 62, 62],
-      [styles.statusInactive]: [113, 128, 150],
+      [styles.statusSuspended]: [229, 62, 62],
+      [styles.statusFrozen]: [214, 158, 46],
+      [styles.statusClosed]: [113, 128, 150],
     };
     return colors[hexClass] || [0, 0, 0];
   };
@@ -460,7 +620,7 @@ const ManageUsers = () => {
           dropdowns: [
             { key: "type", label: "Account Type", options: accountTypes },
             { key: "kyc", label: "KYC Status", options: kycStatuses },
-            { key: "status", label: "Status", options: statuses },
+            { key: "status", label: "Account Status", options: accountStatuses },
           ],
           showDate: false,
         }}
@@ -530,6 +690,125 @@ const ManageUsers = () => {
           </>
         )}
       </button>
+
+      {/* User Details Modal */}
+      {selectedUser && (
+        <CustomModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedUser(null);
+          }}
+          width="600px"
+          showClose={true}
+        >
+          <div className={styles.userDetailsModal}>
+            <h2 className={styles.userDetailsTitle}>User Details</h2>
+            
+            <div className={styles.userDetailsContent}>
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>User ID:</span>
+                <span className={styles.detailValue}>{selectedUser.id}</span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Name:</span>
+                <span className={styles.detailValue}>{selectedUser.name}</span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Email:</span>
+                <span className={styles.detailValue}>{selectedUser.email}</span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Account Type:</span>
+                <span className={`${styles.detailValue} ${styles[selectedUser.type === 'Individual' ? 'accountIndividual' : 'accountBusiness']}`}>
+                  {selectedUser.type}
+                </span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>KYC Status:</span>
+                <span className={`${styles.detailValue} ${styles[`kyc${selectedUser.kyc}`] || ''}`}>
+                  {selectedUser.kyc}
+                </span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Account Status:</span>
+                <span className={`${styles.detailValue} ${styles[`status${selectedUser.accountStatus}`] || ''}`}>
+                  {selectedUser.accountStatus}
+                </span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Date Created:</span>
+                <span className={styles.detailValue}>{selectedUser.dateCreated}</span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Last Login:</span>
+                <span className={styles.detailValue}>{selectedUser.lastLogin}</span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Wallet Balance:</span>
+                <span className={styles.detailValue}>{selectedUser.wallet}</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className={styles.userActionButtons}>
+              <button
+                className={styles.suspendBtn}
+                onClick={() => handleAccountAction('suspend')}
+                disabled={selectedUser.accountStatus === 'Suspended'}
+              >
+                Suspend Account
+              </button>
+              <button
+                className={styles.freezeBtn}
+                onClick={() => handleAccountAction('freeze')}
+                disabled={selectedUser.accountStatus === 'Frozen'}
+              >
+                Freeze Account
+              </button>
+              <button
+                className={styles.closeBtn}
+                onClick={() => handleAccountAction('close')}
+                disabled={selectedUser.accountStatus === 'Closed'}
+              >
+                Close Account
+              </button>
+            </div>
+          </div>
+        </CustomModal>
+      )}
+
+      {/* Confirmation Dialog */}
+      {confirmDialog && (
+        <ConfirmDialog
+          isOpen={!!confirmDialog}
+          type={confirmDialog.type}
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          confirmText={confirmDialog.confirmText}
+          cancelText={confirmDialog.cancelText}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={confirmDialog.onCancel}
+        />
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          type={toast.type}
+          title={toast.title}
+          message={toast.message}
+          onClose={() => setToast(null)}
+        />
+      )}
     </Div>
   );
 };

@@ -77,11 +77,30 @@
   font-weight: 500;
 }
 /* Account Type */
-.accountBasic, .accountPremium, .accountStandard {
+.accountIndividual {
   border: 1px solid var(--primary);
   background-color: #dbeafe;
   color: var(--primary);
   font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
+}
+
+.accountBusiness {
+  border: 1px solid var(--success);
+  background-color: #d1e7dd;
+  color: #0f5132;
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
 }
 
 /* KYC */
@@ -89,34 +108,83 @@
   background-color: #d1e7dd;
   color: #0f5132;
   border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
   font-weight: 500;
+  display: inline-block;
+  min-width: 80px;
 }
 .kycPending {
   background-color: #fff3cd;
   color: #664d03;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
   font-weight: 500;
+  display: inline-block;
+  min-width: 80px;
 }
 .kycRejected {
   background-color: #f8d7da;
   color: #842029;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
   font-weight: 500;
+  display: inline-block;
+  min-width: 80px;
 }
 
-/* Status */
+/* Account Status */
 .statusActive {
   background-color: #d1e7dd;
   color: #0f5132;
   font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
 }
-.statusFlagged {
-  background-color: #fff3cd;
-  color: #664d03;
+
+.statusSuspended {
+  background-color: #fee2e2;
+  color: #dc2626;
   font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
 }
-.statusInactive {
-  background-color: #f8d7da;
-  color: #842029;
+
+.statusFrozen {
+  background-color: #fef3c7;
+  color: #d97706;
   font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
+}
+
+.statusClosed {
+  background-color: #e5e7eb;
+  color: #6b7280;
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
 }
 .exportBtn{
     background-color: var(--btnColor);
@@ -137,4 +205,162 @@
 }
 .exportBtn:hover {
   background-color: var(--btnHover);
+}
+
+/* User Details Modal */
+.userDetailsModal {
+  padding: 20px;
+}
+
+.userDetailsTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #295cbf;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.userDetailsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  min-width: 140px;
+}
+
+.detailValue {
+  font-size: 14px;
+  color: #6b7280;
+  text-align: right;
+  display: inline-block;
+}
+
+.detailValue.accountIndividual,
+.detailValue.accountBusiness,
+.detailValue.kycVerified,
+.detailValue.kycPending,
+.detailValue.kycRejected,
+.detailValue.statusActive,
+.detailValue.statusSuspended,
+.detailValue.statusFrozen,
+.detailValue.statusClosed {
+  width: auto;
+  flex: none;
+  text-align: center;
+}
+
+.userActionButtons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.viewDetailsBtn {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  color: #000000;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.viewDetailsBtn:hover {
+  background-color: #f3f4f6;
+  color: #000000;
+}
+
+.viewDetailsBtn svg {
+  color: #000000;
+  transition: all 0.2s ease;
+}
+
+.viewDetailsBtn:hover svg {
+  color: #000000;
+  transform: scale(1.1);
+}
+
+.suspendBtn,
+.freezeBtn,
+.closeBtn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suspendBtn {
+  background-color: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fbbf24;
+}
+
+.suspendBtn:hover:not(:disabled) {
+  background-color: #fde68a;
+  border-color: #f59e0b;
+}
+
+.suspendBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.freezeBtn {
+  background-color: #e2e8f0;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.freezeBtn:hover:not(:disabled) {
+  background-color: #cbd5e1;
+  border-color: #94a3b8;
+}
+
+.freezeBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.closeBtn {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.closeBtn:hover:not(:disabled) {
+  background-color: #fecaca;
+  border-color: #f87171;
+}
+
+.closeBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
