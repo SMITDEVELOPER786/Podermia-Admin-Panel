@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom'
 function RecentTransactions() {
+  const navigate = useNavigate()
   return (
     <div className="content-panel">
       <h3 className="panel-title">Recent Transaction</h3>
@@ -34,7 +36,7 @@ function RecentTransactions() {
           </div>
         </div>
       </div>
-      <button className="btn-view-all">View All Transaction</button>
+      <button className="btn-view-all" onClick={() => navigate('/all-transactions')}>View All Transaction</button>
     </div>
   )
 }

@@ -1,0 +1,147 @@
+:root {
+    --primary: #295cbf;
+    --btnColor: #1e3a5f;
+    --btnHover: #1a3250;
+    --txtLight: #675f5f;
+    --lightBG: #f3f3f5;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    min-height: 100vh;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  .header {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+  
+  .backButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--primary);
+    cursor: pointer;
+    color: #000;
+    font-size: 1rem;
+    padding: 10px;
+    transition: color 0.3s ease-in-out;
+    border-radius: 8px;
+  }
+  
+  
+  .backButton:hover {
+     
+    color: #675f5f;
+  }
+  
+  .backArrow {
+    color: inherit;
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #295cbf;
+    margin: 0;
+  }
+
+  .subtitle {
+    color: #675F5F;
+    font-weight: 500px;
+  }
+
+  .notificationsContainer {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .notificationCard {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 1px solid #B7B8BB;
+    gap: 20px;
+  }
+
+  .bullet {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #295cbf;
+  }
+
+  /* .iconContainer {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  } */
+
+  .cardContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cardTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+  }
+
+  .cardDescription {
+    font-size: 0.875rem;
+    color: #000;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .cardTime {
+    font-size: 0.8125rem;
+    color: #675f5f;
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 768px) {
+    
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .titleContainer {
+    align-items: center;
+    text-align: center;
+    align-self: center;
+  }
+  }
+  

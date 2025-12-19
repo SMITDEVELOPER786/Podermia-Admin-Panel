@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom'
 function Header({ activeTab }) {
+  const navigate = useNavigate()
   return (
     <header className="dashboard-header">
       <h1 className="brand-name">PoderMonie</h1>
@@ -52,11 +54,11 @@ function Header({ activeTab }) {
 
           
           {activeTab !== "KYC Management" && activeTab !== "Loans" && (
-            <button className="btn-header">Admin Panel</button>
+            <button className="btn-header" onClick={() => navigate('/admin-panel')}>Admin Panel</button>
           )}
 
        
-          <button className="btn-header btn-notification">
+          <button className="btn-header btn-notification" onClick={() => navigate('/notifications')}>
             <svg
               width="18"
               height="18"

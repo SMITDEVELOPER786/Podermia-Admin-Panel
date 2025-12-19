@@ -1,0 +1,129 @@
+:root {
+    --primary: #295cbf;
+    --btnColor: #1e3a5f;
+    --btnHover: #1a3250;
+    --txtLight: #675f5f;
+    --lightBG: #f3f3f5;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    min-height: 100vh;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+
+
+  .header {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+  
+  .backButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--primary);
+    cursor: pointer;
+    color: #000;
+    font-size: 1rem;
+    padding: 10px;
+    transition: color 0.3s ease-in-out;
+    border-radius: 8px;
+  }
+  
+  
+  .backButton:hover {
+     
+    color: #675f5f;
+  }
+  
+  .backArrow {
+    color: inherit;
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #295cbf;
+    margin: 0;
+  }
+
+  .tableWrapper {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Status Badge Styles */
+  .statusFailed {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-radius: 50px;
+    padding: 4px 12px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 80px;
+    display: inline-block;
+  }
+
+  .statusPending {
+    background-color: #fef3c7;
+    color: #d97706;
+    border-radius: 50px;
+    padding: 4px 12px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 80px;
+    display: inline-block;
+  }
+
+  .statusCompleted {
+    background-color: #d1fae5;
+    color: #059669;
+    border-radius: 50px;
+    padding: 4px 12px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 80px;
+    display: inline-block;
+  }
+
+  .statusDisbursed {
+    background-color: #fed7aa;
+    color: #ea580c;
+    border-radius: 50px;
+    padding: 4px 12px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 80px;
+    display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .title {
+        align-self: center;
+    }
+  }
+  

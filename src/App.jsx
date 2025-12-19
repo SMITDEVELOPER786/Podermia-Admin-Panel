@@ -6,12 +6,12 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ActivityLog from "./OverviewTabs/ActivityLog";
 import ManageUsers from "./OverviewTabs/ManageUsers";
 import AdminReferrals from "./OverviewTabs/AdminReferrals";
-import LoansPage from "../src/pages/Loans"; 
-
-
+import LoansPage from "../src/pages/Loans";
+import AdminPanel from "./adminDashboardTabs/AdminPanel";
 import LoginPage from "./auth/Login";
 import TwoFactorPage from "./auth/Twofactorauth";
-
+import Notifications from "./adminDashboardTabs/Notifications";
+import AllTransactions from "./adminDashboardTabs/AllTransactions";
 const isAuthenticated = () => !!localStorage.getItem("token");
 const isTwoFAComplete = () => !!localStorage.getItem("2fa");
 
@@ -59,15 +59,38 @@ const App = () => {
           </PrivateRoute>
         }
       />
-<Route
-  path="/loans"
-  element={
-    <PrivateRoute>
-      <LoansPage />
-    </PrivateRoute>
-  }
-/>
-
+      <Route
+        path="/loans"
+        element={
+          <PrivateRoute>
+            <LoansPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin-panel"
+        element={
+          <PrivateRoute>
+            <AdminPanel />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/notifications"
+        element={
+          <PrivateRoute>
+            <Notifications />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/all-transactions"
+        element={
+          <PrivateRoute>
+            <AllTransactions />
+          </PrivateRoute>
+        }
+      />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
