@@ -70,11 +70,60 @@
   font-weight: 500;
 }
 
+/* Status Banner */
+.statusBanner {
+  margin-top: 15px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.statusBannerPaused {
+  background-color: #FEE7E7;
+  border-color: #D4183D;
+  color: #D4183D;
+}
+
+.statusBannerActive {
+  background-color: #edf6e9;
+  border-color: #16A34A;
+  color: #16A34A;
+}
+
+.bannerHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.bannerHeader h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.bannerHeader svg {
+  flex-shrink: 0;
+}
+
+.statusBanner p {
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
 .compaigns-form-wrapper {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 22px;
+  transition: opacity 0.3s ease;
+}
+
+.compaigns-form-wrapper.formDisabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .form-group-row {
@@ -113,6 +162,12 @@
   background-color: #f3f3f5;
 }
 
+.inputField:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f3f3f5;
+}
+
 .errorText {
   color: #e05a5a;
   font-size: 12px;
@@ -135,10 +190,17 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-.updateButton:hover {
+.updateButton:hover:not(:disabled) {
   background: #153289;
+}
+
+.updateButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #1c3faa;
 }
 
 .dropdownWrapper {
@@ -246,6 +308,19 @@
   font-weight: 500;
 }
 /* Fraud Monitor */
+.fraudDetection {
+  color: var(--primary);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.fraud-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .fraud-card {
   padding: 3% 4%;
   margin-top: 10px;
@@ -275,15 +350,15 @@
   color: var(--primary);
 }
 .cases-review button {
-  padding: 8px 20px;
+  padding:12px 30px;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
-  background-color: var(--btnColor);
-  color: white;
+  color: var(--btnColor);
   border: 1px solid var(--btnColor);
   cursor: pointer;
   transition: 0.2s ease-in-out;
+  background-color: transparent;
 }
 .cases-review button:hover {
   background-color: var(--btnHover);
@@ -700,6 +775,225 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Export Page Styles */
+.exportSubtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 8px 0 24px 0;
+}
+
+.reportTypeTabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.reportTypeTab {
+  flex: 1;
+  padding: 12px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: white;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reportTypeTab:hover {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+}
+
+.reportTypeTabActive {
+  background-color: #eff6ff;
+  border-color: #295cbf;
+  color: #295cbf;
+}
+
+.reportDescription {
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.exportSection {
+  margin-bottom: 32px;
+}
+
+.exportSectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 16px 0;
+}
+
+.dateRangeContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dateInputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dateLabel {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.dateInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dateInput {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #f3f3f5;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: #295cbf;
+  background-color: white;
+}
+
+.calendarIcon {
+  position: absolute;
+  right: 12px;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.exportFormatContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.exportFormatBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: white;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exportFormatBtn:hover {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+}
+
+.exportFormatBtnActive {
+  background-color: #eff6ff;
+  border-color: #295cbf;
+  color: #295cbf;
+}
+
+.exportSummary {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summaryLabel {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.summaryValue {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.recentExportsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recentExportItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.recentExportIcon {
+  flex-shrink: 0;
+}
+
+.recentExportInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recentExportFileName {
+  font-size: 14px;
+  color: #111827;
+  margin: 0;
+}
+
+.recentExportMeta {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.recentExportDownload {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.recentExportDownload:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
 
 
 /* Responsive */
@@ -742,4 +1036,300 @@
   }
 
   
+}
+
+/* Status Badges */
+.statusBadgeReview {
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.statusBadgeSafe {
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.statusBadgeFlag {
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.statusBadgeBanned {
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+/* Fraud Review Modal */
+.fraudReviewModal {
+  padding: 0;
+}
+
+.fraudReviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.fraudReviewHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fraudReviewTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.fraudReviewCaseId {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.fraudReviewDivider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 20px 0;
+}
+
+.fraudReviewSection {
+  margin-bottom: 24px;
+}
+
+.fraudReviewSectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 12px 0;
+}
+
+.fraudReviewCard {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fraudReviewCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.fraudReviewLabel {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.fraudReviewValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.fraudReviewValueRed {
+  font-size: 14px;
+  font-weight: 600;
+  color: #dc2626;
+  text-align: right;
+}
+
+.fraudReviewValueOrange {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ea580c;
+  text-align: right;
+}
+
+.fraudReviewRow {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fraudReviewRowRight {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.fraudReviewSubtitle {
+  font-size: 14px;
+  color: #374151;
+  margin: 0 0 12px 0;
+}
+
+.patternAnalysis {
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.patternAnalysisTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 12px 0;
+}
+
+.severityBadge {
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+  background-color: #dc2626;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* User Activity */
+.userActivityRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.userActivityLabel {
+  font-size: 14px;
+  color: #111827;
+}
+
+.userActivityValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+/* System Recommendation */
+.systemRecommendation {
+  background-color: #FEE7E7;
+  border: 1px solid #D4183D;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.systemRecommendationHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.systemRecommendationTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #D4183D;
+  margin: 0;
+}
+
+.systemRecommendationText {
+  font-size: 14px;
+  color: #D4183D;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Review Notes */
+.reviewNotesTextarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.reviewNotesTextarea:focus {
+  outline: none;
+  border-color: #295cbf;
+  box-shadow: 0 0 0 3px rgba(41, 92, 191, 0.1);
+}
+
+/* Action Buttons */
+.fraudReviewActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.actionButtonSafe {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background-color: #295cbf;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButtonSafe:hover {
+  background-color: #1e3a5f;
+}
+
+.actionButtonFlag {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background-color: #D97706;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButtonFlag:hover {
+  background-color: #b45309;
+}
+
+.actionButtonBan {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background-color: #DC2626;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButtonBan:hover {
+  background-color: #b91c1c;
 }

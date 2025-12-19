@@ -12,7 +12,7 @@
 .modalBox {
   background: #fff;
   border-radius: 12px;
-  padding: 20px;
+  padding: 40px 20px;
   position: relative;
   max-height: 90vh; /* modal height limit */
   overflow-y: hidden; /* modal scroll */

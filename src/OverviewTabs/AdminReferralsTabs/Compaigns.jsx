@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from '../../css/AdminReferrals.module.css'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, X, Check } from 'lucide-react'
 import Toast from '../../components/Toast/Toast'
 
 function Div({ className, ...props }) {
@@ -19,6 +19,7 @@ const Compaigns = () => {
   const [minInvestment, setMinInvestment] = useState('');
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [isCampaignActive, setIsCampaignActive] = useState(true);
 
   const options = [
     "Ongoing",
@@ -106,14 +107,37 @@ const Compaigns = () => {
       <Div className="compaigns-head-and-button">
         <h3>Campaign Configuration</h3>
         <label className="toggle-switch">
-          <input type="checkbox" />
+          <input 
+            type="checkbox" 
+            checked={isCampaignActive}
+            onChange={(e) => setIsCampaignActive(e.target.checked)}
+          />
           <span className="toggle-slider"></span>
         </label>
       </Div>
 
       <span className={styles.compaignsStatus}>Campaign Status</span>
 
-      <Div className="compaigns-form-wrapper">
+      {/* Status Banner */}
+      {!isCampaignActive ? (
+        <Div className={`${styles.statusBanner} ${styles.statusBannerPaused}`}>
+          <div className={styles.bannerHeader}>
+            <X size={20} />
+            <h4>Campaign is Paused</h4>
+          </div>
+          <p>✗ No new referral bonuses will be awarded • ✗ Payout requests are paused • ✓ Existing pending payouts are queued</p>
+        </Div>
+      ) : (
+        <Div className={`${styles.statusBanner} ${styles.statusBannerActive}`}>
+          <div className={styles.bannerHeader}>
+            <Check size={20} />
+            <h4>Campaign is Active</h4>
+          </div>
+          <p>✓ Users can earn and withdraw referral bonuses • ✓ New referrals are being tracked • ✓ Fraud detection is active</p>
+        </Div>
+      )}
+
+      <Div className={`compaigns-form-wrapper ${!isCampaignActive ? styles.formDisabled : ''}`}>
         
         {/* Referral + Invitee Bonus */}
         <Div className="form-group-row">
@@ -127,6 +151,7 @@ const Compaigns = () => {
               value={referralBonus}
               onChange={(e) => handleInputChange('referralBonus', e.target.value)}
               onBlur={(e) => handleBlur('referralBonus', e.target.value)}
+              disabled={!isCampaignActive}
             />
             {errors.referralBonus && (
               <span className={styles.errorText}>{errors.referralBonus}</span>
@@ -143,6 +168,7 @@ const Compaigns = () => {
               value={inviteeBonus}
               onChange={(e) => handleInputChange('inviteeBonus', e.target.value)}
               onBlur={(e) => handleBlur('inviteeBonus', e.target.value)}
+              disabled={!isCampaignActive}
             />
             {errors.inviteeBonus && (
               <span className={styles.errorText}>{errors.inviteeBonus}</span>
@@ -156,7 +182,8 @@ const Compaigns = () => {
 
           <div 
             className={styles.dropdownWrapper}
-            onClick={() => setOpenDropdown(!openDropdown)}
+            onClick={() => isCampaignActive && setOpenDropdown(!openDropdown)}
+            style={{ opacity: !isCampaignActive ? 0.5 : 1, pointerEvents: !isCampaignActive ? 'none' : 'auto' }}
           >
             <span>{selected}</span>
             <ChevronDown size={18} />
@@ -190,13 +217,18 @@ const Compaigns = () => {
             value={minInvestment}
             onChange={(e) => handleInputChange('minInvestment', e.target.value)}
             onBlur={(e) => handleBlur('minInvestment', e.target.value)}
+            disabled={!isCampaignActive}
           />
           {errors.minInvestment && (
             <span className={styles.errorText}>{errors.minInvestment}</span>
           )}
         </Div>
 
-        <button className={styles.updateButton} onClick={handleSubmit}>
+        <button 
+          className={styles.updateButton} 
+          onClick={handleSubmit}
+          disabled={!isCampaignActive}
+        >
           Update Campaign Settings
         </button>
       </Div>

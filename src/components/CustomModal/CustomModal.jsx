@@ -45,12 +45,13 @@ const CustomModal = ({
             <h2 className={styles.title} style={{ color: titleColor }}>
               {title}
             </h2>
-            {showClose && (
-              <button className={styles.closeBtn} onClick={onClose}>
-                 <X size={25} />
-              </button>
-            )}
           </div>
+        )}
+
+        {showClose && (
+          <button className={styles.closeBtn} onClick={onClose}>
+            <X size={25} />
+          </button>
         )}
 
         <div className={styles.content}>{children}</div>

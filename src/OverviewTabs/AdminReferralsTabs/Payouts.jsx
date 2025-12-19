@@ -3,6 +3,8 @@ import styles from "../../css/AdminReferrals.module.css";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import Toast from "../../components/Toast/Toast";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function Div({ className, ...props }) {
   const mappedClass = className
@@ -17,7 +19,6 @@ const Payouts = () => {
   const [open2, setOpen2] = useState(false);
   const [selected, setSelected] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [pendingAmount, setPendingAmount] = useState(45000);
   const [monthlyAmount, setMonthlyAmount] = useState(125000);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [searchQuery, setSearchQuery] = useState('');
@@ -151,13 +152,28 @@ const Payouts = () => {
   };
 
   const confirmProcessAll = () => {
-    const amountToProcess = pendingAmount;
+    const pendingPayouts = payouts.filter(item => item.validation === 'Pending');
+    const pendingPayoutsCount = pendingPayouts.length;
+    const amountToProcess = pendingPayouts.reduce((sum, item) => {
+      const amount = parseInt(item.amount.replace(/[₦,]/g, ''));
+      return sum + (isNaN(amount) ? 0 : amount);
+    }, 0);
+    
+    // Update all pending payouts to approved
+    setPayouts(prev => 
+      prev.map(item => 
+        item.validation === 'Pending' 
+          ? { ...item, validation: 'Approved' } 
+          : item
+      )
+    );
+    
+    // Update payout control card
     setMonthlyAmount(prev => prev + amountToProcess);
-    setPendingAmount(0);
     setShowConfirm(false);
     setToast({ 
       show: true, 
-      message: `₦${amountToProcess.toLocaleString()} processed successfully!`, 
+      message: `${pendingPayoutsCount} payouts (₦${amountToProcess.toLocaleString()}) processed successfully!`, 
       type: 'success' 
     });
     setTimeout(() => {
@@ -177,6 +193,14 @@ const Payouts = () => {
   });
 
   const pendingCount = payouts.filter(item => item.validation === 'Pending').length;
+  
+  // Calculate pending amount from actual pending payouts
+  const pendingAmount = payouts
+    .filter(item => item.validation === 'Pending')
+    .reduce((sum, item) => {
+      const amount = parseInt(item.amount.replace(/[₦,]/g, ''));
+      return sum + (isNaN(amount) ? 0 : amount);
+    }, 0);
 
   const handleApprove = () => {
     if (selected) {
@@ -219,6 +243,61 @@ const Payouts = () => {
       closeDetails();
     }
   };
+
+  const handleExportAllPayouts = () => {
+    const doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(18);
+    doc.text("All Payouts Report", 14, 15);
+    
+    // Prepare table data
+    const tableColumn = ["Transaction ID", "Referrer", "Code", "Amount", "Amount Each", "Invitee", "Date", "Status"];
+    const tableRows = payouts.map(payout => [
+      payout.transId,
+      payout.referrer,
+      payout.Code,
+      payout.amount,
+      payout.amountEach,
+      payout.invitee,
+      payout.date,
+      payout.validation
+    ]);
+
+    // Generate table
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+      theme: "grid",
+      headStyles: {
+        fillColor: [22, 163, 74], // #16A34A
+        textColor: 255,
+        fontStyle: "bold",
+        fontSize: 10
+      },
+      bodyStyles: { 
+        textColor: 50, 
+        fontSize: 9 
+      },
+      alternateRowStyles: { 
+        fillColor: [240, 240, 240] 
+      },
+      margin: { top: 10, left: 10, right: 10 },
+    });
+
+    // Save PDF
+    doc.save("all-payouts-report.pdf");
+    
+    setToast({ 
+      show: true, 
+      message: "All payouts exported to PDF successfully!", 
+      type: 'success' 
+    });
+    setTimeout(() => {
+      setToast({ show: false, message: '', type: '' });
+    }, 3000);
+  };
   return (
     <div className="content-panel">
       <h4 className={styles.payoutHead}>Payout Control</h4>
@@ -226,7 +305,7 @@ const Payouts = () => {
         <Div className="pending-card">
           <h4>Pending Payouts</h4>
           <h4>₦{pendingAmount.toLocaleString()}</h4>
-          <p>9 users eligible</p>
+          <p>{pendingCount} user{pendingCount !== 1 ? 's' : ''} eligible</p>
         </Div>
         <Div className="pending-card pending-card2">
           <h4>This Month</h4>
@@ -236,14 +315,6 @@ const Payouts = () => {
       </Div>
 
       <Div className="pending-buttons">
-        <button 
-          className={styles.payoutButton1} 
-          onClick={handleProcessAll}
-          disabled={pendingAmount === 0}
-          style={{ opacity: pendingAmount === 0 ? 0.5 : 1, cursor: pendingAmount === 0 ? 'not-allowed' : 'pointer' }}
-        >
-          Process All Pending Payouts
-        </button>
         <button className={styles.payoutButton2} onClick={() => setOpen(true)}>
           Review Individual Payouts
         </button>
@@ -264,7 +335,7 @@ const Payouts = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </Div>
-          <p>{pendingCount} pending review</p>
+          <p>{pendingCount} pending review{pendingCount !== 1 ? 's' : ''}</p>
         </Div>
 
         {filteredPayouts.map((item) => (
@@ -302,6 +373,61 @@ const Payouts = () => {
             </Div>
           </Div>
         ))}
+
+        {/* Process All Pending Payouts Button */}
+        <Div className="pending-buttons" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e5e7eb' }}>
+          <button 
+            onClick={handleProcessAll}
+            disabled={pendingCount === 0}
+            style={{ 
+              width: '100%',
+              padding: '20px',
+              border: '1px solid #16A34A',
+              borderRadius: '6px',
+              fontWeight: '700',
+              cursor: pendingCount === 0 ? 'not-allowed' : 'pointer',
+              backgroundColor: '#16A34A',
+              color: 'white',
+              opacity: pendingCount === 0 ? 0.5 : 1,
+              transition: '.3s ease-in-out'
+            }}
+            onMouseEnter={(e) => {
+              if (pendingCount > 0) {
+                e.target.style.backgroundColor = '#15803d';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (pendingCount > 0) {
+                e.target.style.backgroundColor = '#16A34A';
+              }
+            }}
+          >
+            Process All Pending Payouts
+          </button>
+          
+          <button 
+            onClick={handleExportAllPayouts}
+            style={{ 
+              width: '100%',
+              padding: '20px',
+              border: '1px solid #16A34A',
+              borderRadius: '6px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              backgroundColor: 'transparent',
+              color: '#16A34A',
+              transition: '.3s ease-in-out'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = '#f0fdf4';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+            }}
+          >
+            Export All Payouts
+          </button>
+        </Div>
       </CustomModal>
 
       <CustomModal
