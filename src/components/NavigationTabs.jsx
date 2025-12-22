@@ -6,7 +6,7 @@ function NavigationTabs({ activeTab, onTabChange }) {
     'Loans',
     'Wallet Admin',
     'Saving & Goals',
-    'User Management',
+    'Admin Management',
     'System Setting',
     'Report'
   ]

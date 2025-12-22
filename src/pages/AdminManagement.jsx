@@ -1,8 +1,8 @@
 import styles from '../css/UserManagement.module.css'
-import UserManagementNav from '../UserManagementTabs/UserManagementNav'
-import AccessRole from '../UserManagementTabs/AccessRole'
-import UserOverview from '../UserManagementTabs/UserOverview'
-import RoleAssignment from '../UserManagementTabs/RoleAssignment'
+import UserManagementNav from '../AdminManagementTabs/UserManagementNav'
+import AccessRole from '../AdminManagementTabs/AccessRole'
+import UserOverview from '../AdminManagementTabs/UserOverview'
+import RoleAssignment from '../AdminManagementTabs/RoleAssignment'
 import { useState } from 'react'
 
 function UserManagement() {
