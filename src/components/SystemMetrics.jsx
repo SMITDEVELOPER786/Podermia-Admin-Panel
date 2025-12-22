@@ -22,7 +22,7 @@ function SystemMetrics() {
           <span className="metric-value">0</span>
         </div>
       </div>
-      <button className="btn-view-all" onClick={()=> navigate('/logs')}>View System Logs</button>
+      <button className="btn-view-all" onClick={()=> navigate('/system/logs')}>View System Logs</button>
     </div>
   )
 }

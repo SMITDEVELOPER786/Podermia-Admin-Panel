@@ -16,23 +16,34 @@ const PayoutCalender = () => {
   const [selectedPayouts, setSelectedPayouts] = useState([])
   const [showTypeDropdown, setShowTypeDropdown] = useState(false)
   const [showSegmentDropdown, setShowSegmentDropdown] = useState(false)
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false)
   const [selectedExportStatuses, setSelectedExportStatuses] = useState([])
-const [activeTab, setActiveTab] = useState('calendar')
+  const [selectedStatus, setSelectedStatus] = useState('All Status')
+  const [activeTab, setActiveTab] = useState('calendar')
   const typeOptions = ['All Types', 'T-Bills', 'Bond', 'Commercial Paper']
   const segmentOptions = ['All Segments', 'Retail Investors', 'Institutional', 'High Net Worth']
+  const statusOptions = ['All Status', 'Pending', 'Completed', 'Recently Processed']
 
-  // Mock data
-  const payouts = [
-    { id: 1, date: 3, name: 'T-Bill 90 Days', status: 'Matured', color: '#c8e6c9', investors: 45, amount: 12500000 },
-    { id: 2, date: 5, name: 'Corporate Bond', status: 'Matured', color: '#c8e6c9', investors: 120, amount: 50000000 },
-    { id: 3, date: 9, name: 'T-Bill', status: 'Processing', color: '#bbdefb', investors: 78, amount: 30000000 },
-    { id: 4, date: 12, name: 'Commercial Paper', status: 'Matured', color: '#fff9c4', investors: 55, amount: 18000000 },
-    { id: 5, date: 15, name: 'Infrastructure Bond', status: 'Matured', color: '#c8e6c9', investors: 200, amount: 100000000 },
-    { id: 6, date: 18, name: 'T-Bill', status: 'Pending', color: '#fff9c4', investors: 89, amount: 42000000 },
-    { id: 7, date: 20, name: 'Corporate Bond', status: 'Matured', color: '#e1bee7', investors: 150, amount: 75000000 },
-    { id: 8, date: 25, name: 'T-Bill', status: 'Pending', color: '#fff9c4', investors: 95, amount: 48000000 },
-    { id: 9, date: 28, name: 'Infrastructure Bond', status: 'Matured', color: '#bbdefb', investors: 180, amount: 90000000 }
-  ]
+  // Mock data with processedAt timestamps
+  // Recently processed: within 24 hours
+  // Completed: all matured payouts (old + recently processed)
+  const now = new Date()
+  const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+  const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000)
+  const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000)
+  
+  // Initialize payouts as state so they can be updated when processed
+  const [payouts, setPayouts] = useState([
+    { id: 1, date: 3, name: 'T-Bill 90 Days', status: 'Matured', color: '#c8e6c9', investors: 45, amount: 12500000, processedAt: tenDaysAgo },
+    { id: 2, date: 5, name: 'Corporate Bond', status: 'Matured', color: '#c8e6c9', investors: 120, amount: 50000000, processedAt: threeDaysAgo },
+    { id: 3, date: 9, name: 'T-Bill', status: 'Processing', color: '#bbdefb', investors: 78, amount: 30000000, processedAt: null },
+    { id: 4, date: 12, name: 'Commercial Paper', status: 'Matured', color: '#fff9c4', investors: 55, amount: 18000000, processedAt: oneDayAgo },
+    { id: 5, date: 15, name: 'Infrastructure Bond', status: 'Matured', color: '#c8e6c9', investors: 200, amount: 100000000, processedAt: new Date(now.getTime() - 12 * 60 * 60 * 1000) }, // 12 hours ago - recently processed
+    { id: 6, date: 18, name: 'T-Bill', status: 'Pending', color: '#fff9c4', investors: 89, amount: 42000000, processedAt: null },
+    { id: 7, date: 20, name: 'Corporate Bond', status: 'Matured', color: '#e1bee7', investors: 150, amount: 75000000, processedAt: new Date(now.getTime() - 6 * 60 * 60 * 1000) }, // 6 hours ago - recently processed
+    { id: 8, date: 25, name: 'T-Bill', status: 'Pending', color: '#fff9c4', investors: 95, amount: 48000000, processedAt: null },
+    { id: 9, date: 28, name: 'Infrastructure Bond', status: 'Matured', color: '#bbdefb', investors: 180, amount: 90000000, processedAt: new Date(now.getTime() - 18 * 60 * 60 * 1000) } // 18 hours ago - recently processed
+  ])
 
   const processPayoutsList = [
     { id: 1, name: 'T-Bill 91 Days Batch A', due: 'Sep 15 • 2 + investors', amount: 12750000, status: 'Matured' },
@@ -55,8 +66,84 @@ const [activeTab, setActiveTab] = useState('calendar')
     return new Date(date.getFullYear(), date.getMonth(), 1).getDay()
   }
 
+  // Filter payouts based on status
+  const getFilteredPayouts = () => {
+    let filtered = [...payouts]
+    const currentTime = new Date()
+    const oneDayAgoTime = new Date(currentTime.getTime() - 24 * 60 * 60 * 1000).getTime()
+    
+    // Filter by status
+    if (selectedStatus === 'Pending') {
+      filtered = filtered.filter(p => p.status === 'Pending')
+    } else if (selectedStatus === 'Completed') {
+      filtered = filtered.filter(p => p.status === 'Matured')
+    } else if (selectedStatus === 'Recently Processed') {
+      filtered = filtered.filter(p => {
+        if (p.status !== 'Matured' || !p.processedAt) return false
+        const processedTime = new Date(p.processedAt).getTime()
+        return processedTime >= oneDayAgoTime
+      })
+    }
+    // 'All Status' - no filtering needed
+    
+    // Sort: Recently processed payouts (within 24 hours) first, then by processedAt date (newest first)
+    filtered.sort((a, b) => {
+      // Check if payout is recently processed (within 24 hours)
+      const aIsRecent = a.processedAt && new Date(a.processedAt).getTime() >= oneDayAgoTime
+      const bIsRecent = b.processedAt && new Date(b.processedAt).getTime() >= oneDayAgoTime
+      
+      // Recently processed payouts come first
+      if (aIsRecent && !bIsRecent) return -1
+      if (!aIsRecent && bIsRecent) return 1
+      
+      // If both are recent or both are not recent, sort by processedAt (newest first)
+      if (a.processedAt && b.processedAt) {
+        return new Date(b.processedAt).getTime() - new Date(a.processedAt).getTime()
+      }
+      
+      // If only one has processedAt, prioritize it
+      if (a.processedAt && !b.processedAt) return -1
+      if (!a.processedAt && b.processedAt) return 1
+      
+      // Otherwise, sort by date (newest first)
+      return b.date - a.date
+    })
+    
+    return filtered
+  }
+
+  const filteredPayouts = getFilteredPayouts()
+  
+  // Check if any filter is active (excluding default values)
+  const hasActiveFilters = selectedStatus !== 'All Status'
+
+  // Function to get relative time (e.g., "2h ago", "1min ago")
+  const getRelativeTime = (processedAt) => {
+    if (!processedAt) return null
+    
+    const now = new Date()
+    const processed = new Date(processedAt)
+    const diffInMs = now.getTime() - processed.getTime()
+    const diffInSeconds = Math.floor(diffInMs / 1000)
+    const diffInMinutes = Math.floor(diffInSeconds / 60)
+    const diffInHours = Math.floor(diffInMinutes / 60)
+    const diffInDays = Math.floor(diffInHours / 24)
+    
+    if (diffInSeconds < 60) {
+      return `${diffInSeconds}s ago`
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes}min ago`
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h ago`
+    } else if (diffInDays < 7) {
+      return `${diffInDays}d ago`
+    } else {
+      return null // Don't show for older than 7 days
+    }
+  }
+
   const getEventsForDate = (day) => {
-    return payouts.filter(p => p.date === day)
+    return filteredPayouts.filter(p => p.date === day)
   }
 
   const handleDateClick = (day) => {
@@ -82,6 +169,78 @@ const [activeTab, setActiveTab] = useState('calendar')
   }
 
   const handleProcessPayouts = () => {
+    const processedTime = new Date() // Current time when processing
+    
+    // Get selected payouts to process
+    const payoutsToProcess = processPayoutsList.filter(p => selectedPayouts.includes(p.id))
+    
+    // Update or add payouts
+    setPayouts(prevPayouts => {
+      const updatedPayouts = [...prevPayouts]
+      
+      payoutsToProcess.forEach(processPayout => {
+        // Extract date from "due" field (e.g., "Sep 15 • 2 + investors" -> 15)
+        const dateMatch = processPayout.due.match(/(\w+)\s+(\d+)/)
+        let payoutDate = null
+        if (dateMatch) {
+          const monthName = dateMatch[1]
+          const day = parseInt(dateMatch[2])
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+          const monthIndex = monthNames.findIndex(m => m === monthName)
+          if (monthIndex !== -1) {
+            payoutDate = day
+          }
+        }
+        
+        // Extract investors count from "due" field (e.g., "2 + investors" -> 2)
+        const investorsMatch = processPayout.due.match(/(\d+)\s*\+?\s*investors?/i)
+        const investors = investorsMatch ? parseInt(investorsMatch[1]) : 0
+        
+        // If date not found, use day 1 as default
+        if (!payoutDate) {
+          payoutDate = 1
+        }
+        
+        // Try to find existing payout by name or amount
+        const existingIndex = updatedPayouts.findIndex(p => 
+          p.name === processPayout.name || 
+          (p.amount === processPayout.amount && p.date === payoutDate)
+        )
+        
+        if (existingIndex !== -1) {
+          // Update existing payout
+          updatedPayouts[existingIndex] = {
+            ...updatedPayouts[existingIndex],
+            status: 'Matured',
+            processedAt: processedTime,
+            investors: investors || updatedPayouts[existingIndex].investors
+          }
+        } else {
+          // Add new payout
+          // Generate a new unique ID
+          const maxId = updatedPayouts.length > 0 ? Math.max(...updatedPayouts.map(p => p.id)) : 0
+          
+          // Assign color based on payout type or use default colors
+          const defaultColors = ['#c8e6c9', '#bbdefb', '#fff9c4', '#e1bee7', '#c5cae9']
+          const colorIndex = (maxId + 1) % defaultColors.length
+          
+          const newPayout = {
+            id: maxId + 1,
+            date: payoutDate || 1, // Default to day 1 if date not found
+            name: processPayout.name,
+            status: 'Matured',
+            color: defaultColors[colorIndex], // Rotate through default colors
+            investors: investors || 0,
+            amount: processPayout.amount,
+            processedAt: processedTime
+          }
+          updatedPayouts.push(newPayout)
+        }
+      })
+      
+      return updatedPayouts
+    })
+    
     setShowProcessModal(false)
     setShowSuccessModal(true)
     setTimeout(() => {
@@ -209,6 +368,7 @@ if (activeTab === 'Failure Center') {
             onClick={() => {
               setShowTypeDropdown(!showTypeDropdown)
               setShowSegmentDropdown(false)
+              setShowStatusDropdown(false)
             }}
           >
             {selectedFilter}
@@ -239,6 +399,7 @@ if (activeTab === 'Failure Center') {
             onClick={() => {
               setShowSegmentDropdown(!showSegmentDropdown)
               setShowTypeDropdown(false)
+              setShowStatusDropdown(false)
             }}
           >
             {selectedSegment}
@@ -253,6 +414,37 @@ if (activeTab === 'Failure Center') {
                   onClick={() => {
                     setSelectedSegment(option)
                     setShowSegmentDropdown(false)
+                  }}
+                >
+                  {option}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Status Dropdown */}
+        <div className={styles.customDropdown}>
+          <div 
+            className={styles.dropdownSelected}
+            onClick={() => {
+              setShowStatusDropdown(!showStatusDropdown)
+              setShowTypeDropdown(false)
+              setShowSegmentDropdown(false)
+            }}
+          >
+            {selectedStatus}
+            <ChevronDown size={18} className={`${styles.dropdownIcon} ${showStatusDropdown ? styles.rotate : ''}`} />
+          </div>
+          {showStatusDropdown && (
+            <div className={styles.dropdownMenu}>
+              {statusOptions.map((option, idx) => (
+                <div
+                  key={idx}
+                  className={`${styles.dropdownItem} ${selectedStatus === option ? styles.active : ''}`}
+                  onClick={() => {
+                    setSelectedStatus(option)
+                    setShowStatusDropdown(false)
                   }}
                 >
                   {option}
@@ -283,17 +475,62 @@ if (activeTab === 'Failure Center') {
         <button className={styles.todayBtn} onClick={handleTodayClick}>Today</button>
       </div>
 
-      {/* Calendar Grid */}
-      <div className={styles.calendarGrid}>
-        <div className={styles.calendarWeekdays}>
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className={styles.weekday}>{day}</div>
-          ))}
+      {/* List View when filters are active */}
+      {hasActiveFilters ? (
+        <div className={styles.payoutsListView}>
+          <div className={styles.listViewHeader}>
+            <h3>Filtered Payouts ({filteredPayouts.length})</h3>
+          </div>
+          <div className={styles.payoutsListContainer}>
+            {filteredPayouts.length > 0 ? (
+              filteredPayouts.map((payout) => (
+                <div 
+                  key={payout.id} 
+                  className={styles.payoutListItem}
+                  style={{ backgroundColor: payout.color }}
+                  onClick={() => {
+                    setSelectedDate(payout.date)
+                    setShowEventsModal(true)
+                  }}
+                >
+                  <div className={styles.payoutListInfo}>
+                    <div className={styles.payoutListName}>{payout.name}</div>
+                    <div className={styles.payoutListDate}>
+                      {monthNames[selectedMonth.getMonth()]} {payout.date}, {selectedMonth.getFullYear()}
+                      {payout.processedAt && getRelativeTime(payout.processedAt) && (
+                        <span className={styles.payoutRelativeTime}>
+                          • {getRelativeTime(payout.processedAt)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.payoutListDetails}>
+                    <div className={styles.payoutListStatus}>{payout.status}</div>
+                    <div className={styles.payoutListInvestors}>Investors: {payout.investors}</div>
+                    <div className={styles.payoutListAmount}>₦{payout.amount.toLocaleString()}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className={styles.noPayoutsMessage}>
+                No payouts found for the selected filters.
+              </div>
+            )}
+          </div>
         </div>
-        <div className={styles.calendarDays}>
-          {renderCalendar()}
+      ) : (
+        /* Calendar Grid */
+        <div className={styles.calendarGrid}>
+          <div className={styles.calendarWeekdays}>
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+              <div key={day} className={styles.weekday}>{day}</div>
+            ))}
+          </div>
+          <div className={styles.calendarDays}>
+            {renderCalendar()}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Events Modal */}
       <CustomModal
@@ -304,7 +541,7 @@ if (activeTab === 'Failure Center') {
       >
         <div className={styles.eventsModalContent}>
           {selectedDate && getEventsForDate(selectedDate).map((event, idx) => (
-            <div key={idx} className={styles.eventCard} style={{ borderLeft: `4px solid ${event.color}` }}>
+            <div key={event.id} className={styles.eventCard} style={{ borderLeft: `4px solid ${event.color}` }}>
               <div className={styles.eventCardHeader}>
                 <h4>{event.name}</h4>
                 <span className={styles.eventBadge} style={{ backgroundColor: event.color }}>
@@ -426,6 +663,7 @@ if (activeTab === 'Failure Center') {
                 type="checkbox"
                 checked={selectedExportStatuses.includes('scheduled')}
                 onChange={() => handleExportStatusToggle('scheduled')}
+                style={{ width: 'fit-content' }}
               />
               <label>Scheduled Payouts (8)</label>
             </div>
@@ -434,6 +672,7 @@ if (activeTab === 'Failure Center') {
                 type="checkbox"
                 checked={selectedExportStatuses.includes('processing')}
                 onChange={() => handleExportStatusToggle('processing')}
+                style={{ width: 'fit-content' }}
               />
               <label>Processing Payouts (1)</label>
             </div>
@@ -442,6 +681,7 @@ if (activeTab === 'Failure Center') {
                 type="checkbox"
                 checked={selectedExportStatuses.includes('completed')}
                 onChange={() => handleExportStatusToggle('completed')}
+                style={{ width: 'fit-content' }}
               />
               <label>Completed Payouts (45)</label>
             </div>
@@ -450,6 +690,7 @@ if (activeTab === 'Failure Center') {
                 type="checkbox"
                 checked={selectedExportStatuses.includes('failed')}
                 onChange={() => handleExportStatusToggle('failed')}
+                style={{ width: 'fit-content' }}
               />
               <label>Failed Payouts (2)</label>
             </div>

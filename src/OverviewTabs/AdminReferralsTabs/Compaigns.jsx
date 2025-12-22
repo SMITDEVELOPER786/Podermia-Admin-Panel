@@ -20,12 +20,41 @@ const Compaigns = () => {
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [isCampaignActive, setIsCampaignActive] = useState(true);
+  
+  // Product Activation Toggles
+  const [productToggles, setProductToggles] = useState({
+    savingsVault: true,
+    commercialPaper: true,
+    treasuryBills: true,
+    bonds: true
+  });
+  
+  // New fields
+  const [minInvestmentTenor, setMinInvestmentTenor] = useState('');
+  const [minReferredUsers, setMinReferredUsers] = useState('');
+  const [rewardPayoutType, setRewardPayoutType] = useState('Wallet Credit');
+  const [rewardLockInPeriod, setRewardLockInPeriod] = useState('0');
+  const [payoutTypeDropdown, setPayoutTypeDropdown] = useState(false);
+  const [lockInDropdown, setLockInDropdown] = useState(false);
 
   const options = [
     "Ongoing",
     "30 days",
     "60 days",
     "Custom Date Range"
+  ];
+
+  const payoutTypeOptions = [
+    "Wallet Credit",
+    "Savings Vault Investment"
+  ];
+
+  const lockInPeriodOptions = [
+    "0",
+    "30",
+    "90",
+    "180",
+    "365"
   ];
 
   const handleSelect = (value) => {
@@ -57,12 +86,25 @@ const Compaigns = () => {
       case 'minInvestment':
         setMinInvestment(value);
         break;
+      case 'minInvestmentTenor':
+        setMinInvestmentTenor(value);
+        break;
+      case 'minReferredUsers':
+        setMinReferredUsers(value);
+        break;
     }
     
     // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+  };
+
+  const handleProductToggle = (product) => {
+    setProductToggles(prev => ({
+      ...prev,
+      [product]: !prev[product]
+    }));
   };
 
   const handleBlur = (name, value) => {
@@ -83,10 +125,26 @@ const Compaigns = () => {
     
     const minInvestmentError = validateField('minInvestment', minInvestment);
     if (minInvestmentError) newErrors.minInvestment = minInvestmentError;
+
+    const minTenorError = validateField('minInvestmentTenor', minInvestmentTenor);
+    if (minTenorError) newErrors.minInvestmentTenor = minTenorError;
+
+    const minReferredError = validateField('minReferredUsers', minReferredUsers);
+    if (minReferredError) newErrors.minReferredUsers = minReferredError;
     
     setErrors(newErrors);
     
     if (Object.keys(newErrors).length === 0) {
+      // Clear all input fields
+      setReferralBonus('');
+      setInviteeBonus('');
+      setMinInvestment('');
+      setMinInvestmentTenor('');
+      setMinReferredUsers('');
+      setRewardPayoutType('Wallet Credit');
+      setRewardLockInPeriod('0');
+      setSelected('Ongoing');
+      
       // Success - save configuration
       setToast({ 
         show: true, 
@@ -101,7 +159,7 @@ const Compaigns = () => {
   };
 
   return (
-    <div className="content-panel">
+    <div className="content-panel" style={{paddingBottom: '150px'}}>
       
       {/* Header */}
       <Div className="compaigns-head-and-button">
@@ -221,6 +279,161 @@ const Compaigns = () => {
           />
           {errors.minInvestment && (
             <span className={styles.errorText}>{errors.minInvestment}</span>
+          )}
+        </Div>
+
+        {/* Product Activation Toggles */}
+        <Div className="input-block full-width">
+          <label>Product Activation</label>
+          <span className={styles.smallText}>Enable or disable products for referral campaigns</span>
+          <div className={styles.productTogglesContainer}>
+            <div className={styles.productToggleItem}>
+              <span>Savings Vault</span>
+              <label className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={productToggles.savingsVault}
+                  onChange={() => handleProductToggle('savingsVault')}
+                  disabled={!isCampaignActive}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+            <div className={styles.productToggleItem}>
+              <span>Commercial Paper</span>
+              <label className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={productToggles.commercialPaper}
+                  onChange={() => handleProductToggle('commercialPaper')}
+                  disabled={!isCampaignActive}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+            <div className={styles.productToggleItem}>
+              <span>Treasury Bills</span>
+              <label className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={productToggles.treasuryBills}
+                  onChange={() => handleProductToggle('treasuryBills')}
+                  disabled={!isCampaignActive}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+            <div className={styles.productToggleItem}>
+              <span>Bonds</span>
+              <label className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={productToggles.bonds}
+                  onChange={() => handleProductToggle('bonds')}
+                  disabled={!isCampaignActive}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </Div>
+
+        {/* Minimum Investment Tenor */}
+        <Div className="input-block full-width">
+          <label>Minimum Investment Tenor</label>
+          <span className={styles.smallText}>Minimum investment period in days</span>
+          <input 
+            type="number" 
+            placeholder="30" 
+            className={styles.inputField} 
+            value={minInvestmentTenor}
+            onChange={(e) => handleInputChange('minInvestmentTenor', e.target.value)}
+            onBlur={(e) => handleBlur('minInvestmentTenor', e.target.value)}
+            disabled={!isCampaignActive}
+            min="0"
+          />
+          {errors.minInvestmentTenor && (
+            <span className={styles.errorText}>{errors.minInvestmentTenor}</span>
+          )}
+        </Div>
+
+        {/* Minimum Number of Referred Users */}
+        <Div className="input-block full-width">
+          <label>Minimum Number of Referred Users</label>
+          <span className={styles.smallText}>Minimum number of users that must be referred</span>
+          <input 
+            type="number" 
+            placeholder="1" 
+            className={styles.inputField} 
+            value={minReferredUsers}
+            onChange={(e) => handleInputChange('minReferredUsers', e.target.value)}
+            onBlur={(e) => handleBlur('minReferredUsers', e.target.value)}
+            disabled={!isCampaignActive}
+            min="0"
+          />
+          {errors.minReferredUsers && (
+            <span className={styles.errorText}>{errors.minReferredUsers}</span>
+          )}
+        </Div>
+
+        {/* Reward Payout Type Dropdown */}
+        <Div className="input-block full-width">
+          <label>Reward Payout Type</label>
+          <div 
+            className={styles.dropdownWrapper}
+            onClick={() => isCampaignActive && setPayoutTypeDropdown(!payoutTypeDropdown)}
+            style={{ opacity: !isCampaignActive ? 0.5 : 1, pointerEvents: !isCampaignActive ? 'none' : 'auto' }}
+          >
+            <span>{rewardPayoutType}</span>
+            <ChevronDown size={18} />
+          </div>
+
+          {payoutTypeDropdown && (
+            <div className={styles.dropdownList}>
+              {payoutTypeOptions.map((opt) => (
+                <div 
+                  key={opt}
+                  className={styles.dropdownItem}
+                  onClick={() => {
+                    setRewardPayoutType(opt);
+                    setPayoutTypeDropdown(false);
+                  }}
+                >
+                  {opt}
+                </div>
+              ))}
+            </div>
+          )}
+        </Div>
+
+        {/* Reward Lock-in Period Dropdown */}
+        <Div className="input-block full-width">
+          <label>Reward Lock-in Period</label>
+          <span className={styles.smallText}>Number of days rewards are locked</span>
+          <div 
+            className={styles.dropdownWrapper}
+            onClick={() => isCampaignActive && setLockInDropdown(!lockInDropdown)}
+            style={{ opacity: !isCampaignActive ? 0.5 : 1, pointerEvents: !isCampaignActive ? 'none' : 'auto' }}
+          >
+            <span>{rewardLockInPeriod} days</span>
+            <ChevronDown size={18} />
+          </div>
+
+          {lockInDropdown && (
+            <div className={styles.dropdownList}>
+              {lockInPeriodOptions.map((opt) => (
+                <div 
+                  key={opt}
+                  className={styles.dropdownItem}
+                  onClick={() => {
+                    setRewardLockInPeriod(opt);
+                    setLockInDropdown(false);
+                  }}
+                >
+                  {opt} days
+                </div>
+              ))}
+            </div>
           )}
         </Div>
 

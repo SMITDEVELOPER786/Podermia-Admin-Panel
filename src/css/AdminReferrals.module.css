@@ -137,6 +137,7 @@
   flex-direction: column;
   gap: 5px;
   position: relative;
+  margin-bottom: 8px;
 }
 
 .input-block label {
@@ -219,15 +220,18 @@
 
 .dropdownList {
   position: absolute;
-  top: 80px;
+  top: 100%;
   left: 0;
   width: 100%;
+  margin-top: 4px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #f3f3f5;
   overflow: hidden;
   z-index: 50;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .dropdownItem {
@@ -238,6 +242,31 @@
 
 .dropdownItem:hover {
   background: white;
+}
+
+/* Product Toggles */
+.productTogglesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.productToggleItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.productToggleItem span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
 }
 
 /* Analytics */

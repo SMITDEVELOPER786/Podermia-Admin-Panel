@@ -1,6 +1,6 @@
 import styles from "../css/Reports.module.css";
 import exportIcon from "../assets/export.png";
-import userIcon from "../assets/usericon.png";
+import userIcon from "../assets/userIcon.png";
 
 export default function FinancialReports() {
   return (

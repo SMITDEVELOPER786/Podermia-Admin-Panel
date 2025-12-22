@@ -16,6 +16,7 @@
   /* overflow-y: auto; */
   position: relative;
   z-index: 10002;
+  padding: 5px
 }
 
 .formGrid {
@@ -25,10 +26,14 @@
 }
 
 .formSection {
-  background: #f9fafb;
+  background: white;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-self: stretch;
 }
 
 .sectionTitle {
@@ -54,7 +59,7 @@
   margin-bottom: 8px;
 }
 
-.formGroup input,
+.formGroup input:not([type="range"]),
 .formGroup textarea,
 .formGroup select {
   width: 100%;
@@ -67,7 +72,7 @@
   transition: all 0.2s ease;
 }
 
-.formGroup input:focus,
+.formGroup input:not([type="range"]):focus,
 .formGroup textarea:focus,
 .formGroup select:focus {
   outline: none;

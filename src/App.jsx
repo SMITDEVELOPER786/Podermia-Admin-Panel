@@ -12,6 +12,7 @@ import LoginPage from "./auth/Login";
 import TwoFactorPage from "./auth/Twofactorauth";
 import Notifications from "./adminDashboardTabs/Notifications";
 import AllTransactions from "./adminDashboardTabs/AllTransactions";
+import SystemLogs from "./adminDashboardTabs/SystemLogs";
 const isAuthenticated = () => !!localStorage.getItem("token");
 const isTwoFAComplete = () => !!localStorage.getItem("2fa");
 
@@ -88,6 +89,14 @@ const App = () => {
         element={
           <PrivateRoute>
             <AllTransactions />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/system/logs"
+        element={
+          <PrivateRoute>
+            <SystemLogs />
           </PrivateRoute>
         }
       />

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styles from '../css/Investment.module.css';
-import { Upload, Calendar } from 'lucide-react';
 import Toast from '../components/Toast/Toast';
 import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialog';
 import EditModal from '../components/EditModal/EditModal';
-import jsPDF from 'jspdf';
+import PortfolioOverview from './PortfolioOverview';
+import InvestmentForm from './InvestmentForm';
 
 const AddProducts = () => {
   const [activeTab, setActiveTab] = useState('Portfolio Overview');
@@ -17,59 +17,131 @@ const AddProducts = () => {
       name: 'Growth Tech Fund',
       issuerName: 'Tech Ventures Inc',
       status: 'Active',
-      productType: 'Equity Funds',
+      productType: 'Treasury Bill',
+      productCategory: 'Treasury Bill',
       category: 'Growth',
+      investmentObjective: 'Growth',
       amount: '50,000',
+      minInvestment: '1000',
+      maxInvestment: '100000',
+      couponInterestRate: '8.5',
+      annualYield: '8.5',
+      interestType: 'Simple',
+      payoutFrequency: 'Monthly',
+      processingFees: '100',
+      withholdingTax: '10',
       expectedReturn: '8.5%',
-      risk: 'High Medium Risk',
+      risk: 'High',
+      riskLevel: 'High',
       maturity: '12/31/2025',
+      maturityDate: '2025-12-31',
+      startDate: '2024-01-01',
+      endDate: '2025-12-31',
+      maturityType: 'Fixed',
+      earlyRedemptionOption: 'Yes',
+      penaltyOnEarlyRedemption: '5',
+      statusControl: 'Active',
       complianceTags: 2,
       description: 'Technology focused growth fund with diversified holdings',
       tags: ['SEC-Compliant', 'FINRA-Approved'],
-      badges: ['Active']
+      badges: ['Active'],
+      productCode: 'PROD-001',
+      createdBy: 'System Admin',
+      createdDate: new Date().toLocaleDateString()
     },
     {
       id: 2,
       name: 'Conservative Bond Portfolio',
       issuerName: 'Safe Bonds LLC',
-      status: 'Error',
-      productType: 'Hedge Funds',
-      category: 'Conservative',
+      status: 'Active',
+      productType: 'Bond',
+      productCategory: 'Bond',
+      category: 'Income',
+      investmentObjective: 'Income',
       amount: '75,000',
+      minInvestment: '5000',
+      maxInvestment: '500000',
+      couponInterestRate: '3.2',
+      annualYield: '3.2',
+      interestType: 'Compound',
+      payoutFrequency: 'Quarterly',
+      processingFees: '150',
+      withholdingTax: '15',
       expectedReturn: '3.2%',
-      risk: 'Low Risk',
+      risk: 'Low',
+      riskLevel: 'Low',
       maturity: '6/30/2026',
+      maturityDate: '2026-06-30',
+      startDate: '2024-01-01',
+      endDate: '2026-06-30',
+      maturityType: 'Fixed',
+      earlyRedemptionOption: 'No',
+      penaltyOnEarlyRedemption: '10',
+      statusControl: 'Active',
       complianceTags: 3,
       description: 'Low-risk bond portfolio for capital preservation',
       tags: ['SEC-Compliant', 'FINRA-Approved', 'SIPC-Protected'],
-      badges: ['Error', 'Requires Attention']
+      badges: ['Active'],
+      productCode: 'PROD-002',
+      createdBy: 'System Admin',
+      createdDate: new Date().toLocaleDateString()
     }
   ]);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({
     // Basic Information
-    issuerName: '',
     productName: '',
-    productType: '',
-    sector: '',
+    productCategory: '',
+    issuerName: '',
     description: '',
+    investmentObjective: '',
     
     // Financial Details
-    interestRate: '',
     minInvestment: '',
     maxInvestment: '',
+    couponInterestRate: '',
+    annualYield: '',
+    
+    // Admin Updates
+    interestType: '',
+    payoutFrequency: '',
+    processingFees: '',
+    withholdingTax: '',
+    productActivationTime: '',
+    statusControl: 'Active',
+    penaltyOnEarlyRedemption: '0',
+    earlyRedemptionOption: 'No',
+    maturityDate: '',
+    startDate: '',
+    endDate: '',
+    maturityType: '',
+    autoRollover: false,
+    gracePeriod: '',
+    riskLevel: '',
+    investmentRating: '',
+    additionalDocumentationRequired: false,
+    kycTierRestriction: '',
+    regulatoryNotes: '',
+    orderPriority: '',
+    productCode: '',
+    createdBy: '',
+    createdDate: '',
+    suspendProduct: false,
+    archiveProduct: false,
+    referralEligibility: false,
+    notifyUser: false,
+    
+    // Legacy fields (keeping for backward compatibility)
+    productType: '',
+    sector: '',
+    interestRate: '',
     totalOffering: '',
     availableAmount: '',
-    
-    // Terms & Condition
-    maturityDate: '',
     lockInPeriod: '',
     couponFrequency: '',
     riskRating: '',
     creditRating: '',
     status: 'Active',
-    
-    // Document Upload
     termSheet: [],
   });
 
@@ -79,12 +151,50 @@ const AddProducts = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+    
+    // Real-time validation for Minimum Investment
+    if (name === 'minInvestment') {
+      if (!value || value.trim() === '') {
+        setErrors(prev => ({
+          ...prev,
+          [name]: 'Minimum investment is required'
+        }));
+      } else {
+        const minInv = parseFloat(value);
+        if (isNaN(minInv)) {
+          setErrors(prev => ({
+            ...prev,
+            [name]: 'Minimum investment must be a valid number'
+          }));
+        } else if (minInv < 1000) {
+          setErrors(prev => ({
+            ...prev,
+            [name]: 'Minimum investment must be at least ₦1,000'
+          }));
+        } else {
+          // Clear error if valid
+          setErrors(prev => ({
+            ...prev,
+            [name]: ''
+          }));
+        }
+      }
+    } else if (name === 'couponInterestRate' || name === 'annualYield') {
+      // Clear error while typing - validate on blur/submit only
+      if (errors[name]) {
+        setErrors(prev => ({
+          ...prev,
+          [name]: ''
+        }));
+      }
+    } else {
+      // Clear error when user starts typing for other fields
+      if (errors[name]) {
+        setErrors(prev => ({
+          ...prev,
+          [name]: ''
+        }));
+      }
     }
   };
 
@@ -122,7 +232,6 @@ const AddProducts = () => {
       }
     }
     
-    // Reset input value to allow re-selecting the same file
     e.target.value = '';
   };
 
@@ -137,13 +246,9 @@ const AddProducts = () => {
     const newErrors = {};
 
     // Basic Information validation
-    if (!formData.issuerName.trim()) {
-      newErrors.issuerName = 'Issuer name is required';
-    }
     if (!formData.productName.trim()) {
       newErrors.productName = 'Product name is required';
     } else {
-      // Check for duplicate or similar product names
       const isDuplicate = portfolioItems.some(item => 
         item.id !== editingItem?.id && 
         item.name.toLowerCase() === formData.productName.trim().toLowerCase()
@@ -152,69 +257,119 @@ const AddProducts = () => {
         newErrors.productName = 'Product name already exists or is too similar';
       }
     }
-    if (!formData.productType.trim()) {
-      newErrors.productType = 'Product type is required';
-    }
-    if (!formData.sector.trim()) {
-      newErrors.sector = 'Sector is required';
+
+    if (!formData.issuerName.trim()) {
+      newErrors.issuerName = 'Issuer name is required';
     }
 
     // Financial Details validation
-    if (!formData.interestRate.trim()) {
-      newErrors.interestRate = 'Interest rate is required';
-    } else if (isNaN(formData.interestRate)) {
-      newErrors.interestRate = 'Interest rate must be a valid number';
+    if (!formData.minInvestment || formData.minInvestment.trim() === '') {
+      newErrors.minInvestment = 'Minimum investment is required';
     } else {
-      const rate = parseFloat(formData.interestRate);
-      if (rate <= 0 || rate > 100) {
-        newErrors.interestRate = 'Interest rate must be between 0 and 100';
+      const minInv = parseFloat(formData.minInvestment);
+      if (isNaN(minInv)) {
+        newErrors.minInvestment = 'Minimum investment must be a valid number';
+      } else if (minInv < 1000) {
+        newErrors.minInvestment = 'Minimum investment must be at least ₦1,000';
       }
     }
 
-    if (!formData.minInvestment.trim()) {
-      newErrors.minInvestment = 'Minimum investment is required';
-    } else if (isNaN(formData.minInvestment) || parseFloat(formData.minInvestment) <= 0) {
-      newErrors.minInvestment = 'Please enter a valid positive amount';
-    }
-
-    if (!formData.maxInvestment.trim()) {
-      newErrors.maxInvestment = 'Maximum investment is required';
-    } else if (isNaN(formData.maxInvestment) || parseFloat(formData.maxInvestment) <= 0) {
-      newErrors.maxInvestment = 'Please enter a valid positive amount';
-    } else if (parseFloat(formData.maxInvestment) < parseFloat(formData.minInvestment)) {
+    if (formData.maxInvestment && parseFloat(formData.maxInvestment) < parseFloat(formData.minInvestment || 0)) {
       newErrors.maxInvestment = 'Maximum must be greater than minimum';
     }
 
-    if (!formData.totalOffering.trim()) {
-      newErrors.totalOffering = 'Total offering amount is required';
-    } else if (isNaN(formData.totalOffering) || parseFloat(formData.totalOffering) <= 0) {
-      newErrors.totalOffering = 'Please enter a valid positive amount';
-    }
-
-    if (!formData.availableAmount.trim()) {
-      newErrors.availableAmount = 'Available amount is required';
-    } else if (isNaN(formData.availableAmount) || parseFloat(formData.availableAmount) <= 0) {
-      newErrors.availableAmount = 'Please enter a valid positive amount';
-    } else if (parseFloat(formData.availableAmount) > parseFloat(formData.totalOffering)) {
-      newErrors.availableAmount = 'Available amount cannot exceed total offering';
-    }
-
-    // Terms & Condition validation
-    if (!formData.maturityDate.trim()) {
-      newErrors.maturityDate = 'Maturity date is required';
+    if (!formData.couponInterestRate || isNaN(formData.couponInterestRate)) {
+      newErrors.couponInterestRate = 'Coupon/Interest rate is required';
     } else {
-      const maturityDate = new Date(formData.maturityDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (maturityDate <= today) {
-        newErrors.maturityDate = 'Maturity date must be in the future';
+      const rate = parseFloat(formData.couponInterestRate);
+      if (rate < 1 || rate > 100) {
+        newErrors.couponInterestRate = 'Coupon/Interest rate must be between 1% and 100%';
       }
     }
 
-    if (!formData.lockInPeriod.trim()) {
-      newErrors.lockInPeriod = 'Lock-in period is required';
-    } else if (isNaN(formData.lockInPeriod) || parseFloat(formData.lockInPeriod) <= 0) {
-      newErrors.lockInPeriod = 'Please enter a valid number of days/months';
+    if (!formData.annualYield || isNaN(formData.annualYield)) {
+      newErrors.annualYield = 'Annual yield is required';
+    } else {
+      const yieldVal = parseFloat(formData.annualYield);
+      if (yieldVal < 1 || yieldVal > 100) {
+        newErrors.annualYield = 'Annual yield must be between 1% and 100%';
+      }
+    }
+
+    // Additional validations
+    if (!formData.productCategory) {
+      newErrors.productCategory = 'Product category is required';
+    }
+
+    if (!formData.investmentObjective) {
+      newErrors.investmentObjective = 'Investment objective is required';
+    }
+
+    if (!formData.processingFees || isNaN(formData.processingFees) || parseFloat(formData.processingFees) < 0) {
+      newErrors.processingFees = 'Processing fees is required and must be a valid number';
+    }
+
+    if (!formData.withholdingTax || isNaN(formData.withholdingTax) || parseFloat(formData.withholdingTax) < 0) {
+      newErrors.withholdingTax = 'Withholding tax is required and must be a valid number';
+    }
+
+    if (!formData.interestType) {
+      newErrors.interestType = 'Interest type is required';
+    }
+
+    if (!formData.payoutFrequency) {
+      newErrors.payoutFrequency = 'Payout frequency is required';
+    }
+
+    if (!formData.startDate) {
+      newErrors.startDate = 'Start date is required';
+    } else {
+      const startDate = new Date(formData.startDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (startDate < today) {
+        newErrors.startDate = 'Start date cannot be in the past';
+      }
+    }
+
+    if (formData.endDate && formData.startDate) {
+      const endDate = new Date(formData.endDate);
+      const startDate = new Date(formData.startDate);
+      if (endDate < startDate) {
+        newErrors.endDate = 'End date must be after start date';
+      }
+    }
+
+    if (formData.maturityDate && formData.startDate) {
+      const maturityDate = new Date(formData.maturityDate);
+      const startDate = new Date(formData.startDate);
+      if (maturityDate < startDate) {
+        newErrors.maturityDate = 'Maturity date must be after start date';
+      }
+    }
+
+    if (!formData.maturityType) {
+      newErrors.maturityType = 'Maturity type is required';
+    }
+
+    if (!formData.riskLevel) {
+      newErrors.riskLevel = 'Risk level is required';
+    }
+
+    if (!formData.statusControl) {
+      newErrors.statusControl = 'Status control is required';
+    }
+
+    if (formData.orderPriority && (isNaN(formData.orderPriority) || parseFloat(formData.orderPriority) < 1 || parseFloat(formData.orderPriority) > 10)) {
+      newErrors.orderPriority = 'Order priority must be between 1 and 10';
+    }
+
+    if (formData.gracePeriod && (isNaN(formData.gracePeriod) || parseFloat(formData.gracePeriod) < 0)) {
+      newErrors.gracePeriod = 'Grace period must be a valid positive number';
+    }
+
+    if (!formData.earlyRedemptionOption) {
+      newErrors.earlyRedemptionOption = 'Early redemption option is required';
     }
 
     setErrors(newErrors);
@@ -241,27 +396,62 @@ const AddProducts = () => {
     }
 
     if (editingItem) {
-      // Update existing item
       handleUpdateItem();
       return;
     }
 
-    // Create new item
+    // Generate product code
+    const productCode = `PROD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    
     const newItem = {
       id: portfolioItems.length + 1,
       name: formData.productName,
       issuerName: formData.issuerName,
-      status: 'Active',
-      productType: formData.productType,
-      category: formData.sector,
-      amount: formData.totalOffering,
-      expectedReturn: formData.interestRate + '%',
-      risk: formData.riskRating || 'Medium Risk',
-      maturity: formData.maturityDate,
+      status: formData.statusControl || 'Active',
+      productType: formData.productCategory || formData.productType,
+      category: formData.productCategory || formData.sector,
+      amount: formData.totalOffering || formData.minInvestment,
+      expectedReturn: formData.annualYield ? `${formData.annualYield}%` : (formData.couponInterestRate ? `${formData.couponInterestRate}%` : '0%'),
+      risk: formData.riskLevel || formData.riskRating || 'Medium Risk',
+      maturity: formData.maturityDate || formData.maturity,
       complianceTags: 2,
       description: formData.description || 'New investment product',
       tags: ['SEC-Compliant', 'FINRA-Approved'],
-      badges: ['Active']
+      badges: [formData.statusControl || 'Active'],
+      // All new fields
+      productCategory: formData.productCategory,
+      investmentObjective: formData.investmentObjective,
+      minInvestment: formData.minInvestment,
+      maxInvestment: formData.maxInvestment,
+      couponInterestRate: formData.couponInterestRate,
+      annualYield: formData.annualYield,
+      interestType: formData.interestType,
+      payoutFrequency: formData.payoutFrequency,
+      processingFees: formData.processingFees,
+      withholdingTax: formData.withholdingTax,
+      productActivationTime: formData.productActivationTime,
+      statusControl: formData.statusControl,
+      penaltyOnEarlyRedemption: formData.penaltyOnEarlyRedemption || '0',
+      earlyRedemptionOption: formData.earlyRedemptionOption,
+      maturityDate: formData.maturityDate,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      maturityType: formData.maturityType,
+      autoRollover: formData.autoRollover,
+      gracePeriod: formData.gracePeriod,
+      riskLevel: formData.riskLevel,
+      investmentRating: formData.investmentRating,
+      additionalDocumentationRequired: formData.additionalDocumentationRequired,
+      kycTierRestriction: formData.kycTierRestriction,
+      regulatoryNotes: formData.regulatoryNotes,
+      orderPriority: formData.orderPriority,
+      productCode: productCode,
+      createdBy: 'System Admin',
+      createdDate: new Date().toLocaleDateString(),
+      suspendProduct: formData.suspendProduct,
+      archiveProduct: formData.archiveProduct,
+      referralEligibility: formData.referralEligibility,
+      notifyUser: formData.notifyUser,
     };
 
     setPortfolioItems(prev => [...prev, newItem]);
@@ -273,24 +463,61 @@ const AddProducts = () => {
       message: 'Your investment product has been created'
     });
     
-    // Reset form after successful creation
     setTimeout(() => {
       setFormData({
-        issuerName: '',
+        // Basic Information
         productName: '',
-        productType: '',
-        sector: '',
+        productCategory: '',
+        issuerName: '',
         description: '',
-        interestRate: '',
+        investmentObjective: '',
+        
+        // Financial Details
         minInvestment: '',
         maxInvestment: '',
+        couponInterestRate: '',
+        annualYield: '',
+        
+        // Admin Updates
+        interestType: '',
+        payoutFrequency: '',
+        processingFees: '',
+        withholdingTax: '',
+        productActivationTime: '',
+        statusControl: 'Active',
+        penaltyOnEarlyRedemption: '0',
+        earlyRedemptionOption: 'No',
+        maturityDate: '',
+        startDate: '',
+        endDate: '',
+        maturityType: '',
+        autoRollover: false,
+        gracePeriod: '',
+        riskLevel: '',
+        investmentRating: '',
+        additionalDocumentationRequired: false,
+        kycTierRestriction: '',
+        regulatoryNotes: '',
+        orderPriority: '',
+        productCode: '',
+        createdBy: '',
+        createdDate: '',
+        suspendProduct: false,
+        archiveProduct: false,
+        referralEligibility: false,
+        notifyUser: false,
+        
+        // Legacy fields
+        productType: '',
+        sector: '',
+        interestRate: '',
         totalOffering: '',
         availableAmount: '',
-        maturityDate: '',
         lockInPeriod: '',
         couponFrequency: '',
         riskRating: '',
         creditRating: '',
+        status: 'Active',
         termSheet: [],
       });
       setActiveTab('Portfolio Overview');
@@ -359,42 +586,161 @@ const AddProducts = () => {
   const handleEdit = (item) => {
     setEditingItem(item);
     setFormData({
+      // Basic Information
+      productName: item.name || '',
+      productCategory: item.productCategory || item.productType || '',
       issuerName: item.issuerName || '',
-      productName: item.name,
-      productType: item.productType,
-      sector: item.category,
-      description: item.description,
-      interestRate: item.expectedReturn.replace('%', ''),
-      minInvestment: '',
-      maxInvestment: '',
-      totalOffering: item.amount,
-      availableAmount: item.amount,
-      maturityDate: item.maturity,
-      lockInPeriod: '',
-      couponFrequency: '',
-      riskRating: item.risk,
-      creditRating: '',
+      description: item.description || '',
+      investmentObjective: item.investmentObjective || '',
+      
+      // Financial Details
+      minInvestment: item.minInvestment || '',
+      maxInvestment: item.maxInvestment || '',
+      couponInterestRate: item.couponInterestRate || (item.expectedReturn ? item.expectedReturn.replace('%', '') : ''),
+      annualYield: item.annualYield || '',
+      
+      // Admin Updates
+      interestType: item.interestType || '',
+      payoutFrequency: item.payoutFrequency || item.couponFrequency || '',
+      processingFees: item.processingFees || '',
+      withholdingTax: item.withholdingTax || '',
+      productActivationTime: item.productActivationTime || '',
+      statusControl: item.statusControl || item.status || 'Active',
+      penaltyOnEarlyRedemption: item.penaltyOnEarlyRedemption || '0',
+      earlyRedemptionOption: item.earlyRedemptionOption || 'No',
+      maturityDate: item.maturityDate || item.maturity || '',
+      startDate: item.startDate || '',
+      endDate: item.endDate || '',
+      maturityType: item.maturityType || '',
+      autoRollover: item.autoRollover || false,
+      gracePeriod: item.gracePeriod || '',
+      riskLevel: item.riskLevel || item.risk || '',
+      investmentRating: item.investmentRating || '',
+      additionalDocumentationRequired: item.additionalDocumentationRequired || false,
+      kycTierRestriction: item.kycTierRestriction || '',
+      regulatoryNotes: item.regulatoryNotes || '',
+      orderPriority: item.orderPriority || '',
+      productCode: item.productCode || '',
+      createdBy: item.createdBy || '',
+      createdDate: item.createdDate || '',
+      suspendProduct: item.suspendProduct || false,
+      archiveProduct: item.archiveProduct || false,
+      referralEligibility: item.referralEligibility || false,
+      notifyUser: item.notifyUser || false,
+      
+      // Legacy fields (for backward compatibility)
+      productType: item.productType || '',
+      sector: item.category || '',
+      interestRate: item.expectedReturn ? item.expectedReturn.replace('%', '') : '',
+      totalOffering: item.amount || '',
+      availableAmount: item.amount || '',
+      lockInPeriod: item.lockInPeriod || '',
+      couponFrequency: item.couponFrequency || '',
+      riskRating: item.risk || '',
+      creditRating: item.creditRating || '',
       status: item.status || 'Active',
-      termSheet: null,
+      termSheet: item.termSheet || null,
     });
+    // Don't switch tab - keep Portfolio Overview active
   };
 
   const handleUpdateItem = () => {
-    // No validation for edit mode - user can update what they want
-    // Only update fields that have values (are not empty)
+    // Validate only business rules (like minimum investment >= 1000)
+    const newErrors = {};
+    
+    // Check minimum investment if provided
+    if (formData.minInvestment && formData.minInvestment.trim() !== '') {
+      const minInv = parseFloat(formData.minInvestment);
+      if (isNaN(minInv)) {
+        newErrors.minInvestment = 'Minimum investment must be a valid number';
+      } else if (minInv < 1000) {
+        newErrors.minInvestment = 'Minimum investment must be at least ₦1,000';
+      }
+    }
+    
+    // Check coupon/interest rate if provided
+    if (formData.couponInterestRate && formData.couponInterestRate.trim() !== '') {
+      const rate = parseFloat(formData.couponInterestRate);
+      if (isNaN(rate)) {
+        newErrors.couponInterestRate = 'Coupon/Interest rate must be a valid number';
+      } else if (rate < 1 || rate > 100) {
+        newErrors.couponInterestRate = 'Coupon/Interest rate must be between 1% and 100%';
+      }
+    }
+    
+    // Check annual yield if provided
+    if (formData.annualYield && formData.annualYield.trim() !== '') {
+      const yieldVal = parseFloat(formData.annualYield);
+      if (isNaN(yieldVal)) {
+        newErrors.annualYield = 'Annual yield must be a valid number';
+      } else if (yieldVal < 1 || yieldVal > 100) {
+        newErrors.annualYield = 'Annual yield must be between 1% and 100%';
+      }
+    }
+    
+    // If there are validation errors, show them and don't update
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(prev => ({ ...prev, ...newErrors }));
+      setToast({
+        type: 'error',
+        title: 'Validation Error',
+        message: 'Please fix the validation errors before updating'
+      });
+      return;
+    }
+
     const updatedItem = {
       ...editingItem,
+      // Basic fields
       name: formData.productName?.trim() ? formData.productName : editingItem.name,
       issuerName: formData.issuerName?.trim() ? formData.issuerName : editingItem.issuerName,
-      productType: formData.productType?.trim() ? formData.productType : editingItem.productType,
-      category: formData.sector?.trim() ? formData.sector : editingItem.category,
-      amount: formData.totalOffering?.trim() ? formData.totalOffering : editingItem.amount,
-      expectedReturn: formData.interestRate?.trim() ? formData.interestRate + '%' : editingItem.expectedReturn,
-      maturity: formData.maturityDate?.trim() ? formData.maturityDate : editingItem.maturity,
-      risk: formData.riskRating?.trim() ? formData.riskRating : editingItem.risk,
+      productType: formData.productCategory?.trim() || formData.productType?.trim() ? (formData.productCategory || formData.productType) : editingItem.productType,
+      category: formData.productCategory?.trim() || formData.sector?.trim() ? (formData.productCategory || formData.sector) : editingItem.category,
       description: formData.description?.trim() ? formData.description : editingItem.description,
-      status: formData.status ? formData.status : editingItem.status,
-      badges: formData.status ? [formData.status] : editingItem.badges,
+      
+      // Financial fields
+      amount: formData.totalOffering?.trim() || formData.minInvestment ? (formData.totalOffering || formData.minInvestment) : editingItem.amount,
+      expectedReturn: formData.annualYield ? `${formData.annualYield}%` : (formData.couponInterestRate ? `${formData.couponInterestRate}%` : (formData.interestRate ? `${formData.interestRate}%` : editingItem.expectedReturn)),
+      maturity: formData.maturityDate?.trim() ? formData.maturityDate : editingItem.maturity,
+      risk: formData.riskLevel?.trim() || formData.riskRating?.trim() ? (formData.riskLevel || formData.riskRating) : editingItem.risk,
+      
+      // Status
+      status: formData.statusControl || formData.status || editingItem.status,
+      badges: formData.statusControl ? [formData.statusControl] : (formData.status ? [formData.status] : editingItem.badges),
+      
+      // All new fields
+      productCategory: formData.productCategory || editingItem.productCategory || '',
+      investmentObjective: formData.investmentObjective || editingItem.investmentObjective,
+      minInvestment: formData.minInvestment || editingItem.minInvestment,
+      maxInvestment: formData.maxInvestment || editingItem.maxInvestment,
+      couponInterestRate: formData.couponInterestRate || editingItem.couponInterestRate,
+      annualYield: formData.annualYield || editingItem.annualYield,
+      interestType: formData.interestType || editingItem.interestType,
+      payoutFrequency: formData.payoutFrequency || editingItem.payoutFrequency,
+      processingFees: formData.processingFees || editingItem.processingFees,
+      withholdingTax: formData.withholdingTax || editingItem.withholdingTax,
+      productActivationTime: formData.productActivationTime || editingItem.productActivationTime,
+      statusControl: formData.statusControl || editingItem.statusControl,
+      penaltyOnEarlyRedemption: formData.penaltyOnEarlyRedemption || editingItem.penaltyOnEarlyRedemption,
+      earlyRedemptionOption: formData.earlyRedemptionOption || editingItem.earlyRedemptionOption,
+      startDate: formData.startDate || editingItem.startDate,
+      endDate: formData.endDate || editingItem.endDate,
+      maturityType: formData.maturityType || editingItem.maturityType,
+      autoRollover: formData.autoRollover !== undefined ? formData.autoRollover : editingItem.autoRollover,
+      gracePeriod: formData.gracePeriod || editingItem.gracePeriod,
+      riskLevel: formData.riskLevel || editingItem.riskLevel,
+      investmentRating: formData.investmentRating || editingItem.investmentRating,
+      additionalDocumentationRequired: formData.additionalDocumentationRequired !== undefined ? formData.additionalDocumentationRequired : editingItem.additionalDocumentationRequired,
+      kycTierRestriction: formData.kycTierRestriction || editingItem.kycTierRestriction,
+      regulatoryNotes: formData.regulatoryNotes || editingItem.regulatoryNotes,
+      orderPriority: formData.orderPriority || editingItem.orderPriority,
+      productCode: formData.productCode || editingItem.productCode,
+      createdBy: formData.createdBy || editingItem.createdBy,
+      createdDate: formData.createdDate || editingItem.createdDate,
+      suspendProduct: formData.suspendProduct !== undefined ? formData.suspendProduct : editingItem.suspendProduct,
+      archiveProduct: formData.archiveProduct !== undefined ? formData.archiveProduct : editingItem.archiveProduct,
+      referralEligibility: formData.referralEligibility !== undefined ? formData.referralEligibility : editingItem.referralEligibility,
+      notifyUser: formData.notifyUser !== undefined ? formData.notifyUser : editingItem.notifyUser,
     };
 
     console.log('Updating item:', updatedItem);
@@ -409,7 +755,6 @@ const AddProducts = () => {
       message: 'Investment product has been updated'
     });
 
-    // Close modal and clear form
     setEditingItem(null);
     setFormData({
       issuerName: '',
@@ -467,135 +812,9 @@ const AddProducts = () => {
     });
   };
 
-  const handleExport = () => {
-    const doc = new jsPDF();
-    
-    // Header Background
-    doc.setFillColor(240, 248, 255); // Light blue
-    doc.rect(0, 0, 210, 30, 'F');
-    
-    // Title
-    doc.setFontSize(22);
-    doc.setTextColor(41, 92, 191); // Primary blue
-    doc.setFont(undefined, 'bold');
-    doc.text('Investment Portfolio Report', 105, 18, { align: 'center' });
-    
-    // Stats Summary Box
-    doc.setFillColor(247, 250, 252); // Very light gray
-    doc.roundedRect(15, 35, 180, 35, 3, 3, 'F');
-    
-    doc.setFontSize(11);
-    doc.setTextColor(60, 60, 60);
-    doc.setFont(undefined, 'normal');
-    
-    const totalValue = portfolioItems.reduce((sum, item) => sum + parseFloat(item.amount.replace(/,/g, '')), 0).toLocaleString();
-    const activeCount = portfolioItems.filter(item => item.status === 'Active').length;
-    const avgReturn = portfolioItems.length > 0 
-      ? (portfolioItems.reduce((sum, item) => sum + parseFloat(item.expectedReturn), 0) / portfolioItems.length).toFixed(1) + '%'
-      : '0%';
-    
-    doc.text(`Total Value: ₦${totalValue}`, 25, 45);
-    doc.text(`Active Investments: ${activeCount}`, 25, 53);
-    doc.text(`Avg. Expected Return: ${avgReturn}`, 25, 61);
-    doc.text(`Total Products: ${portfolioItems.length}`, 120, 45);
-    
-    // Section Header
-    doc.setFillColor(245, 247, 250);
-    doc.rect(15, 78, 180, 10, 'F');
-    doc.setFontSize(13);
-    doc.setTextColor(41, 92, 191);
-    doc.setFont(undefined, 'bold');
-    doc.text('Investment Details', 20, 85);
-    
-    let yPos = 100;
-    doc.setFontSize(10);
-    
-    portfolioItems.forEach((item, index) => {
-      if (yPos > 265) {
-        doc.addPage();
-        yPos = 20;
-      }
-      
-      // Card Background
-      doc.setFillColor(252, 252, 253);
-      doc.roundedRect(15, yPos - 5, 180, 42, 2, 2, 'F');
-      
-      // Border
-      doc.setDrawColor(220, 220, 225);
-      doc.setLineWidth(0.3);
-      doc.roundedRect(15, yPos - 5, 180, 42, 2, 2, 'S');
-      
-      // Product Name
-      doc.setFont(undefined, 'bold');
-      doc.setTextColor(30, 30, 30);
-      doc.text(`${index + 1}. ${item.name}`, 20, yPos);
-      
-      // Status Badge
-      if (item.status === 'Active') {
-        doc.setFillColor(220, 252, 231); // Light green
-        doc.setTextColor(22, 101, 52);
-      } else {
-        doc.setFillColor(254, 226, 226); // Light red
-        doc.setTextColor(153, 27, 27);
-      }
-      doc.roundedRect(160, yPos - 4, 30, 6, 1, 1, 'F');
-      doc.setFontSize(8);
-      doc.text(item.status, 175, yPos, { align: 'center' });
-      
-      doc.setFontSize(9);
-      doc.setFont(undefined, 'normal');
-      doc.setTextColor(80, 80, 80);
-      
-      yPos += 7;
-      doc.text(`Type: ${item.productType}`, 22, yPos);
-      doc.text(`Category: ${item.category}`, 100, yPos);
-      
-      yPos += 5;
-      doc.setTextColor(22, 163, 74); // Green for amount
-      doc.text(`Amount: ₦${item.amount}`, 22, yPos);
-      doc.setTextColor(80, 80, 80);
-      doc.text(`Return: ${item.expectedReturn}`, 100, yPos);
-      
-      yPos += 5;
-      doc.text(`Risk: ${item.risk}`, 22, yPos);
-      doc.text(`Maturity: ${item.maturity}`, 100, yPos);
-      
-      yPos += 5;
-      doc.setFontSize(8);
-      doc.setTextColor(120, 120, 120);
-      const descText = item.description.length > 80 ? item.description.substring(0, 80) + '...' : item.description;
-      doc.text(descText, 22, yPos);
-      
-      doc.setFontSize(10);
-      yPos += 15;
-    });
-    
-    // Footer on each page
-    const pageCount = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setDrawColor(220, 220, 225);
-      doc.setLineWidth(0.5);
-      doc.line(15, 285, 195, 285);
-      doc.setFontSize(8);
-      doc.setTextColor(120, 120, 120);
-      doc.text(`Page ${i} of ${pageCount}`, 20, 290);
-      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 290, { align: 'center' });
-      doc.text('Podermia Admin', 190, 290, { align: 'right' });
-    }
-    
-    doc.save('Portfolio_Report.pdf');
-    
-    setToast({
-      type: 'success',
-      title: 'Exported Successfully',
-      message: 'Portfolio report has been downloaded as PDF'
-    });
-  };
 
   return (
     <div className={styles.addProductsContainer}>
-      {/* Tab Navigation */}
       <div className={styles.formTabs}>
         <button
           className={`${styles.formTab} ${activeTab === 'Portfolio Overview' ? styles.formTabActive : ''}`}
@@ -611,407 +830,42 @@ const AddProducts = () => {
         </button>
       </div>
 
-      {/* Portfolio Overview Tab */}
       {activeTab === 'Portfolio Overview' && (
-        <div className={styles.portfolioOverview}>
-          <div className={styles.statsGrid}>
-            <div className={styles.statCard}>
-              <span className={styles.statLabel}>Total Value</span>
-              <span className={styles.statValue}>
-                {portfolioItems.reduce((sum, item) => sum + parseFloat(item.amount.replace(/,/g, '')), 0).toLocaleString()}
-              </span>
-            </div>
-            <div className={styles.statCard}>
-              <span className={styles.statLabel}>Active Investments</span>
-              <span className={styles.statValue}>{portfolioItems.filter(item => item.status === 'Active').length}</span>
-            </div>
-            <div className={styles.statCard}>
-              <span className={styles.statLabel}>Avg. Expected Return</span>
-              <span className={styles.statValue}>
-                {portfolioItems.length > 0 
-                  ? (portfolioItems.reduce((sum, item) => sum + parseFloat(item.expectedReturn), 0) / portfolioItems.length).toFixed(1) + '%'
-                  : '0%'
-                }
-              </span>
-            </div>
-            <div className={styles.statCard}>
-              <span className={styles.statLabel}>Portfolio Health</span>
-              <span className={styles.statValue}>
-                {portfolioItems.length > 0
-                  ? Math.round((portfolioItems.filter(item => item.status === 'Active').length / portfolioItems.length) * 100) + '%'
-                  : '0%'
-                }
-              </span>
-              <div className={styles.healthBar}>
-                <div 
-                  className={styles.healthProgress} 
-                  style={{ 
-                    width: portfolioItems.length > 0 
-                      ? `${(portfolioItems.filter(item => item.status === 'Active').length / portfolioItems.length) * 100}%`
-                      : '0%'
-                  }}
-                ></div>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.portfolioSection}>
-            <div className={styles.portfolioHeader}>
-              <h3>Investment Portfolio</h3>
-              <button className={styles.exportBtn} onClick={handleExport}>Export Data</button>
-            </div>
-
-            {/* Dynamic Investment Cards */}
-            {portfolioItems.length === 0 ? (
-              <div className={styles.emptyState}>
-                <p>No investment products yet. Create your first product using the Investment Form.</p>
-              </div>
-            ) : (
-              portfolioItems.map((item) => (
-                <div key={item.id} className={styles.investmentCard}>
-                  <div className={styles.investmentHeader}>
-                    <div>
-                      <h4>{item.name}</h4>
-                      {item.issuerName && (
-                        <p className={styles.issuerName}>Issuer: {item.issuerName}</p>
-                      )}
-                      {item.badges.map((badge, idx) => (
-                        <span 
-                          key={idx}
-                          className={
-                            badge === 'Active' ? styles.statusBadgeActive :
-                            badge === 'Error' ? styles.statusBadgeError :
-                            styles.statusBadgeAttention
-                          }
-                        >
-                          {badge}
-                        </span>
-                      ))}
-                    </div>
-                    <div className={styles.cardActions}>
-                      <button className={styles.editBtn} onClick={() => handleEdit(item)}>Edit</button>
-                      <button className={styles.deleteBtn} onClick={() => handleDelete(item)}>Delete</button>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.investmentDetails}>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>Product Type</span>
-                      <span className={styles.detailValue}>{item.productType}</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>Category</span>
-                      <span className={styles.detailValue}>{item.category}</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>Amount</span>
-                      <span className={styles.detailValue}>{item.amount}</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>Expected Return</span>
-                      <span className={styles.detailValue}>{item.expectedReturn}</span>
-                    </div>
-                  </div>
-
-                  <div className={styles.investmentMeta}>
-                    <span className={item.risk.includes('Low') ? styles.riskBadgeLow : styles.riskBadge}>
-                      {item.risk}
-                    </span>
-                    <span className={styles.metaText}>Maturity: {item.maturity}</span>
-                    <span className={styles.metaText}>{item.complianceTags} compliance tags</span>
-                  </div>
-
-                  <p className={styles.investmentDesc}>{item.description}</p>
-                  
-                  <div className={styles.complianceTags}>
-                    {item.tags.map((tag, idx) => (
-                      <span key={idx} className={styles.complianceTag}>{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        <PortfolioOverview
+          portfolioItems={portfolioItems}
+          setPortfolioItems={setPortfolioItems}
+          editingItem={editingItem}
+          setEditingItem={setEditingItem}
+          formData={formData}
+          setFormData={setFormData}
+          errors={errors}
+          setErrors={setErrors}
+          setConfirmDialog={setConfirmDialog}
+          setToast={setToast}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+          handleUpdateItem={handleUpdateItem}
+          handleCancelEdit={handleCancelEdit}
+        />
       )}
 
       {activeTab === 'Investment Form' && (
-        <div className={styles.investmentForm}>
-          <h2 className={styles.formTitle}>
-            {editingItem ? '✏️ Edit Investment Product' : '+ Add New Investment Product'}
-          </h2>
-
-          <div className={styles.formGrid}>
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Basic Information</h3>
-              
-              <div className={styles.formGroup}>
-                <label>Issuer Name</label>
-                <input
-                  type="text"
-                  name="issuerName"
-                  placeholder="Enter Issuer Name"
-                  value={formData.issuerName}
-                  onChange={handleInputChange}
-                  className={errors.issuerName ? styles.inputError : ''}
-                />
-                {errors.issuerName && <span className={styles.errorText}>{errors.issuerName}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Product Name</label>
-                <input
-                  type="text"
-                  name="productName"
-                  placeholder="Enter Product Name"
-                  value={formData.productName}
-                  onChange={handleInputChange}
-                  className={errors.productName ? styles.inputError : ''}
-                />
-                {errors.productName && <span className={styles.errorText}>{errors.productName}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Product Type</label>
-                <input
-                  type="text"
-                  name="productType"
-                  placeholder="Enter Product Type"
-                  value={formData.productType}
-                  onChange={handleInputChange}
-                  className={errors.productType ? styles.inputError : ''}
-                />
-                {errors.productType && <span className={styles.errorText}>{errors.productType}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Sector</label>
-                <input
-                  type="text"
-                  name="sector"
-                  placeholder="Enter Sector"
-                  value={formData.sector}
-                  onChange={handleInputChange}
-                  className={errors.sector ? styles.inputError : ''}
-                />
-                {errors.sector && <span className={styles.errorText}>{errors.sector}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Description</label>
-                <textarea
-                  name="description"
-                  placeholder="Description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className={errors.description ? styles.inputError : ''}
-                  rows="4"
-                />
-                {errors.description && <span className={styles.errorText}>{errors.description}</span>}
-              </div>
-            </div>
-
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Financial Details</h3>
-              
-              <div className={styles.formGroup}>
-                <label>Interest Rate (%)</label>
-                <input
-                  type="text"
-                  name="interestRate"
-                  placeholder="e.g 12.5"
-                  value={formData.interestRate}
-                  onChange={handleInputChange}
-                  className={errors.interestRate ? styles.inputError : ''}
-                />
-                {errors.interestRate && <span className={styles.errorText}>{errors.interestRate}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Minimum Investment Amount</label>
-                <input
-                  type="text"
-                  name="minInvestment"
-                  placeholder="Enter Minimum amount"
-                  value={formData.minInvestment}
-                  onChange={handleInputChange}
-                  className={errors.minInvestment ? styles.inputError : ''}
-                />
-                {errors.minInvestment && <span className={styles.errorText}>{errors.minInvestment}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Maximum Investment Amount</label>
-                <input
-                  type="text"
-                  name="maxInvestment"
-                  placeholder="Enter Maximum Amount"
-                  value={formData.maxInvestment}
-                  onChange={handleInputChange}
-                  className={errors.maxInvestment ? styles.inputError : ''}
-                />
-                {errors.maxInvestment && <span className={styles.errorText}>{errors.maxInvestment}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Total Offering Amount</label>
-                <input
-                  type="text"
-                  name="totalOffering"
-                  placeholder="Enter Total Offering Amount"
-                  value={formData.totalOffering}
-                  onChange={handleInputChange}
-                  className={errors.totalOffering ? styles.inputError : ''}
-                />
-                {errors.totalOffering && <span className={styles.errorText}>{errors.totalOffering}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Available Amount</label>
-                <input
-                  type="text"
-                  name="availableAmount"
-                  placeholder="Enter Available Amount"
-                  value={formData.availableAmount}
-                  onChange={handleInputChange}
-                  className={errors.availableAmount ? styles.inputError : ''}
-                />
-                {errors.availableAmount && <span className={styles.errorText}>{errors.availableAmount}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Maturity Date</label>
-                <div className={styles.inputWithIcon}>
-                  <input
-                    type="date"
-                    name="maturityDate"
-                    value={formData.maturityDate}
-                    onChange={handleInputChange}
-                    className={errors.maturityDate ? styles.inputError : ''}
-                    style={{cursor:'pointer'}}
-                  />
-                  {/* <Calendar size={18} className={styles.inputIcon} /> */}
-                </div>
-                {errors.maturityDate && <span className={styles.errorText}>{errors.maturityDate}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Lock-In Period</label>
-                <input
-                  type="text"
-                  name="lockInPeriod"
-                  placeholder="e.g 90-1 year"
-                  value={formData.lockInPeriod}
-                  onChange={handleInputChange}
-                  className={errors.lockInPeriod ? styles.inputError : ''}
-                />
-                {errors.lockInPeriod && <span className={styles.errorText}>{errors.lockInPeriod}</span>}
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Risk Rating</label>
-                <input
-                  type="text"
-                  name="riskRating"
-                  placeholder="Enter risk rating"
-                  value={formData.riskRating}
-                  onChange={handleInputChange}
-                  className={errors.riskRating ? styles.inputError : ''}
-                />
-                {errors.riskRating && <span className={styles.errorText}>{errors.riskRating}</span>}
-              </div>
-            </div>
-
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Terms & Conditions</h3>
-              
-              <div className={styles.formGroup}>
-                <label>Coupon Frequency</label>
-                <input
-                  type="text"
-                  name="couponFrequency"
-                  placeholder="e.g Monthly"
-                  value={formData.couponFrequency}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Credit Rating</label>
-                <input
-                  type="text"
-                  name="creditRating"
-                  placeholder="Enter credit rating"
-                  value={formData.creditRating}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Document Upload</h3>
-              
-              <div className={styles.formGroup}>
-                <label>Term Sheet Upload</label>
-                <div className={styles.uploadArea} onClick={() => document.getElementById('termSheet').click()}>
-                  <input
-                    type="file"
-                    id="termSheet"
-                    name="termSheet"
-                    onChange={handleFileUpload}
-                    accept=".pdf,.doc,.docx"
-                    multiple
-                    style={{ display: 'none' }}
-                  />
-                  <Upload size={40} className={styles.uploadIcon} />
-                  <label className={styles.uploadLabel}>
-                    Click to Upload drag and drop
-                  </label>
-                  <span className={styles.uploadHint}>PDF, DOCS, (MAX 108M)</span>
-                </div>
-                
-                {formData.termSheet && formData.termSheet.length > 0 && (
-                  <div className={styles.uploadedFiles}>
-                    {formData.termSheet.map((file, index) => (
-                      <div key={index} className={styles.fileItem}>
-                        <span className={styles.fileName}>{file.name}</span>
-                        <button 
-                          type="button"
-                          className={styles.removeFileBtn} 
-                          onClick={() => removeFile(index)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <div className={styles.documentsChecklist}>
-                  <h4>Required Documents Checklist</h4>
-                  <ul>
-                    <li>Team Sheet</li>
-                    <li>Issuer Financial Statement</li>
-                    <li>Credit Rating Report</li>
-                    <li>Regularly Approval</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.formActions}>
-            <button className={styles.draftBtn} onClick={handleSaveDraft}>
-              Save Draft
-            </button>
-            <button className={styles.createBtn} onClick={handleCreateProduct}>
-              {editingItem ? 'Update Product' : 'Create Product'}
-            </button>
-          </div>
-        </div>
+        <InvestmentForm
+          editingItem={editingItem}
+          formData={formData}
+          errors={errors}
+          handleInputChange={handleInputChange}
+          handleFileUpload={handleFileUpload}
+          removeFile={removeFile}
+          handleSaveDraft={handleSaveDraft}
+          handleCreateProduct={handleCreateProduct}
+          handleCancel={handleCancel}
+          handleCancelEdit={handleCancelEdit}
+          handleUpdateItem={handleUpdateItem}
+        />
       )}
 
-      {/* Edit Modal */}
+      {/* EditModal - Always available regardless of active tab */}
       <EditModal
         isOpen={!!editingItem}
         item={editingItem}
@@ -1022,7 +876,6 @@ const AddProducts = () => {
         onCancel={handleCancelEdit}
       />
 
-      {/* Toast Notification */}
       {toast && (
         <Toast
           type={toast.type}
@@ -1032,7 +885,6 @@ const AddProducts = () => {
         />
       )}
 
-      {/* Confirmation Dialog */}
       {confirmDialog && (
         <ConfirmDialog
           isOpen={!!confirmDialog}

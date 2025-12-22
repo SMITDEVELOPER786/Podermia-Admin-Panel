@@ -679,6 +679,18 @@
   margin-bottom: 24px;
 }
 
+
+.formSection {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-self: stretch;
+}
+
 .formSection {
   background: white;
   border: 1px solid #e5e7eb;
@@ -709,7 +721,26 @@
   margin-bottom: 8px;
 }
 
-.formGroup input,
+.required {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+.helperText {
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.disabledInput {
+  background: #f3f4f6 !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+}
+
+.formGroup input:not(.slider),
 .formGroup textarea {
   width: 100%;
   padding: 10px 14px;
@@ -721,7 +752,7 @@
   transition: all 0.2s ease;
 }
 
-.formGroup input:focus,
+.formGroup input:not(.slider):focus,
 .formGroup textarea:focus {
   outline: none;
   background: white;
@@ -1271,6 +1302,164 @@
   font-weight: 500;
 }
 
+/* Form Dropdown Styles */
+.dropdownWrapper {
+  position: relative;
+  width: 100%;
+  padding: 10px 14px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.dropdownWrapper span {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  min-width: 0;
+}
+
+.dropdownWrapper:hover {
+  background: white;
+  border-color: #9ca3af;
+}
+
+.dropdownList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  min-width: 100%;
+}
+
+.dropdownList .dropdownItem {
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dropdownList .dropdownItem:hover {
+  background: #f9fafb;
+}
+
+.chevronRotate {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+/* Toggle Switch Styles */
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  margin-top: 8px;
+}
+
+.toggleSwitch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.toggleSwitch input:checked + .toggleSlider {
+  background-color: #2563eb;
+}
+
+.toggleSwitch input:checked + .toggleSlider:before {
+  transform: translateX(26px);
+}
+
+.toggleSwitch input:disabled + .toggleSlider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Slider Styles */
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 2px;
+  background: #e5e7eb;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2563eb;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2563eb;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e7eb;
+}
+
 .monthSelector {
   display: flex;
   align-items: center;
@@ -1418,6 +1607,112 @@
   font-size: 10px;
   font-weight: 500;
   color: #374151;
+}
+
+/* Payouts List View */
+.payoutsListView {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.listViewHeader {
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.listViewHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.payoutsListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.payoutListItem {
+  padding: 16px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.payoutListItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.payoutListInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.payoutListName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.payoutListDate {
+  font-size: 14px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.payoutRelativeTime {
+  font-size: 12px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.payoutListDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.payoutListStatus {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #111827;
+}
+
+.payoutListInvestors {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.payoutListAmount {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.noPayoutsMessage {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+  font-size: 16px;
 }
 
 /* Events Modal */
