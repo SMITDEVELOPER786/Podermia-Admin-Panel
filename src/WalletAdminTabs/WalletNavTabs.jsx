@@ -4,6 +4,8 @@ function WalletNavTabs({ activeTab, onTabChange }) {
     'Transaction ledger',
     'Wallet Adjustment',
     'Reconciliation',
+    'Wallet Management',
+    'Wallet Settings',
   ]
 
   return (

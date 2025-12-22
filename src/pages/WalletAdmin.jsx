@@ -5,7 +5,8 @@ import Overview from '../WalletAdminTabs/Overview'
 import TransactionLedger from '../WalletAdminTabs/TransactionLedger'
 import WalletAdjustment from '../WalletAdminTabs/WalletAdjustment'
 import Reconciliation from '../WalletAdminTabs/Reconciliation'
-
+import WalletManagement from '../WalletAdminTabs/WalletManagement'
+import WalletSettings from '../WalletAdminTabs/WalletSettings'
 function Div({ className, ...props }) {
   const mappedClass = className
     ?.split(" ")
@@ -26,6 +27,10 @@ function WalletAdmin() {
         return <WalletAdjustment />
       case 'Reconciliation':
         return <Reconciliation />
+      case 'Wallet Management':
+        return <WalletManagement />
+      case 'Wallet Settings':
+        return <WalletSettings />
       default:
         return <Overview />
     }

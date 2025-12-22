@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react'
 import styles from '../css/Investment.module.css'
 import FilterSearch from '../components/FilterSearch/FilterSearch'
 import DataTable from '../components/DataTable/DataTables'
+import CustomModal from '../components/CustomModal/CustomModal'
+import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialog'
 import { Eye } from 'lucide-react'
 
 const UserInvestments = () => {
@@ -10,8 +12,11 @@ const UserInvestments = () => {
     status: '',
     product: ''
   })
+  const [showViewModal, setShowViewModal] = useState(false)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [selectedInvestment, setSelectedInvestment] = useState(null)
+  const [pendingAction, setPendingAction] = useState(null)
 
-  // Mock KPI data
   const kpiData = [
     { label: 'Total Investment', value: '5' },
     { label: 'Total Value', value: '3' },
@@ -19,9 +24,9 @@ const UserInvestments = () => {
     { label: 'Total Earning', value: '130,6000.000' }
   ]
 
-  // Mock table data
-  const mockData = [
+  const [mockData, setMockData] = useState([
     {
+      id: 1,
       user: 'John Doe',
       email: 'jhon.Doi @gmail.com',
       product: 'T-Bill 182 days',
@@ -33,6 +38,7 @@ const UserInvestments = () => {
       action: 'Early Exit'
     },
     {
+      id: 2,
       user: 'Sarah Jhonson',
       email: 'Sarah.Jhonson @gmail.com',
       product: 'Corporate Bond',
@@ -44,6 +50,7 @@ const UserInvestments = () => {
       action: 'Early Exit'
     },
     {
+      id: 3,
       user: 'Michael Brown',
       email: 'Mike.brown @gmail.com',
       product: 'Commercial Paper',
@@ -55,6 +62,7 @@ const UserInvestments = () => {
       action: ''
     },
     {
+      id: 4,
       user: 'Emily Davis',
       email: 'Emilydavis @gmail.com',
       product: 'T-Bills91 days',
@@ -66,6 +74,7 @@ const UserInvestments = () => {
       action: 'Rejected'
     },
     {
+      id: 5,
       user: 'Robert Welson',
       email: 'Robertvelson @gmail.com',
       product: 'Infrastructuor bond',
@@ -76,9 +85,8 @@ const UserInvestments = () => {
       currentValue: '12,00.000',
       action: 'Approved'
     }
-  ]
+  ])
 
-  // Filter configuration
   const filterConfig = {
     showSearch: true,
     searchPlaceholder: 'Search User or product',
@@ -96,7 +104,6 @@ const UserInvestments = () => {
     ]
   }
 
-  // Table columns with custom render for Action
   const columns = [
     { header: 'User', key: 'user' },
     { header: 'Product', key: 'product' },
@@ -119,27 +126,52 @@ const UserInvestments = () => {
       key: 'action',
       render: (row) => (
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button className={styles.eyeBtn} title="View Details">
+          <button 
+            className={styles.eyeBtn} 
+            title="View Details"
+            onClick={() => handleViewDetails(row)}
+          >
             <Eye size={18} />
           </button>
-          {row.action && row.action !== '' && (
+          
+          {row.status === 'Pending' && (
+            <>
+              <button 
+                className={styles.approveBtn}
+                onClick={() => handleActionClick(row, 'Accept')}
+              >
+                Accept
+              </button>
+              <button 
+                className={styles.rejectedBtn}
+                onClick={() => handleActionClick(row, 'Reject')}
+              >
+                Reject
+              </button>
+            </>
+          )}
+          {row.status === 'Active' && (
             <button 
-              className={
-                row.action === 'Early Exit' ? styles.earlyExitBtn :
-                row.action === 'Approved' ? styles.approvedBtn :
-                row.action === 'Rejected' ? styles.rejectedBtn :
-                styles.approveBtn
-              }
+              className={styles.approveBtn}
+              onClick={() => handleActionClick(row, 'Mark as Pending')}
             >
-              {row.action}
+              Mark as Pending
             </button>
           )}
+
+          {/* {row.action && row.action === 'Early Exit' && (
+            <button 
+              className={styles.earlyExitBtn}
+              onClick={() => handleActionClick(row, 'Early Exit')}
+            >
+              Early Exit
+            </button>
+          )} */}
         </div>
       )
     }
   ]
 
-  // Filtered data
   const filteredData = useMemo(() => {
     return mockData.filter(item => {
       const searchMatch = !filters.search || 
@@ -157,15 +189,104 @@ const UserInvestments = () => {
       
       return searchMatch && statusMatch && productMatch
     })
-  }, [filters])
+  }, [filters, mockData])
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters)
   }
 
+  const handleViewDetails = (investment) => {
+    setSelectedInvestment(investment)
+    setShowViewModal(true)
+  }
+
+  const handleActionClick = (investment, action) => {
+    setSelectedInvestment(investment)
+    setPendingAction(action)
+    
+    let confirmMessage = ''
+    let confirmTitle = ''
+    
+    switch(action) {
+      case 'Accept':
+      case 'Approved':
+        confirmTitle = 'Approve Investment'
+        confirmMessage = `Are you sure you want to approve this investment for ${investment.user}?`
+        break
+      case 'Reject':
+      case 'Rejected':
+        confirmTitle = 'Reject Investment'
+        confirmMessage = `Are you sure you want to reject this investment for ${investment.user}?`
+        break
+      case 'Mark as Pending':
+        confirmTitle = 'Mark as Pending'
+        confirmMessage = `Are you sure you want to mark this investment as pending for ${investment.user}?`
+        break
+      // case 'Early Exit':
+      //   confirmTitle = 'Process Early Exit'
+      //   confirmMessage = `Are you sure you want to process early exit for ${investment.user}'s investment?`
+      //   break
+      default:
+        confirmTitle = 'Confirm Action'
+        confirmMessage = `Are you sure you want to perform this action?`
+    }
+    
+    setShowConfirmDialog({
+      isOpen: true,
+      title: confirmTitle,
+      message: confirmMessage,
+      type: action === 'Reject' || action === 'Rejected' ? 'warning' : 'question'
+    })
+  }
+
+  const handleConfirmAction = () => {
+    if (!selectedInvestment || !pendingAction) return
+
+    setMockData(prevData => 
+      prevData.map(item => {
+        if (item.id === selectedInvestment.id) {
+          let updatedItem = { ...item }
+          
+          switch(pendingAction) {
+            case 'Accept':
+            case 'Approved':
+              updatedItem.status = 'Active'
+              updatedItem.action = 'Approved'
+              break
+            case 'Reject':
+            case 'Rejected':
+              updatedItem.status = 'Cancelled'
+              updatedItem.action = 'Rejected'
+              break
+            case 'Mark as Pending':
+              updatedItem.status = 'Pending'
+              updatedItem.action = ''
+              break
+            // case 'Early Exit':
+            //   updatedItem.status = 'Matured'
+            //   updatedItem.action = ''
+            //   break
+          }
+          
+          return updatedItem
+        }
+        return item
+      })
+    )
+
+    setShowConfirmDialog({ isOpen: false })
+    setSelectedInvestment(null)
+    setPendingAction(null)
+  }
+
+  const handleCancelAction = () => {
+    setShowConfirmDialog({ isOpen: false })
+    setSelectedInvestment(null)
+    setPendingAction(null)
+  }
+
   return (
     <div className={styles.userInvestmentContainer}>
-      {/* KPI Cards */}
       <div className={styles.kpiGrid}>
         {kpiData.map((kpi, index) => (
           <div key={index} className={styles.kpiCard}>
@@ -175,13 +296,11 @@ const UserInvestments = () => {
         ))}
       </div>
 
-      {/* Filter & Search */}
       <FilterSearch 
         config={filterConfig} 
         onFilterChange={handleFilterChange}
       />
 
-      {/* Activity Log Entries */}
       <div className={styles.tableSection}>
         <h3 className={styles.sectionTitle}>Activity Log Entries</h3>
         <DataTable 
@@ -190,6 +309,78 @@ const UserInvestments = () => {
           scrollHeight={500}
         />
       </div>
+
+      <CustomModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedInvestment(null)
+        }}
+        title="Investment Details"
+        width="600px"
+      >
+        {selectedInvestment && (() => {
+          const currentInvestment = mockData.find(item => item.id === selectedInvestment.id) || selectedInvestment
+          return (
+          <div className={styles.investmentDetailsModal}>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>User:</span>
+              <span className={styles.detailValue}>{currentInvestment.user}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Email:</span>
+              <span className={styles.detailValue}>{currentInvestment.email}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Product:</span>
+              <span className={styles.detailValue}>{currentInvestment.product}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Amount:</span>
+              <span className={styles.detailValue}>{currentInvestment.amount}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Investment Date:</span>
+              <span className={styles.detailValue}>{currentInvestment.investmentDate}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Maturity Date:</span>
+              <span className={styles.detailValue}>{currentInvestment.maturityDate}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Status:</span>
+              <span className={`${styles.detailValue} ${styles.modalStatusBadge} ${
+                currentInvestment.status === 'Active' ? styles.statusActive :
+                currentInvestment.status === 'Matured' ? styles.statusMatured :
+                currentInvestment.status === 'Pending' ? styles.statusPending :
+                styles.statusCancelled
+              }`}>
+                {currentInvestment.status}
+              </span>
+            </div>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Current Value:</span>
+              <span className={styles.detailValue}>{currentInvestment.currentValue}</span>
+            </div>
+            {currentInvestment.action && (
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Action:</span>
+                <span className={styles.detailValue}>{currentInvestment.action}</span>
+              </div>
+            )}
+          </div>
+          )
+        })()}
+      </CustomModal>
+
+      <ConfirmDialog
+        isOpen={showConfirmDialog.isOpen}
+        type={showConfirmDialog.type || 'question'}
+        title={showConfirmDialog.title || 'Confirm Action'}
+        message={showConfirmDialog.message || 'Are you sure you want to perform this action?'}
+        onConfirm={handleConfirmAction}
+        onCancel={handleCancelAction}
+      />
     </div>
   )
 }

@@ -1,0 +1,608 @@
+:root {
+    --primary: #295cbf;
+    --btnColor: #1e3a5f;
+    --btnHover: #1a3250;
+    --txtLight: #675f5f;
+    --lightBG: #f3f3f5;
+    --success: #0a0;
+    --danger: #e05a5a;
+    --muted: #666666;
+    --light-bg: #f7f7f8;
+    --flag-bg: #fff6f6;
+    --border-color: #c6c9cd;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+/* Wallet Management Container */
+.walletManagementContainer {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--btnColor);
+  margin: 0;
+}
+
+.tableSection {
+  margin-top: 24px;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+}
+
+/* Action Button - Eye Icon */
+.actionCell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.eyeBtn {
+  padding: 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #374151;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.eyeBtn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* Status Badges */
+.statusActive {
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.statusSuspended {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.statusInactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* User Details Modal */
+.userDetailsModal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 10px 5px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailLabel {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  min-width: 200px;
+}
+
+.detailValue {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+}
+
+.statusBadge {
+  width: fit-content !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  display: inline-block !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  flex: none !important;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  margin-left: auto;
+}
+
+/* Other Actions Dropdown in Modal */
+.otherActionsSection {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.otherActionsDropdown {
+  position: relative;
+  width: 100%;
+}
+
+.otherActionsSelected {
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.otherActionsSelected:hover {
+  border-color: var(--btnColor);
+  background: #f9fafb;
+}
+
+.dropdownIcon {
+  transition: transform 0.2s ease;
+  color: #6b7280;
+}
+
+.dropdownIcon.rotate {
+  transform: rotate(180deg);
+}
+
+.otherActionsMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Custom Scrollbar Styling for Dropdown */
+.otherActionsMenu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.otherActionsMenu::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.otherActionsMenu::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.otherActionsMenu::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Firefox scrollbar styling */
+.otherActionsMenu {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.otherActionsItem {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--btnColor);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.otherActionsItem:last-child {
+  border-bottom: none;
+}
+
+.otherActionsItem:hover {
+  background: var(--lightBG);
+  color: var(--btnColor);
+}
+
+/* Change Settings Form */
+.changeForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.formInput,
+.formSelect {
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  background: white;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.formInput:focus,
+.formSelect:focus {
+  outline: none;
+  border-color: var(--btnColor);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.formInput::placeholder {
+  color: #9ca3af;
+}
+
+.errorText {
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 4px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--btnColor);
+}
+
+.helpText {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.saveButton {
+  padding: 10px 20px;
+  background: var(--primary);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveButton:hover {
+  background: #1a3250;
+}
+
+/* Wallet Settings Styles */
+.walletSettingsContainer {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.settingsForm {
+  background: white;
+  border-radius: 12px;
+  padding: 2%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.settingsSection {
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.settingsSection:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--btnColor);
+  margin-bottom: 20px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Radio Group */
+.radioGroup {
+  display: flex;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+}
+
+.radioLabel input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--btnColor);
+}
+
+/* Input with Suffix */
+.inputWithSuffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputWithSuffix .formInput {
+  padding-right: 40px;
+}
+
+.inputSuffix {
+  position: absolute;
+  right: 14px;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.inputError {
+  border-color: var(--danger) !important;
+  background-color: #fef2f2 !important;
+}
+
+/* Toggle Row */
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  grid-column: 1 / -1;
+}
+
+.toggleLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.toggleDescription {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggleSwitch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.toggleSwitch input:checked + .toggleSlider {
+  background-color: var(--btnColor);
+}
+
+.toggleSwitch input:checked + .toggleSlider:before {
+  transform: translateX(26px);
+}
+
+/* Success Message */
+.successMessage {
+  padding: 12px 20px;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 16px;
+  display: inline-block;
+}
+
+/* Reset Button */
+.resetButton {
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetButton:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .walletManagementContainer,
+  .walletSettingsContainer {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .settingsForm {
+    padding: 20px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .toggleRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .actionMenu {
+    right: auto;
+    left: 0;
+    min-width: 200px;
+  }
+
+  .detailRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .detailLabel {
+    min-width: auto;
+  }
+
+  .detailValue {
+    text-align: left;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .cancelButton,
+  .saveButton,
+  .resetButton {
+    width: 100%;
+  }
+}

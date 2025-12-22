@@ -1132,6 +1132,56 @@
   border-color: #9ca3af;
 }
 
+/* Investment Details Modal */
+.investmentDetailsModal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailRow .detailLabel {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  min-width: 140px;
+}
+
+.detailRow .detailValue {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+}
+
+/* Modal Status Badge - Override detailValue styles */
+.detailRow .detailValue.modalStatusBadge {
+  width: fit-content !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  display: inline-block !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  flex: none !important;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  margin-left: auto;
+}
+
 /* Responsive for User Investment */
 @media (max-width: 768px) {
   .kpiGrid {
