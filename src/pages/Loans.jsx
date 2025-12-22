@@ -12,7 +12,7 @@ import crossIcon from "../assets/cross.png";
 import exportIcon from "../assets/export.png";
 
 
-function LoansQueueTab() {
+function LoansQueueTab({ setActiveTab }) {
   const initialRows = [
     { user: "John Doe", amount: 500000, collateral: "Savings Vault", ltv: "80%", status: "Pending", fullActions: true, date: "2025-12-01", accountId: "JD123" },
     { user: "Jahn Smith", amount: 500000, collateral: "T-Bills", ltv: "60%", status: "Under Review", fullActions: false, date: "2025-12-02", accountId: "JS456" },
@@ -20,61 +20,50 @@ function LoansQueueTab() {
     { user: "Sarah Wilson", amount: 500000, collateral: "Fixed Savings", ltv: "70%", status: "Approved", fullActions: true, date: "2025-12-04", accountId: "SW101" }
   ];
 
-  const [rows, setRows] = useState(initialRows);
- const [filters, setFilters] = useState({
-  user: "",
-  minAmount: "",
-  collateral: "All Product",
-  status: "Status"
-});
+  const [allRows, setAllRows] = useState(() => {
+    const stored = localStorage.getItem("loanQueue");
+    return stored ? JSON.parse(stored) : initialRows;
+  });
+
+  const [rows, setRows] = useState(allRows);
+  const [filters, setFilters] = useState({ user: "", minAmount: "", collateral: "All Product", status: "Status" });
+
+  const [showCriticalModal, setShowCriticalModal] = useState(false);
+  const [selectedLoan, setSelectedLoan] = useState(null);
+  const [confirmModal, setConfirmModal] = useState({ open: false, loan: null, type: "" });
+
+  useEffect(() => {
+    localStorage.setItem("loanQueue", JSON.stringify(allRows));
+    applyFilters(); 
+  }, [allRows]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
- const applyFilters = () => {
-  let filtered = initialRows;
-  if (filters.minAmount !== "") {
-    filtered = filtered.filter(
-      r => r.amount >= Number(filters.minAmount)
-    );
-  }
-  if (filters.user) {
-    filtered = filtered.filter(r =>
-      r.user.toLowerCase().includes(filters.user.toLowerCase())
-    );
-  }
-  if (filters.collateral !== "All Product") {
-    filtered = filtered.filter(
-      r => r.collateral === filters.collateral
-    );
-  }
-  if (filters.status !== "Status") {
-    filtered = filtered.filter(
-      r => r.status === filters.status
-    );
-  }
-  setRows(filtered);
-};
-
- const clearFilters = () => {
-  setFilters({
-    user: "",
-    minAmount: "",
-    collateral: "All Product",
-    status: "Status"
-  });
-  setRows(initialRows);
-};
-// loan queue tab
-  const [showCriticalModal, setShowCriticalModal] = useState(false);
-  const [selectedLoan, setSelectedLoan] = useState(null);
-
-  const openModal = (loan) => {
-    setSelectedLoan(loan);
-    setShowCriticalModal(true);
+  const applyFilters = () => {
+    let filtered = [...allRows];
+    if (filters.minAmount !== "") filtered = filtered.filter(r => r.amount >= Number(filters.minAmount));
+    if (filters.user) filtered = filtered.filter(r => r.user.toLowerCase().includes(filters.user.toLowerCase()));
+    if (filters.collateral !== "All Product") filtered = filtered.filter(r => r.collateral === filters.collateral);
+    if (filters.status !== "Status") filtered = filtered.filter(r => r.status === filters.status);
+    setRows(filtered);
   };
 
+  const clearFilters = () => {
+    setFilters({ user: "", minAmount: "", collateral: "All Product", status: "Status" });
+    setRows(allRows);
+  };
+
+  const handleConfirmAction = () => {
+    const updatedRows = allRows.map(r =>
+      r.accountId === confirmModal.loan.accountId
+        ? { ...r, status: confirmModal.type === "approve" ? "Approved" : "Rejected" }
+        : r
+    );
+    setAllRows(updatedRows); 
+    setConfirmModal({ open: false, loan: null, type: "" });
+  };
   return (
     <>
       <div className={styles.topBar}>
@@ -96,7 +85,7 @@ function LoansQueueTab() {
       </div>
 
       <div className={styles.filters}>
-        <input type="number" name="minAmount" value={filters.minAmount} onChange={handleInputChange} placeholder="Min Amount" /> 
+        <input type="number" name="minAmount" value={filters.minAmount} onChange={handleInputChange} placeholder="Min Amount" />
         <input type="text" name="user" value={filters.user} onChange={handleInputChange} placeholder="User Name" />
         <select name="collateral" value={filters.collateral} onChange={handleInputChange}>
           <option>All Product</option>
@@ -109,10 +98,12 @@ function LoansQueueTab() {
           <option>Pending</option>
           <option>Under Review</option>
           <option>Approved</option>
+          <option>Rejected</option>
         </select>
         <button className={styles.applyBtn} onClick={applyFilters}>Apply Filters</button>
         <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
       </div>
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -135,9 +126,13 @@ function LoansQueueTab() {
                 <td><span className={`${styles.status} ${styles[r.status.replace(" ", "").toLowerCase()]}`}>{r.status}</span></td>
                 <td>
                   <div className={styles.actionBtns}>
-                    <img src={eyeIcon} alt="view" />
-                    {r.fullActions && <img src={tickIcon} alt="approve" />}
-                    {r.fullActions && <img src={crossIcon} alt="reject" />}
+                    <img src={eyeIcon} alt="view" style={{ cursor: "pointer" }} onClick={() => { setSelectedLoan(r); setActiveTab("Review"); }} />
+                    {r.fullActions && (
+                      <>
+                        <img src={tickIcon} alt="approve" style={{ cursor: "pointer" }} onClick={() => setConfirmModal({ open: true, loan: r, type: "approve" })} />
+                        <img src={crossIcon} alt="reject" style={{ cursor: "pointer" }} onClick={() => setConfirmModal({ open: true, loan: r, type: "reject" })} />
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -145,23 +140,51 @@ function LoansQueueTab() {
           </tbody>
         </table>
       </div>
+
       {showCriticalModal && selectedLoan && (
-        <CriticalActionModal
-          isOpen={showCriticalModal}
-          onClose={() => setShowCriticalModal(false)}
-          loan={selectedLoan}
-        />
+        <CriticalActionModal isOpen={showCriticalModal} onClose={() => setShowCriticalModal(false)} loan={selectedLoan} />
+      )}
+
+      {confirmModal.open && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>{confirmModal.type === "approve" ? "Approve Loan?" : "Reject Loan?"}</h3>
+            <p>Are you sure you want to {confirmModal.type} the loan for <strong>{confirmModal.loan.user}</strong>?</p>
+            <div className={styles.modalButtons}>
+              <button onClick={() => setConfirmModal({ open: false, loan: null, type: "" })}>Cancel</button>
+              <button onClick={handleConfirmAction}>Confirm</button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
 }
-// review tab
 
- function ReviewTab({ setActiveTab }) {
+
+function ReviewTab({ setActiveTab }) {
+  const [status, setStatus] = useState(() => {
+    return localStorage.getItem("loanStatus") || "";
+  });
+
+  const [toast, setToast] = useState("");
+  useEffect(() => {
+    if (status) localStorage.setItem("loanStatus", status);
+  }, [status]);
+
+  const handleAction = (action) => {
+    setStatus(action);
+    setToast(`${action} applied!`);
+    setTimeout(() => setToast(""), 2000);
+  };
+
   return (
     <div className={styles.reviewTab}>
       <div className={styles.topHeader}>
-        <button className={styles.backBtn} onClick={() => setActiveTab("Loans Queue")}>
+        <button
+          className={styles.backBtn}
+          onClick={() => setActiveTab("Loans Queue")}
+        >
           Back To Queue
         </button>
         <h2 className={styles.pageTitle}>Loan Application Review</h2>
@@ -170,24 +193,53 @@ function LoansQueueTab() {
           Export Report
         </button>
       </div>
+
       <section className={styles.box}>
         <h3 className={styles.boxTitle}>Application User</h3>
         <div className={styles.grid2}>
-          <p><strong>Name:</strong> John Smith</p>
-          <p><strong>Account:</strong> ACC001</p>
-          <p><strong>Email:</strong> John.doi@gmail.com</p>
-          <p><strong>Phone:</strong> +234 801234</p>
+          <p>
+            <strong>Name:</strong> John Smith
+          </p>
+          <p>
+            <strong>Account:</strong> ACC001
+          </p>
+          <p>
+            <strong>Email:</strong> John.doi@gmail.com
+          </p>
+          <p>
+            <strong>Phone:</strong> +234 801234
+          </p>
         </div>
       </section>
-      <section className={styles.box}>
+
+      <section className={styles.box} style={{ position: "relative" }}>
         <h3 className={styles.boxTitle}>Loans Detail</h3>
         <div className={styles.grid2}>
-          <p><strong>Loan Amount:</strong> 500,000</p>
-          <p><strong>Purpose:</strong> Business Expansion</p>
-          <p><strong>Collateral:</strong> Saving Vault</p>
-          <p><strong>LTV Ratio:</strong> 80%</p>
+          <p>
+            <strong>Loan Amount:</strong> 500,000
+          </p>
+          <p>
+            <strong>Purpose:</strong> Business Expansion
+          </p>
+          <p>
+            <strong>Collateral:</strong> Saving Vault
+          </p>
+          <p>
+            <strong>LTV Ratio:</strong> 80%
+          </p>
         </div>
+
+        {status && (
+          <span
+            className={`${styles.statusBadgeTopRight} ${styles[
+              status.toLowerCase().replace(/\s/g, "")
+            ]}`}
+          >
+            {status}
+          </span>
+        )}
       </section>
+
       <section className={styles.box}>
         <h3 className={styles.boxTitle}>AI Recommendation</h3>
         <p className={styles.aiText}>
@@ -196,40 +248,61 @@ function LoansQueueTab() {
           with standard terms.
         </p>
       </section>
+
       <div className={styles.grid4}>
-        <div className={styles.card} style={{height: "300px"}}>
+        <div className={styles.card} style={{ height: "300px" }}>
           <h4>KYC Verified</h4>
           <span className={styles.verified}>Verified</span>
           <p className={styles.smallText}>
-            <strong>Documents Verified:</strong><br />
+            <strong>Documents Verified:</strong>
+            <br />
             • National ID <br />
             • Utility Bill <br />
             • Bank Statement
           </p>
         </div>
+
         <div className={styles.cardCenter}>
           <h4>Credit Score</h4>
           <h2 className={styles.bigNumber}>720</h2>
-
           <p className={styles.scoreBadge}>Good</p>
         </div>
+
         <div className={styles.cardCenter}>
           <h4>Risk Level</h4>
           <h2 className={styles.bigNumber}>85/100</h2>
           <p className={styles.riskBadge}>Low</p>
         </div>
+
         <div className={styles.cardCenter}>
           <h4>Action</h4>
-          <button className={styles.btnGreen}>Approve Loan</button>
-          <button className={styles.btnRed}>Reject Application</button>
-          <button className={styles.btnGrey}>Request Additional Info</button>
+          <button
+            className={styles.btnGreen}
+            onClick={() => handleAction("Approved")}
+          >
+            Approve Loan
+          </button>
+          <button
+            className={styles.btnRed}
+            onClick={() => handleAction("Rejected")}
+          >
+            Reject Application
+          </button>
+          <button
+            className={styles.btnGrey}
+            onClick={() => handleAction("Info Needed")}
+          >
+            Request Additional Info
+          </button>
         </div>
       </div>
+
+      {toast && <div className={styles.toast}>{toast}</div>}
     </div>
   );
 }
+function LoanListTab({ setActiveTab }) {
 
-function LoanListTab() {
   const initialRows = [
     { user: "John Doe", amount: 500000, balance: 350000, status: "Active", rate: "15.5%", maturity: "7/1/2025" },
     { user: "Jahn Smith", amount: 500000, balance: 0, status: "Repaid", rate: "12%", maturity: "8/15/2024" },
@@ -267,6 +340,7 @@ function LoanListTab() {
   }
   setRows(filtered);
 };
+const [selectedLoan, setSelectedLoan] = useState(null);
   const clearFilters = () => {
     setFilters({ user: "", minAmount: "", date: "" });
     setRows(initialRows);
@@ -275,10 +349,9 @@ function LoanListTab() {
     <>
       <div className={styles.topBar}>
         <h2>All Loans - Master List</h2>
-        <button className={styles.exportBtn}>
-          <img src={eyeIcon} alt="export" />
-          Export Reports
-        </button>
+       <button className={styles.exportBtn}>
+            <img src={exportIcon} alt="export" /> Export Reports
+          </button>
       </div>
       <div className={styles.filtersRow}>
         <input type="date" name="date" value={filters.date} onChange={handleInputChange} />
@@ -328,7 +401,17 @@ function LoanListTab() {
                 <td>{row.maturity}</td>
                 <td>
                   <div className={styles.actionIcon}>
-                    <img src={eyeIcon} alt="view" />
+  <img
+  src={eyeIcon}
+  alt="view"
+  style={{ cursor: "pointer" }}
+  onClick={() => {
+    setSelectedLoan(row);
+    setActiveTab("Review");
+  }}
+/>
+
+
                   </div>
                 </td>
               </tr>
@@ -339,51 +422,110 @@ function LoanListTab() {
     </>
   );
 }
-
-function SettingTab() {
-  const [products, setProducts] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    name: "",
-    amountRange: "",
-    tenorRange: "",
-    interestRate: "",
-    maxLTV: "",
+const DEFAULT_PRODUCTS = [
+  {
+    name: "Personal Loan-Bronze",
+    amountRange: "50,000 - 500,000",
+    tenorRange: "3 - 12 months",
+    interestRate: "15.5% per annum",
+    maxLTV: "70%",
     globalInterestRate: { base: "", max: "", min: "" },
     ltvSetting: { conservative: "", standard: "", highest: "" },
     penaltySetting: { penalty: "", defaultCharge: "", overdue: "" },
     tenorSetting: { min: "", max: "", step: "" }
-  });
+  },
+  {
+    name: "Personal Loan-Silver",
+    amountRange: "100,000 - 1,000,000",
+    tenorRange: "6 - 18 months",
+    interestRate: "15.5% per annum",
+    maxLTV: "75%",
+    globalInterestRate: { base: "", max: "", min: "" },
+    ltvSetting: { conservative: "", standard: "", highest: "" },
+    penaltySetting: { penalty: "", defaultCharge: "", overdue: "" },
+    tenorSetting: { min: "", max: "", step: "" }
+  },
+  {
+    name: "Personal Loan-Gold",
+    amountRange: "500,000 - 5,000,000",
+    tenorRange: "12 - 36 months",
+    interestRate: "12% per annum",
+    maxLTV: "80%",
+    globalInterestRate: { base: "", max: "", min: "" },
+    ltvSetting: { conservative: "", standard: "", highest: "" },
+    penaltySetting: { penalty: "", defaultCharge: "", overdue: "" },
+    tenorSetting: { min: "", max: "", step: "" }
+  },
+  {
+    name: "Personal Loan-Platinum",
+    amountRange: "1,000,000 - 10,000,000",
+    tenorRange: "12 - 60 months",
+    interestRate: "9.5% per annum",
+    maxLTV: "85%",
+    globalInterestRate: { base: "", max: "", min: "" },
+    ltvSetting: { conservative: "", standard: "", highest: "" },
+    penaltySetting: { penalty: "", defaultCharge: "", overdue: "" },
+    tenorSetting: { min: "", max: "", step: "" }
+  }
+];
+
+
+
+const EMPTY_PRODUCT = {
+  name: "",
+  amountRange: "",
+  tenorRange: "",
+  interestRate: "",
+  maxLTV: "",
+  globalInterestRate: { base: "", max: "", min: "" },
+  ltvSetting: { conservative: "", standard: "", highest: "" },
+  penaltySetting: { penalty: "", defaultCharge: "", overdue: "" },
+  tenorSetting: { min: "", max: "", step: "" }
+};
+
+function SettingTab() {
+  const [products, setProducts] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [newProduct, setNewProduct] = useState(EMPTY_PRODUCT);
   const [editingIndex, setEditingIndex] = useState(null);
 
   // Load from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("loanProducts");
-    if (stored) setProducts(JSON.parse(stored));
+
+    if (stored) {
+      const parsed = JSON.parse(stored);
+
+      const safeData = parsed.map(p => ({
+        ...EMPTY_PRODUCT,
+        ...p,
+        globalInterestRate: { ...EMPTY_PRODUCT.globalInterestRate, ...p.globalInterestRate },
+        ltvSetting: { ...EMPTY_PRODUCT.ltvSetting, ...p.ltvSetting },
+        penaltySetting: { ...EMPTY_PRODUCT.penaltySetting, ...p.penaltySetting },
+        tenorSetting: { ...EMPTY_PRODUCT.tenorSetting, ...p.tenorSetting }
+      }));
+
+      setProducts(safeData);
+      localStorage.setItem("loanProducts", JSON.stringify(safeData));
+    } else {
+      setProducts([]);
+    }
   }, []);
 
-  // Save to localStorage
   const saveProducts = (updated) => {
     setProducts(updated);
     localStorage.setItem("loanProducts", JSON.stringify(updated));
   };
 
   const openModal = (index = null) => {
-    if (index !== null) {
-      setNewProduct(products[index]);
+    if (index !== null && products[index]) {
+      setNewProduct({
+        ...EMPTY_PRODUCT,
+        ...products[index]
+      });
       setEditingIndex(index);
     } else {
-      setNewProduct({
-        name: "",
-        amountRange: "",
-        tenorRange: "",
-        interestRate: "",
-        maxLTV: "",
-        globalInterestRate: { base: "", max: "", min: "" },
-        ltvSetting: { conservative: "", standard: "", highest: "" },
-        penaltySetting: { penalty: "", defaultCharge: "", overdue: "" },
-        tenorSetting: { min: "", max: "", step: "" }
-      });
+      setNewProduct(EMPTY_PRODUCT);
       setEditingIndex(null);
     }
     setModalOpen(true);
@@ -409,6 +551,8 @@ function SettingTab() {
       saveProducts([...products, newProduct]);
     }
     setModalOpen(false);
+    setEditingIndex(null);
+    setNewProduct(EMPTY_PRODUCT);
   };
 
   return (
@@ -423,68 +567,19 @@ function SettingTab() {
 
       <div style={{ border: "1px solid #246DAF", borderRadius: "10px", padding: "6px 10px", paddingBottom: "0%" }}>
         <h3 className={styles.sectionTitle}>Loan Product Configuration</h3>
- <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <h4>Personal Loan-Bronze</h4>
-          <button className={styles.editBtn}>Edit</button>
-        </div>
-
-        <div className={styles.cardGrid}>
-          <p><strong>Amount Range:</strong> 50,000 - 500,000</p>
-          <p><strong>Tenor Range:</strong> 3 - 12 months</p>
-          <p><strong>Interest Rate:</strong> 15.5% per annum</p>
-          <p><strong>MAX LTV:</strong> 70%</p>
-        </div>
-      </div>
-
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <h4>Personal Loan-Silver</h4>
-          <button className={styles.editBtn}>Edit</button>
-        </div>
-
-        <div className={styles.cardGrid}>
-          <p><strong>Amount Range:</strong> 100,000 - 1,000,000</p>
-          <p><strong>Tenor Range:</strong> 6 - 18 months</p>
-          <p><strong>Interest Rate:</strong> 15.5% per annum</p>
-          <p><strong>MAX LTV:</strong> 75%</p>
-        </div>
-      </div>
-
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <h4>Personal Loan-Gold</h4>
-          <button className={styles.editBtn}>Edit</button>
-        </div>
-
-        <div className={styles.cardGrid}>
-          <p><strong>Amount Range:</strong> 500,000 - 5,000,000</p>
-          <p><strong>Tenor Range:</strong> 12 - 36 months</p>
-          <p><strong>Interest Rate:</strong> 12% per annum</p>
-          <p><strong>MAX LTV:</strong> 80%</p>
-        </div>
-      </div>
-
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <h4>Personal Loan-Platinum</h4>
-          <button className={styles.editBtn}>Edit</button>
-        </div>
-
-        <div className={styles.cardGrid}>
-          <p><strong>Amount Range:</strong> 1,000,000 - 10,000,000</p>
-          <p><strong>Tenor Range:</strong> 12 - 60 months</p>
-          <p><strong>Interest Rate:</strong> 9.5% per annum</p>
-          <p><strong>MAX LTV:</strong> 85%</p>
-        </div>
-      </div>
 
         {products.map((p, i) => (
           <div className={styles.card} key={i}>
             <div className={styles.cardHeader}>
-              <h4>{p.name}</h4>
-              <button className={styles.editBtn} onClick={() => openModal(i)}>Edit</button>
+              <h4>{p.name || "Unnamed Product"}</h4>
+              <button
+                className={styles.editBtn}
+                onClick={() => openModal(i)}
+              >
+                Edit
+              </button>
             </div>
+
             <div className={styles.cardGrid}>
               <p><strong>Amount Range:</strong> {p.amountRange}</p>
               <p><strong>Tenor Range:</strong> {p.tenorRange}</p>
@@ -497,11 +592,21 @@ function SettingTab() {
         <button className={styles.addProductBtn} onClick={() => openModal()}>Add New Loan Product</button>
       </div>
 
-      {/* Modal */}
       {modalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h3>{editingIndex !== null ? "Edit Loan Product" : "Add New Loan Product"}</h3>
+            <div className={styles.modalHeader}>
+              <h3>{editingIndex !== null ? "Edit Loan Product" : "Add New Loan Product"}</h3>
+              <span
+                className={styles.closeIcon}
+                onClick={() => {
+                  setModalOpen(false);
+                  setEditingIndex(null);
+                }}
+              >
+                ×
+              </span>
+            </div>
 
             <input
               placeholder="Loan Product Name"
@@ -865,7 +970,7 @@ if (showLiquidation) {
                 </td>
 
                 <td>
-                  <button className={styles.actionBtn}>⋮</button>
+                 <img src={eyeIcon} alt="view" style={{ cursor: "pointer" }} onClick={() => { setSelectedLoan(r); setActiveTab("Review"); }} />
                 </td>
 
               </tr>
@@ -1016,10 +1121,10 @@ export default function LoansPage() {
 const tabs = {
   "Loans Queue": <LoansQueueTab setActiveTab={setActiveTab} />,
   Review: <ReviewTab setActiveTab={setActiveTab} />,
-  "Loan List": <LoanListTab />,
+"Loan List": <LoanListTab setActiveTab={setActiveTab} />,
   Setting: <SettingTab />,
   "Default Management": <DefaultManagementTab />,
-  Collateral: <CollateralTab />,
+  Collateral: <CollateralTab  setActiveTab={setActiveTab} />,
   Reports: <ReportsTab />
 };
 
