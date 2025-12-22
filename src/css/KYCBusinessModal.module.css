@@ -190,8 +190,9 @@
   border-radius: 10px;
   padding: 22px;
   margin-top: 10px;
-  gap: 300px;
-
+}
+.tinnum{
+  padding-left: 400px !important;
 }
 
 .bvnTitle {
@@ -873,5 +874,27 @@
   .docBadge {
     font-size: 10px;
     padding: 4px 8px;
+  }
+}
+@media (max-width: 768px) {
+  .bvnGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .bvnGrid div {
+    padding-left: 0 !important;
+  }
+
+  .bvnLabel {
+    padding-left: 0 !important;
+  }
+
+  .bvnValue {
+    padding-left: 0 !important;
+  }
+
+  .bvnVerified {
+    margin-left: 0 !important;
   }
 }

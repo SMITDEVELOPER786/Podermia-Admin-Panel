@@ -4,6 +4,8 @@ import { MdAdminPanelSettings } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
 import KYCModal from "../components/KYCModal";
 import KYCBusinessModal from "../components/KYCBusinessModal";
+import OverrideLogModal from "../components/OverrideLogModal";
+
 
 export default function KYCManagement() {
   const LOCAL_KEY = "kyc_ui_data";
@@ -88,6 +90,7 @@ export default function KYCManagement() {
     const upd = users.map((u) => saved[u.userId] || u);
     setUsers(upd);
   }, []);
+const [selectedOverrideLog, setSelectedOverrideLog] = useState(null);
 
   const handleView = (user) => {
     const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}");
@@ -188,12 +191,25 @@ const filteredOverrideLogs = overrideLogs.filter((log) =>
                   <td>{log.change}</td>
                   <td>{log.reason}</td>
                   <td>
- <button className={styles.btnViewDetail}>View</button>
+ <button
+  className={styles.btnViewDetail}
+  onClick={() => setSelectedOverrideLog(log)}
+>
+  View
+</button>
+
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {selectedOverrideLog && (
+  <OverrideLogModal
+    log={selectedOverrideLog}
+    onClose={() => setSelectedOverrideLog(null)}
+  />
+)}
+
         </div>
 
         <AdminPanel />

@@ -1,0 +1,216 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 14px;
+  padding: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+  color: #0f172a;
+}
+
+.header p {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+/* ================= INFO BOX ================= */
+
+.infoBox {
+  border: 1px solid #c7d7fe;
+  border-radius: 12px;
+  padding: 14px;
+  margin: 16px 0;
+}
+
+/* IMPORTANT: remove flex completely */
+.row {
+  display: grid;
+  gap: 14px;
+}
+
+/* Date | Time | Status */
+.infoBox > .row:first-child {
+  grid-template-columns: 1fr 1fr auto;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+/* Affected User | Performed By */
+.infoBox > .row:nth-child(2) {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* TEXT */
+.row span {
+  font-size: 11px;
+  color: #6b7280;
+  display: block;
+}
+
+.row p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+/* STATUS */
+.statusBtn {
+  background: #eef2ff;
+  border: 1px solid #4c6fff;
+  color: #4c6fff;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  height: fit-content;
+  white-space: nowrap;
+}
+
+/* ================= SECTIONS ================= */
+
+.section {
+  margin-top: 16px;
+}
+
+.section h4 {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #0f172a;
+}
+
+.summaryBox {
+  background: #f5f7fb;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+    border-left: 1px #FF0000 solid;
+}
+
+.label {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.pending {
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.approved {
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ================= INPUTS ================= */
+
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  background: #f9fafb;
+  color: #374151;
+}
+
+/* ================= AUDIT ================= */
+
+.auditBox {
+  border: 1px solid #c7d7fe;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 16px;
+  font-size: 13px;
+  background: #f9fbff;
+}
+
+.auditBox p {
+  margin: 6px 0;
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.exportBtn {
+  background: #2f4ec7;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.downloadBtn {
+  background: #ffffff;
+  border: 1px solid #2f4ec7;
+  color: #2f4ec7;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 480px) {
+  .infoBox > .row:first-child {
+    grid-template-columns: 1fr;
+  }
+
+  .infoBox > .row:nth-child(2) {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    flex-direction: column;
+  }
+}

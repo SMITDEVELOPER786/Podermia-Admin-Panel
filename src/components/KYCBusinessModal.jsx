@@ -245,9 +245,9 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                 </div>
 
                 <div>
-                  <label className={styles.bvnLabel}>TIN Number</label>
-                  <p className={styles.bvnValue}>{form.tinNumber || "12345678-0001"}</p>
-                  <span className={styles.bvnVerified}>Verified</span>
+                  <label className={styles.bvnLabel} style={{paddingLeft: "200px"}}>TIN Number</label>
+                  <p className={styles.bvnValue} style={{paddingLeft: "200px"}}>{form.tinNumber || "12345678-0001"}</p>
+                  <span className={styles.bvnVerified}  style={{marginLeft: "200px"}}>Verified</span>
                 </div>
               </div>
             </div>
