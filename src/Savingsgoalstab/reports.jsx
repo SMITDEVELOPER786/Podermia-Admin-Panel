@@ -7,7 +7,6 @@ export default function ReportsPage() {
       <div className={styles.cardBox}>
         <div className={styles.headerRow}>
           <h3>Fixed Savings Rates</h3>
-          <button className={styles.updateBtn}>Update Rates</button>
         </div>
 
         <div className={styles.topStats}>

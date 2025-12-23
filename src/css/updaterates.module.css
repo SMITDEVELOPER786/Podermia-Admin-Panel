@@ -1,0 +1,193 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modalBox {
+  background: #fff;
+  padding: 30px 35px;
+  border-radius: 16px;
+  width: 480px;
+  max-width: 95%;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+@keyframes slideIn {
+  from {transform: translateY(-20px); opacity: 0;}
+  to {transform: translateY(0); opacity: 1;}
+}
+
+.modalContent {
+  margin-top: 20px;
+}
+
+.modalRateItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.modalRateItem span {
+  font-weight: 500;
+  color: #333;
+}
+.modalRateItem input {
+  width: 90px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border 0.2s;
+  font-size: 14px;
+}
+.modalRateItem input:focus {
+  border-color: #246daf;
+  outline: none;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.toggleItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-weight: 500;
+  color: #333;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 50px;
+  transition: 0.4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+input:checked + .slider {
+  background-color: #246daf;
+}
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.cancelBtn {
+  background: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.cancelBtn:hover {
+  background: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+.updateBtn {
+  background: #246daf;
+  color: #fff;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+.updateBtn:hover {
+  background: #1d89e7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+}
+
+.closeBtn {
+    position: absolute;
+    margin-left: 30%;
+    margin-top: 0.8%;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #333;
+}
+
+.closeBtn:hover {
+  color: #000;
+}
+
+@media (max-width: 600px) {
+  .modalBox {
+    width: 90%;
+    padding: 20px 20px;
+  }
+  .modalRateItem input {
+    width: 70px;
+  }
+  .updateBtn, .cancelBtn {
+    padding: 8px 16px;
+  }
+}
+@media (max-width: 768px) {
+  .closeBtn {
+    margin-left: 75% !important;
+    margin-top: 12px !important;
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 500px) {
+  .closeBtn {
+    margin-left: 20%;
+    margin-top: 4px;
+    font-size: 20px;
+  }
+}
