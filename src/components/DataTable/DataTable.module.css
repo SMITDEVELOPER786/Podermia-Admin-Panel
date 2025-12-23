@@ -11,6 +11,38 @@
   overflow-x: auto;
 }
 
+/* Custom Scrollbar Styling */
+.responsiveWrapper::-webkit-scrollbar,
+.tableContainer::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.responsiveWrapper::-webkit-scrollbar-track,
+.tableContainer::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.responsiveWrapper::-webkit-scrollbar-thumb,
+.tableContainer::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.responsiveWrapper::-webkit-scrollbar-thumb:hover,
+.tableContainer::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Firefox Scrollbar */
+.responsiveWrapper,
+.tableContainer {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
 /* Table styling */
 .dataTable {
   width: 100%;
@@ -21,8 +53,10 @@
   border: 1px solid var(--table-border);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
+  white-space: nowrap;
+  overflow: auto;
 }
+
 
 .tableHeader {
   padding: 16px 12px;

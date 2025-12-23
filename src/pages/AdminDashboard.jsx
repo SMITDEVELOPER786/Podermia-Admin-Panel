@@ -8,7 +8,7 @@ import Investment from './Investment'
 import Loans from './Loans'
 import WalletAdmin from './WalletAdmin'
 import SavingGoals from './SavingGoals'
-import UserManagement from './AdminManagement'
+import AdminManagement from './AdminManagement'
 import SystemSetting from './SystemSetting'
 import Report from './Report'
 
@@ -30,7 +30,7 @@ function AdminDashboard() {
       case 'Saving & Goals':
         return <SavingGoals />
       case 'Admin Management':
-        return <UserManagement />
+        return <AdminManagement />
       case 'System Setting':
         return <SystemSetting />
       case 'Report':

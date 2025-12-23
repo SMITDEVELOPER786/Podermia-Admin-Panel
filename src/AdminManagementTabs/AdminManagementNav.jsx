@@ -1,8 +1,9 @@
-function UserManagementNav({ activeTab, onTabChange }) {
+function AdminManagementNav({ activeTab, onTabChange }) {
   const tabs = [
-    'User Overview',
+    'Admin Directory',
+    'Admin Overview',
+    'Admin Audit Logs',
     'Role Assignment',
-    'Access Role'
   ]
 
   return (
@@ -20,5 +21,5 @@ function UserManagementNav({ activeTab, onTabChange }) {
   )
 }
 
-export default UserManagementNav
+export default AdminManagementNav
 

@@ -1,34 +1,38 @@
-import styles from '../css/UserManagement.module.css'
-import UserManagementNav from '../AdminManagementTabs/UserManagementNav'
+import styles from '../css/AdminManagement.module.css'
+import AdminManagementNav from '../AdminManagementTabs/AdminManagementNav'
 import AccessRole from '../AdminManagementTabs/AccessRole'
-import UserOverview from '../AdminManagementTabs/UserOverview'
+import UserOverview from '../AdminManagementTabs/AdminOverview'
 import RoleAssignment from '../AdminManagementTabs/RoleAssignment'
+import AdminDirectory from '../AdminManagementTabs/AdminDirectory'
+import AdminAuditLogs from '../AdminManagementTabs/AdminAuditLogs'
 import { useState } from 'react'
 
-function UserManagement() {
-    const [activeTab, setActiveTab] = useState('User Overview')
+function AdminManagement() {
+    const [activeTab, setActiveTab] = useState('Admin Directory')
 
       const renderContent = () => {
     switch (activeTab) {
-      case 'User Overview':
+      case 'Admin Directory':
+        return <AdminDirectory />
+      case 'Admin Overview':
         return <UserOverview />
+      case 'Admin Audit Logs':
+        return <AdminAuditLogs />
       case 'Role Assignment':
         return <RoleAssignment />
-      case 'Access Role':
-        return <AccessRole />
       default:
-        return <UserOverview />
+        return <AdminDirectory />
     }
   }
   
   return (
     <div className="content-panel">
-      <h3 className="panel-title">User Management</h3>
-      <UserManagementNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <h3 className="panel-title">Admin Management</h3>
+      <AdminManagementNav activeTab={activeTab} onTabChange={setActiveTab} />
       {renderContent()}
     </div>
   )
 }
 
-export default UserManagement
+export default AdminManagement
 
