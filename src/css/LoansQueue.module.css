@@ -913,10 +913,7 @@ color: #9F0712 !important;
 
 .reportsContainer {
   width: 100%;
-  background: #ffffff;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 6px 18px rgba(37, 56, 111, 0.06);
   box-sizing: border-box;
 }
 
@@ -1254,12 +1251,12 @@ color: #9F0712 !important;
   color: #D4183D;
  border: #D4183D 1px solid;
  }
+
 .infoneeded { 
   background: #ffffff;
   border: 1px solid #173A8A;
   color: #063092;
  }
-
 
 .toast {
   position: fixed;
@@ -1326,6 +1323,15 @@ color: #9F0712 !important;
 }
 
 @media (max-width: 768px) {
+  .toast{
+    font-size: 12px;
+    padding: 8px 10px !important;
+  }
+  .statusBadgeTopRight{
+    font-size: 12px;
+    padding: 6px 12px !important;
+    top: 4px !important;
+  }
 .backBtn{
   width: 100%;
   justify-content: center;
@@ -1355,7 +1361,7 @@ color: #9F0712 !important;
   }
 
 }
-/* SettingsTab modal*/
+/* loan queue Tab modal*/
 
 .modalOverlay {
   position: fixed;
@@ -1441,22 +1447,27 @@ color: #9F0712 !important;
 }
 
 @media (max-width: 768px) {
+
   .modalContent {
-    width: 90%;
+    width: 100% !important;
     padding: 20px 15px;
   }
-
+.modalContent h3{
+  text-align: center !important;
+}
   .modalContent input {
     padding: 8px 10px;
   }
 
   .modalButtons {
+    display: flex;
     flex-direction: column;
-    gap: 8px;
+      flex-direction: row;     
+    justify-content: space-between;
+    gap: 1px;
   }
-
   .modalButtons button {
-    width: 100%;
+    width: 48%;
   }
 }
 @media (max-width: 1200px) {
