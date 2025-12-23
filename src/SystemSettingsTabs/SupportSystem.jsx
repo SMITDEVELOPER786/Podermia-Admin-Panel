@@ -3,6 +3,7 @@ import SupportQueue from "./SupportSystemTabs/SupportQueue";
 import ReplyThreads from "./SupportSystemTabs/ReplyThreads";
 import TicketAssignments from "./SupportSystemTabs/TicketAssignments";
 import TicketResolution from "./SupportSystemTabs/TicketResolution";
+import LiveChat from "./SupportSystemTabs/LiveChat";
 import SupportSystemNavigation from "./SupportSystemTabs/SupportSystemNavigation";
 import styles from "../css/SupportSystem.module.css";
 
@@ -19,6 +20,8 @@ const SupportSystem = ({ onBack }) => {
         return <ReplyThreads />;
       case "Ticket Resolution":
         return <TicketResolution />;
+      case "Live Chat":
+        return <LiveChat />;
       default:
         return <SupportQueue />;
     }

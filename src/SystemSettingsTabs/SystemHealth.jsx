@@ -195,7 +195,7 @@ const SystemHealth = () => {
       {/* Financial Product Settings */}
       <div className={styles.settingsSection}>
         <h2>Financial Product Settings</h2>
-        <p className={styles.subtitle}>Configure interest rates and loan parameters</p>
+        <p className={styles.subtitle} style={{marginBottom: 20}}>Configure interest rates and loan parameters</p>
 
         {/* Savings Interest Rates */}
         <div className={styles.configBox}>

@@ -126,6 +126,37 @@
   margin-bottom: 20px;
 }
 
+.socialMediaSection {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.socialMediaTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 16px 0;
+}
+
+.socialMediaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .socialMediaGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .socialMediaGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .inputGroup {
   display: flex;
   flex-direction: column;

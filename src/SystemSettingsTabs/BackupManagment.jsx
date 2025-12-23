@@ -375,9 +375,9 @@ const BackupManagment = () => {
         </div>
 
         <div className={styles.actionButtonsRow}>
-          <button className={styles.manualBackupBtn} onClick={handleManualBackup}>
+          {/* <button className={styles.manualBackupBtn} onClick={handleManualBackup}>
             Manual Backup
-          </button>
+          </button> */}
           <button className={styles.testConnectionBtn} onClick={handleTestConnection}>
             Test Storage Connection
           </button>

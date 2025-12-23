@@ -201,14 +201,7 @@ const Reconciliation = () => {
 
       {/* Source Filter */}
       <div className={styles.sourceFilter}>
-        <button
-          className={`${styles.sourceBtn} ${
-            selectedSource === "All Sources" ? styles.active : ""
-          }`}
-          onClick={() => setSelectedSource("All Sources")}
-        >
           All Sources
-        </button>
       </div>
 
       {/* Reconciliation Table */}

@@ -1,8 +1,12 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import styles from '../css/WalletAdmin.module.css'
 import FilterSearch from '../components/FilterSearch/FilterSearch'
 import DataTable from '../components/DataTable/DataTables'
 import CustomModal from '../components/CustomModal/CustomModal'
+import Toast from '../components/Toast/Toast'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+import { Download, FileText, FileSpreadsheet } from 'lucide-react'
 
 const TransactionLedger = () => {
   const [filters, setFilters] = useState({
@@ -12,8 +16,7 @@ const TransactionLedger = () => {
   })
   const [modalOpen, setModalOpen] = useState(false)
 
-  // Pending bank transfers data
-  const pendingTransfers = [
+  const [pendingTransfers, setPendingTransfers] = useState([
     {
       id: 1,
       user: 'Mike Wilson',
@@ -47,15 +50,48 @@ const TransactionLedger = () => {
       estCompletion: 'Pending verification',
       status: 'Verification Required'
     }
-  ]
+  ])
 
-  const statusCounts = {
-    total: pendingTransfers.length,
-    processing: pendingTransfers.filter(t => t.status === 'Processing').length,
-    verification: pendingTransfers.filter(t => t.status === 'Verification Required').length
-  }
+  const [statusCounts, setStatusCounts] = useState({
+    total: 0,
+    processing: 0,
+    verification: 0
+  })
 
-  // Mock transaction data
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [showExportDropdown, setShowExportDropdown] = useState(false);
+  const [loadingCSV, setLoadingCSV] = useState(false);
+  const [loadingPDF, setLoadingPDF] = useState(false);
+  const exportDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (exportDropdownRef.current && !exportDropdownRef.current.contains(event.target)) {
+        setShowExportDropdown(false);
+      }
+    };
+
+    if (showExportDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showExportDropdown]);
+
+  React.useEffect(() => {
+    const counts = {
+      total: pendingTransfers.filter(t => 
+        t.status === 'Pending' || 
+        t.status === 'Verification Required'
+      ).length,
+      processing: pendingTransfers.filter(t => t.status === 'Processing').length,
+      verification: pendingTransfers.filter(t => t.status === 'Verification Required').length
+    };
+    setStatusCounts(counts);
+  }, [pendingTransfers]);
+
   const mockData = [
     {
       transactionId: 'TXN001',
@@ -109,7 +145,6 @@ const TransactionLedger = () => {
     }
   ]
 
-  // Filter configuration
   const filterConfig = {
     showSearch: true,
     searchPlaceholder: 'Search by user, refrence,or ID',
@@ -127,7 +162,6 @@ const TransactionLedger = () => {
     ]
   }
 
-  // Table columns
   const columns = [
     { header: 'Transaction ID', key: 'transactionId' },
     { header: 'User', key: 'user' },
@@ -155,7 +189,6 @@ const TransactionLedger = () => {
     { header: 'Reference', key: 'reference' }
   ]
 
-  // Filtered data
   const filteredData = useMemo(() => {
     return mockData.filter(item => {
       const searchMatch = !filters.search || 
@@ -175,7 +208,6 @@ const TransactionLedger = () => {
     })
   }, [filters])
 
-  // Calculate KPI values from filtered data
   const kpiData = useMemo(() => {
     const totalCredits = filteredData
       .filter(t => t.type === 'Credit')
@@ -192,9 +224,213 @@ const TransactionLedger = () => {
     ]
   }, [filteredData])
 
+  const handleProcessNow = (transferId) => {
+    console.log(`Processing transfer with ID: ${transferId}`);
+    
+    setPendingTransfers(prevTransfers => 
+      prevTransfers.map(transfer => 
+        transfer.id === transferId 
+          ? { ...transfer, status: 'Processing', estCompletion: '1-2 business days' } 
+          : transfer
+      )
+    );
+    
+    setStatusCounts(prevCounts => ({
+      total: prevCounts.total - 1,
+      processing: prevCounts.processing + 1,
+      verification: prevCounts.verification
+    }));
+  };
+
+  const handleRejectTransfer = (transferId) => {
+    console.log(`Rejecting transfer with ID: ${transferId}`);
+    
+    setPendingTransfers(prevTransfers => 
+      prevTransfers.map(transfer => 
+        transfer.id === transferId 
+          ? { ...transfer, status: 'Rejected', estCompletion: 'Transfer rejected' } 
+          : transfer
+      )
+    );
+    
+    setStatusCounts(prevCounts => ({
+      total: prevCounts.total - 1,
+      processing: prevCounts.processing,
+      verification: prevCounts.verification - 1
+    }));
+  };
+
+  const handleApproveTransfer = (transferId) => {
+    console.log(`Approving transfer with ID: ${transferId}`);
+    
+    setPendingTransfers(prevTransfers => 
+      prevTransfers.map(transfer => 
+        transfer.id === transferId 
+          ? { ...transfer, status: 'Processing', estCompletion: '1-2 business days' } 
+          : transfer
+      )
+    );
+    
+    setStatusCounts(prevCounts => ({
+      total: prevCounts.total - 1,
+      processing: prevCounts.processing + 1,
+      verification: prevCounts.verification - 1
+    }));
+  };
+
+  const handleRefreshStatus = () => {
+    console.log('Refreshing transfer status...');
+    setToast({ show: true, message: 'Refreshing transfer status...', type: 'info' });
+    
+    
+    setPendingTransfers(prevTransfers => [...prevTransfers]);
+    
+    setTimeout(() => {
+      setToast({ show: false, message: '', type: '' });
+    }, 3000);
+  };
+
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters)
   }
+
+  const handleExportCSV = () => {
+    if (filteredData.length === 0) {
+      setToast({
+        show: true,
+        type: 'warning',
+        message: 'No transaction data available to export'
+      });
+      return;
+    }
+
+    setLoadingCSV(true);
+    setTimeout(() => {
+      try {
+        const headers = ['Transaction ID', 'User', 'Type', 'Amount', 'Status', 'Date', 'Description', 'Reference'];
+        const csvContent = [
+          headers.join(','),
+          ...filteredData.map(transaction => [
+            transaction.transactionId,
+            `"${transaction.user}"`,
+            transaction.type,
+            transaction.amount,
+            transaction.status,
+            transaction.date,
+            `"${transaction.description}"`,
+            transaction.reference
+          ].join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `transaction-ledger-${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setToast({
+          show: true,
+          type: 'success',
+          message: `CSV file downloaded successfully (${filteredData.length} transactions)`
+        });
+        setLoadingCSV(false);
+        setShowExportDropdown(false);
+      } catch (error) {
+        console.error('CSV Export Error:', error);
+        setLoadingCSV(false);
+        setToast({
+          show: true,
+          type: 'error',
+          message: 'Failed to export CSV file. Please try again.'
+        });
+      }
+    }, 500);
+  };
+
+  const handleExportPDF = () => {
+    if (filteredData.length === 0) {
+      setToast({
+        show: true,
+        type: 'warning',
+        message: 'No transaction data available to export'
+      });
+      return;
+    }
+
+    setLoadingPDF(true);
+    setTimeout(() => {
+      try {
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+        doc.setFontSize(18);
+        doc.text('Transaction Ledger Report', 14, 15);
+        doc.setFontSize(11);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 23);
+        doc.text(`Total Transactions: ${filteredData.length}`, 14, 30);
+
+        const tableColumn = ['Transaction ID', 'User', 'Type', 'Amount', 'Status', 'Date', 'Description', 'Reference'];
+        const tableRows = filteredData.map(transaction => [
+          transaction.transactionId,
+          transaction.user,
+          transaction.type,
+          transaction.amount,
+          transaction.status,
+          transaction.date,
+          transaction.description.length > 30 ? transaction.description.substring(0, 27) + '...' : transaction.description,
+          transaction.reference
+        ]);
+
+        autoTable(doc, {
+          head: [tableColumn],
+          body: tableRows,
+          startY: 37,
+          theme: 'grid',
+          styles: { 
+            fontSize: 7,
+            cellPadding: 2
+          },
+          headStyles: { 
+            fillColor: [41, 92, 191],
+            textColor: 255,
+            fontStyle: 'bold',
+            fontSize: 8
+          },
+          alternateRowStyles: { fillColor: [245, 245, 245] },
+          columnStyles: {
+            0: { cellWidth: 35 },
+            1: { cellWidth: 30 },
+            2: { cellWidth: 20 },
+            3: { cellWidth: 25 },
+            4: { cellWidth: 25 },
+            5: { cellWidth: 30 },
+            6: { cellWidth: 50 },
+            7: { cellWidth: 30 }
+          }
+        });
+
+        doc.save(`transaction-ledger-${new Date().toISOString().split('T')[0]}.pdf`);
+
+        setToast({
+          show: true,
+          type: 'success',
+          message: `PDF file downloaded successfully (${filteredData.length} transactions)`
+        });
+        setLoadingPDF(false);
+        setShowExportDropdown(false);
+      } catch (error) {
+        console.error('PDF Export Error:', error);
+        setLoadingPDF(false);
+        setToast({
+          show: true,
+          type: 'error',
+          message: 'Failed to export PDF file. Please try again.'
+        });
+      }
+    }, 500);
+  };
 
   return (
     <>
@@ -202,18 +438,43 @@ const TransactionLedger = () => {
       <div className={styles.headerSection}>
         <h2 className={styles.pageTitle}>Transaction Ledger</h2>
         <div className={styles.headerButtons}>
-          <button className={styles.exportBtn}>Export</button>
+          <div className={styles.exportDropdownContainer} ref={exportDropdownRef}>
+            <button 
+              className={styles.exportBtn}
+              onClick={() => setShowExportDropdown(!showExportDropdown)}
+            >
+              Export
+            </button>
+            {showExportDropdown && (
+              <div className={styles.exportDropdown}>
+                <button
+                  className={styles.exportOption}
+                  onClick={handleExportCSV}
+                  disabled={loadingCSV || loadingPDF}
+                >
+                  <FileSpreadsheet size={16} />
+                  {loadingCSV ? 'Exporting...' : 'Export CSV'}
+                </button>
+                <button
+                  className={styles.exportOption}
+                  onClick={handleExportPDF}
+                  disabled={loadingCSV || loadingPDF}
+                >
+                  <FileText size={16} />
+                  {loadingPDF ? 'Exporting...' : 'Export PDF'}
+                </button>
+              </div>
+            )}
+          </div>
           <button className={styles.pendingBankBtn} onClick={() => setModalOpen(true)}>Pending Bank Transfer</button>
         </div>
       </div>
 
-      {/* Filter & Search */}
       <FilterSearch 
         config={filterConfig} 
         onFilterChange={handleFilterChange}
       />
 
-      {/* Transaction Table */}
       <div className={styles.tableSection}>
         <DataTable 
           columns={columns}
@@ -222,7 +483,6 @@ const TransactionLedger = () => {
         />
       </div>
 
-      {/* KPI Cards at bottom */}
       <div className={styles.kpiGrid}>
         {kpiData.map((kpi, index) => (
           <div key={index} className={styles.kpiCard}>
@@ -250,12 +510,10 @@ const TransactionLedger = () => {
             Manage critical loan operations and system-wide actions
           </p>
         </div>
-        {/* Info Banner */}
         <div className={styles.infoBanner}>
           {statusCounts.total} bank transfers are currently pending processing or verification.
         </div>
 
-        {/* Status Cards */}
         <div className={styles.statusCardsGrid}>
           <div className={styles.statusCard}>
             <h3>Total Pending</h3>
@@ -280,7 +538,6 @@ const TransactionLedger = () => {
           </div>
         </div>
 
-        {/* Pending Transfers List */}
         <div className={styles.transfersList}>
           {pendingTransfers.map((transfer) => (
             <div key={transfer.id} className={styles.transferCard}>
@@ -293,18 +550,35 @@ const TransactionLedger = () => {
                     className={`${styles.statusBadge} ${
                       transfer.status === 'Pending' ? styles.badgePending :
                       transfer.status === 'Processing' ? styles.badgeProcessing :
-                      styles.badgeVerification
+                      transfer.status === 'Verification Required' ? styles.badgeVerification :
+                      transfer.status === 'Rejected' ? styles.badgeRejected :
+                      styles.badgePending
                     }`}
                   >
                     {transfer.status}
                   </span>
                   {transfer.status === 'Pending' && (
-                    <button className={styles.processBtn}>Process Now</button>
+                    <button 
+                      className={styles.processBtn} 
+                      onClick={() => handleProcessNow(transfer.id)}
+                    >
+                      Process Now
+                    </button>
                   )}
                   {transfer.status === 'Verification Required' && (
                     <>
-                      <button className={styles.rejectBtn}>Rejected</button>
-                      {/* <button className={styles.approveBtn}>Approved</button> */}
+                      <button 
+                        className={styles.rejectBtn}
+                        onClick={() => handleRejectTransfer(transfer.id)}
+                      >
+                        Reject
+                      </button>
+                      <button 
+                        className={styles.approveBtn}
+                        onClick={() => handleApproveTransfer(transfer.id)}
+                      >
+                        Approve
+                      </button>
                     </>
                   )}
                 </div>
@@ -343,15 +617,26 @@ const TransactionLedger = () => {
           ))}
         </div>
 
-        {/* Footer Buttons */}
         <div className={styles.modalFooter}>
-          <button className={styles.refreshBtn}>Refresh Status</button>
+          <button 
+            className={styles.refreshBtn} 
+            onClick={handleRefreshStatus}
+          >
+            Refresh Status
+          </button>
           <button className={styles.closeModalBtn} onClick={() => setModalOpen(false)}>Close</button>
         </div>
       </div>
     </CustomModal>
-
+    {toast.show && toast.message && (
+      <Toast 
+        message={toast.message} 
+        type={toast.type}
+        onClose={() => setToast({ show: false, message: '', type: '' })}
+      />
+    )}
     </>
+
   )
 }
 

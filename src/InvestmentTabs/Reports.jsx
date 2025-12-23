@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from '../css/Investment.module.css'
 import { ChevronDown } from 'lucide-react'
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import ScheduleReportsModal from './ScheduleReportsModal'
 
 const Reports = () => {
   const [reportType, setReportType] = useState('Performance Overview')
@@ -10,6 +11,7 @@ const Reports = () => {
   const [endDate, setEndDate] = useState('')
   const [showReportDropdown, setShowReportDropdown] = useState(false)
   const [showTimeDropdown, setShowTimeDropdown] = useState(false)
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false)
 
   const reportTypes = ['Performance Overview', 'Investment Analysis', 'Payout Report', 'Risk Assessment']
   const timeRanges = ['Last 6 months', 'Last 12 months', 'Last 3 months', 'Custom Range']
@@ -75,7 +77,7 @@ const Reports = () => {
         <div className={styles.reportActions}>
           <button className={styles.exportBtn}>Export CSV</button>
           <button className={styles.exportBtn}>Export PDF</button>
-          <button className={styles.exportBtn}>Schedule Reports</button>
+          <button className={styles.exportBtn} onClick={() => setScheduleModalOpen(true)}>Schedule Reports</button>
         </div>
       </div>
 
@@ -303,6 +305,11 @@ const Reports = () => {
           </ul>
         </div>
       </div>
+
+      <ScheduleReportsModal
+        isOpen={scheduleModalOpen}
+        onClose={() => setScheduleModalOpen(false)}
+      />
     </div>
   )
 }

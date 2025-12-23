@@ -4,6 +4,7 @@ function SystemSettingsNav({ activeTab, onTabChange }) {
     'Ticket Assignments',
     'Reply Threads',
     'Ticket Resolution',
+    'Live Chat',
   ]
 
   

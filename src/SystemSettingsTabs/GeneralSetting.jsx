@@ -13,7 +13,17 @@ const GeneralSetting = () => {
   const [twoFactorAuth, setTwoFactorAuth] = useState(false)
   const [adminAuditLogin, setAdminAuditLogin] = useState(false)
   const [ipWhitelisting, setIpWhitelisting] = useState(false)
+  const [loginPinRequired, setLoginPinRequired] = useState(false)
+  const [biometricsRequired, setBiometricsRequired] = useState(false)
   const [criticalActionsDisabled, setCriticalActionsDisabled] = useState(false)
+  const [socialMediaLinks, setSocialMediaLinks] = useState({
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    linkedin: '',
+    youtube: '',
+    tiktok: ''
+  })
   const [toast, setToast] = useState(null)
   const [errors, setErrors] = useState({})
 
@@ -118,7 +128,17 @@ const GeneralSetting = () => {
     setTwoFactorAuth(false)
     setAdminAuditLogin(false)
     setIpWhitelisting(false)
+    setLoginPinRequired(false)
+    setBiometricsRequired(false)
     setCriticalActionsDisabled(false)
+    setSocialMediaLinks({
+      facebook: '',
+      instagram: '',
+      twitter: '',
+      linkedin: '',
+      youtube: '',
+      tiktok: ''
+    })
     setErrors({})
     setToast({
       type: 'success',
@@ -236,6 +256,78 @@ const GeneralSetting = () => {
             <span className={styles.toggleSlider}></span>
           </label>
         </div>
+
+        {/* Social Media Links */}
+        <div className={styles.socialMediaSection}>
+          <h4 className={styles.socialMediaTitle}>Social Media Links</h4>
+          <div className={styles.socialMediaGrid}>
+            <div className={styles.inputGroup}>
+              <label>Facebook</label>
+              <input
+                type="url"
+                value={socialMediaLinks.facebook}
+                onChange={(e) => setSocialMediaLinks(prev => ({ ...prev, facebook: e.target.value }))}
+                className={styles.inputField}
+                placeholder="https://facebook.com/yourpage"
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>Instagram</label>
+              <input
+                type="url"
+                value={socialMediaLinks.instagram}
+                onChange={(e) => setSocialMediaLinks(prev => ({ ...prev, instagram: e.target.value }))}
+                className={styles.inputField}
+                placeholder="https://instagram.com/yourpage"
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>X (Twitter)</label>
+              <input
+                type="url"
+                value={socialMediaLinks.twitter}
+                onChange={(e) => setSocialMediaLinks(prev => ({ ...prev, twitter: e.target.value }))}
+                className={styles.inputField}
+                placeholder="https://x.com/yourhandle"
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>LinkedIn</label>
+              <input
+                type="url"
+                value={socialMediaLinks.linkedin}
+                onChange={(e) => setSocialMediaLinks(prev => ({ ...prev, linkedin: e.target.value }))}
+                className={styles.inputField}
+                placeholder="https://linkedin.com/company/yourcompany"
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>YouTube</label>
+              <input
+                type="url"
+                value={socialMediaLinks.youtube}
+                onChange={(e) => setSocialMediaLinks(prev => ({ ...prev, youtube: e.target.value }))}
+                className={styles.inputField}
+                placeholder="https://youtube.com/@yourchannel"
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>TikTok</label>
+              <input
+                type="url"
+                value={socialMediaLinks.tiktok}
+                onChange={(e) => setSocialMediaLinks(prev => ({ ...prev, tiktok: e.target.value }))}
+                className={styles.inputField}
+                placeholder="https://tiktok.com/@yourhandle"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Security Setting Section */}
@@ -310,6 +402,36 @@ const GeneralSetting = () => {
               type="checkbox"
               checked={ipWhitelisting}
               onChange={(e) => setIpWhitelisting(e.target.checked)}
+            />
+            <span className={styles.toggleSlider}></span>
+          </label>
+        </div>
+
+        <div className={styles.toggleRow}>
+          <div>
+            <h4>Login PIN Required</h4>
+            <p className={styles.toggleDesc}>Require PIN for user login authentication</p>
+          </div>
+          <label className={styles.toggleSwitch}>
+            <input
+              type="checkbox"
+              checked={loginPinRequired}
+              onChange={(e) => setLoginPinRequired(e.target.checked)}
+            />
+            <span className={styles.toggleSlider}></span>
+          </label>
+        </div>
+
+        <div className={styles.toggleRow}>
+          <div>
+            <h4>Biometrics Required</h4>
+            <p className={styles.toggleDesc}>Require Fingerprint/FaceID for login authentication</p>
+          </div>
+          <label className={styles.toggleSwitch}>
+            <input
+              type="checkbox"
+              checked={biometricsRequired}
+              onChange={(e) => setBiometricsRequired(e.target.checked)}
             />
             <span className={styles.toggleSlider}></span>
           </label>

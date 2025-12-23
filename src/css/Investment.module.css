@@ -2763,3 +2763,458 @@
   }
 
 }
+
+/* Schedule Reports Modal Styles */
+.scheduleModalContent {
+  padding: 0;
+}
+
+.scheduleTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.scheduleTab {
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.scheduleTab:hover {
+  color: #2563eb;
+}
+
+.activeTab {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.scheduleForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.formSelect,
+.formInput {
+  padding: 10px 14px;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  transition: all 0.2s ease;
+}
+
+.formSelect:focus,
+.formInput:focus {
+  outline: none;
+  background: white;
+  border-color: #2563eb;
+}
+
+.recipientInputWrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.recipientInputWrapper .formInput {
+  flex: 1;
+}
+
+.addRecipientBtn {
+  padding: 10px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.addRecipientBtn:hover {
+  background: #1d4ed8;
+}
+
+.recipientsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.recipientTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #1e40af;
+}
+
+.removeRecipientBtn {
+  background: transparent;
+  border: none;
+  color: #1e40af;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.removeRecipientBtn:hover {
+  color: #dc2626;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cancelBtn {
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.submitBtn {
+  padding: 10px 20px;
+  background: #2563eb;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitBtn:hover {
+  background: #1d4ed8;
+}
+
+.schedulesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+ 
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.emptyState svg {
+  margin-bottom: 16px;
+  color: #d1d5db;
+}
+
+.emptyState p {
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+}
+
+.emptySubtext {
+  font-size: 13px !important;
+  color: #9ca3af !important;
+  margin-top: 4px !important;
+}
+
+.scheduleCard {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.scheduleCard:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.scheduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.scheduleTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.scheduleStatus {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.statusActive {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.statusPaused {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.scheduleActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.actionButton {
+  padding: 6px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #6b7280;
+}
+
+.actionButton:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.scheduleDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailRow {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.detailLabel {
+  font-weight: 500;
+  color: #6b7280;
+  min-width: 100px;
+}
+
+.detailValue {
+  color: #111827;
+  flex: 1;
+}
+
+.scheduleCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.scheduleCardHeader h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.scheduleMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.scheduleCardActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.statusBtn {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.activeStatus {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.pausedStatus {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.editBtn,
+.deleteBtn {
+  padding: 6px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.editBtn {
+  color: #2563eb;
+}
+
+.editBtn:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+.deleteBtn {
+  color: #dc2626;
+}
+
+.deleteBtn:hover {
+  background: #fee2e2;
+  border-color: #dc2626;
+}
+
+.scheduleCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scheduleInfo {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.infoTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.recipientsPreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.emailChip {
+  padding: 4px 10px;
+  background: white;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  font-size: 11px;
+  color: #1e40af;
+}
+
+@media (max-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .scheduleCardHeader {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .scheduleCardActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .recipientInputWrapper {
+    flex-direction: column;
+  }
+
+  .addRecipientBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
