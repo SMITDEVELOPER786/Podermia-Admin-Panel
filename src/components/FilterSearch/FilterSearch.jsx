@@ -63,6 +63,7 @@ const FilterSearch = ({
     dropdowns = [],         // [{ key: "module", label: "Module", options: [...] }]
     showDate = false,
     showMonth = false,
+    heading = "Filter & Search",
   } = config;
 
   const initialFilters = {
@@ -90,7 +91,7 @@ const FilterSearch = ({
     <>
       {/* Mobile Button */}
       <button className={styles.mobileFilterBtn} onClick={() => setMobileOpen(true)}>
-        Filter & Search
+        {heading}
       </button>
 
       {/* Mobile Search (Conditional) */}
@@ -111,7 +112,7 @@ const FilterSearch = ({
         <div className={styles.header}>
           <div className={styles.heading}>
             <SlidersHorizontal size={20} />
-            <h3>Filter & Search</h3>
+            <h3>{heading}</h3>
           </div>
 
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>

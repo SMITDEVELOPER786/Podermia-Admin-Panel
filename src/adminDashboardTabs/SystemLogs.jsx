@@ -1,14 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import styles from '../css/SystemLogs.module.css';
 import FilterSearch from '../components/FilterSearch/FilterSearch';
-import DataTable from '../components/DataTable/DataTables';
-import CustomModal from '../components/CustomModal/CustomModal';
-import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialog';
-import Toast from '../components/Toast/Toast';
-import { ArrowLeftIcon, UploadIcon, Loader2, Settings, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
+import { ArrowLeftIcon, Loader2, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
 function Div({ className, ...props }) {
   const mappedClass = className
@@ -18,35 +12,64 @@ function Div({ className, ...props }) {
   return <div className={mappedClass} {...props} />;
 }
 
-// Generate mock metrics data
-const generateMetrics = () => {
-  const categories = [
-    'Infrastructure',
-    'Application Performance',
-    'Transaction System',
-    'Security & Risk',
-    'Growth & Usage'
+
+export const parseNumber = (str) => {
+  if (str === null || str === undefined) return null;
+  const cleaned = String(str).replace(/,/g, '').trim();
+  const match = cleaned.match(/-?\d+(\.\d+)?/);
+  if (!match) return null;
+  return parseFloat(match[0]);
+};
+export const isLowBad = (name) => {
+  if (!name) return false;
+  const key = name.toLowerCase();
+  const lowBadKeywords = [
+    'uptime', 'success', 'dau', 'mau', 'active', 'new signups', 'success vs failure', 'success rate'
   ];
+  return lowBadKeywords.some(k => key.includes(k));
+};
 
-  const statuses = ['Normal', 'Warning', 'Critical'];
-  const services = ['API Gateway', 'Payment Service', 'Auth Service', 'Database', 'Cache Service', 'Notification Service'];
+export const computeStatus = (metric) => {
+  const { value, threshold } = metric;
+  const v = parseNumber(value);
+  const t = threshold !== null && threshold !== undefined ? parseNumber(threshold) : null;
 
+  if (t === null || isNaN(t)) {
+    return 'Normal';
+  }
+  if (v === null || isNaN(v)) {
+    return metric.status || 'Normal';
+  }
+
+  const lowBad = isLowBad(metric.name);
+
+  if (!lowBad) {
+    if (v >= t) return 'Critical';
+    if (v >= t * 0.9) return 'Warning';
+    return 'Normal';
+  } else {
+    if (v <= t) return 'Critical';
+    if (v <= t * 0.995) return 'Warning';
+    return 'Normal';
+  }
+};
+
+
+export const generateMetrics = () => {
   const metrics = [];
 
-  // Infrastructure Metrics
   metrics.push(
     { id: 'INF001', category: 'Infrastructure', name: 'Server Uptime', value: '99.9%', threshold: '99.5%', status: 'Normal', sourceService: 'Infrastructure', timestamp: new Date().toISOString() },
     { id: 'INF002', category: 'Infrastructure', name: 'CPU Usage', value: '45%', threshold: '80%', status: 'Normal', sourceService: 'Infrastructure', timestamp: new Date(Date.now() - 5 * 60000).toISOString() },
-    { id: 'INF003', category: 'Infrastructure', name: 'Memory Usage', value: '72%', threshold: '85%', status: 'Normal', sourceService: 'Infrastructure', timestamp: new Date(Date.now() - 10 * 60000).toISOString() },
+    { id: 'INF003', category: 'Infrastructure', name: 'Memory Usage', value: '72%', threshold: '70%', status: 'Normal', sourceService: 'Infrastructure', timestamp: new Date(Date.now() - 10 * 60000).toISOString() },
     { id: 'INF004', category: 'Infrastructure', name: 'Disk I/O', value: '234 MB/s', threshold: '500 MB/s', status: 'Normal', sourceService: 'Infrastructure', timestamp: new Date(Date.now() - 15 * 60000).toISOString() },
     { id: 'INF005', category: 'Infrastructure', name: 'Network Latency', value: '12ms', threshold: '50ms', status: 'Normal', sourceService: 'Infrastructure', timestamp: new Date(Date.now() - 20 * 60000).toISOString() },
     { id: 'INF006', category: 'Infrastructure', name: 'Error Rate (4xx)', value: '0.2%', threshold: '1%', status: 'Normal', sourceService: 'API Gateway', timestamp: new Date(Date.now() - 25 * 60000).toISOString() },
     { id: 'INF007', category: 'Infrastructure', name: 'Error Rate (5xx)', value: '0.05%', threshold: '0.5%', status: 'Normal', sourceService: 'API Gateway', timestamp: new Date(Date.now() - 30 * 60000).toISOString() },
   );
 
-  // Application Performance Metrics
   metrics.push(
-    { id: 'APP001', category: 'Application Performance', name: 'API Response Time', value: '150ms', threshold: '300ms', status: 'Normal', sourceService: 'API Gateway', timestamp: new Date(Date.now() - 35 * 60000).toISOString() },
+    { id: 'APP001', category: 'Application Performance', name: 'API Response Time', value: '150ms', threshold: '100ms', status: 'Normal', sourceService: 'API Gateway', timestamp: new Date(Date.now() - 35 * 60000).toISOString() },
     { id: 'APP002', category: 'Application Performance', name: 'API Failure Rate', value: '0.1%', threshold: '1%', status: 'Normal', sourceService: 'API Gateway', timestamp: new Date(Date.now() - 40 * 60000).toISOString() },
     { id: 'APP003', category: 'Application Performance', name: 'Request Volume - /api/payments', value: '1,234/min', threshold: '5000/min', status: 'Normal', sourceService: 'Payment Service', timestamp: new Date(Date.now() - 45 * 60000).toISOString() },
     { id: 'APP004', category: 'Application Performance', name: 'Request Volume - /api/auth', value: '567/min', threshold: '2000/min', status: 'Normal', sourceService: 'Auth Service', timestamp: new Date(Date.now() - 50 * 60000).toISOString() },
@@ -55,7 +78,6 @@ const generateMetrics = () => {
     { id: 'APP007', category: 'Application Performance', name: 'Queue Backlog Size', value: '45', threshold: '100', status: 'Normal', sourceService: 'Notification Service', timestamp: new Date(Date.now() - 65 * 60000).toISOString() },
   );
 
-  // Transaction System Metrics
   metrics.push(
     { id: 'TXN001', category: 'Transaction System', name: 'Transactions per Minute', value: '2,345', threshold: '10000', status: 'Normal', sourceService: 'Payment Service', timestamp: new Date(Date.now() - 70 * 60000).toISOString() },
     { id: 'TXN002', category: 'Transaction System', name: 'Success vs Failure Ratio', value: '99.8%', threshold: '99%', status: 'Normal', sourceService: 'Payment Service', timestamp: new Date(Date.now() - 75 * 60000).toISOString() },
@@ -65,17 +87,15 @@ const generateMetrics = () => {
     { id: 'TXN006', category: 'Transaction System', name: 'Timeout Thresholds Breached', value: '0', threshold: '5', status: 'Normal', sourceService: 'Payment Service', timestamp: new Date(Date.now() - 95 * 60000).toISOString() },
   );
 
-  // Security & Risk Metrics
   metrics.push(
     { id: 'SEC001', category: 'Security & Risk', name: 'Failed Login Spikes', value: '3', threshold: '10', status: 'Normal', sourceService: 'Auth Service', timestamp: new Date(Date.now() - 100 * 60000).toISOString() },
     { id: 'SEC002', category: 'Security & Risk', name: 'OTP/PIN Retry Frequency', value: '1.2%', threshold: '5%', status: 'Normal', sourceService: 'Auth Service', timestamp: new Date(Date.now() - 105 * 60000).toISOString() },
     { id: 'SEC003', category: 'Security & Risk', name: '2FA Failure Rate', value: '0.3%', threshold: '2%', status: 'Normal', sourceService: 'Auth Service', timestamp: new Date(Date.now() - 110 * 60000).toISOString() },
     { id: 'SEC004', category: 'Security & Risk', name: 'Device Mismatch Frequency', value: '0.5%', threshold: '3%', status: 'Normal', sourceService: 'Auth Service', timestamp: new Date(Date.now() - 115 * 60000).toISOString() },
     { id: 'SEC005', category: 'Security & Risk', name: 'Velocity Rule Triggers', value: '2', threshold: '10', status: 'Normal', sourceService: 'Auth Service', timestamp: new Date(Date.now() - 120 * 60000).toISOString() },
-    { id: 'SEC006', category: 'Security & Risk', name: 'AML Flag Volume', value: '5', threshold: '20', status: 'Normal', sourceService: 'Risk Service', timestamp: new Date(Date.now() - 125 * 60000).toISOString() },
+    { id: 'SEC006', category: 'Security & Risk', name: 'AML Flag Volume', value: '5', threshold: '4', status: 'Normal', sourceService: 'Risk Service', timestamp: new Date(Date.now() - 125 * 60000).toISOString() },
   );
 
-  // Growth & Usage Metrics
   metrics.push(
     { id: 'GRW001', category: 'Growth & Usage', name: 'DAU (Daily Active Users)', value: '45,234', threshold: null, status: 'Normal', sourceService: 'Analytics Service', timestamp: new Date(Date.now() - 130 * 60000).toISOString() },
     { id: 'GRW002', category: 'Growth & Usage', name: 'MAU (Monthly Active Users)', value: '1,234,567', threshold: null, status: 'Normal', sourceService: 'Analytics Service', timestamp: new Date(Date.now() - 135 * 60000).toISOString() },
@@ -86,100 +106,23 @@ const generateMetrics = () => {
     { id: 'GRW007', category: 'Growth & Usage', name: 'Feature Usage Rate', value: '78%', threshold: null, status: 'Normal', sourceService: 'Analytics Service', timestamp: new Date(Date.now() - 160 * 60000).toISOString() },
   );
 
-  // Add some Warning and Critical statuses
-  metrics[1].status = 'Warning';
-  metrics[2].status = 'Warning';
-  metrics[8].status = 'Critical';
-  metrics[15].status = 'Warning';
-
-  // Add acknowledged field to all metrics (default false)
   metrics.forEach(metric => {
+    const computed = computeStatus(metric);
+    metric.status = computed;
     metric.acknowledged = false;
   });
 
   return metrics;
 };
 
-// Threshold Modal Component
-const ThresholdModal = ({ metric, onClose, onSave }) => {
-  const [thresholdValue, setThresholdValue] = useState(metric.threshold || '');
-
-  // Update threshold value when metric changes
-  React.useEffect(() => {
-    setThresholdValue(metric.threshold || '');
-  }, [metric.threshold]);
-
-  const handleSave = () => {
-    if (thresholdValue.trim()) {
-      onSave(thresholdValue.trim());
-    }
-  };
-
-  return (
-    <CustomModal
-      isOpen={!!metric}
-      onClose={onClose}
-      width="500px"
-      showClose={true}
-    >
-      <div className={styles.thresholdModal}>
-        <h2 className={styles.modalTitle}>Set Alert Threshold</h2>
-        <div className={styles.modalContent}>
-          <div className={styles.metricInfo}>
-            <p><strong>Metric:</strong> {metric.name}</p>
-            <p><strong>Current Value:</strong> {metric.value}</p>
-            <p><strong>Current Threshold:</strong> {metric.threshold || 'Not Set'}</p>
-          </div>
-          <div className={styles.inputGroup}>
-            <label>New Threshold Value:</label>
-            <input
-              type="text"
-              placeholder="Enter threshold value"
-              value={thresholdValue}
-              onChange={(e) => setThresholdValue(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  handleSave();
-                }
-              }}
-              autoFocus
-            />
-          </div>
-          <div className={styles.modalActions}>
-            <button
-              className={styles.cancelBtn}
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button
-              className={styles.saveBtn}
-              onClick={handleSave}
-              disabled={!thresholdValue.trim()}
-            >
-              Save Threshold
-            </button>
-          </div>
-        </div>
-      </div>
-    </CustomModal>
-  );
-};
-
 const SystemLogs = () => {
   const navigate = useNavigate();
-  const [metrics, setMetrics] = useState(generateMetrics());
+  const [metrics] = useState(generateMetrics());
   const [filteredMetrics, setFilteredMetrics] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadingPDF, setLoadingPDF] = useState(false);
-  const [selectedMetrics, setSelectedMetrics] = useState([]);
-  const [thresholdModal, setThresholdModal] = useState(null);
-  const [confirmDialog, setConfirmDialog] = useState(null);
-  const [toast, setToast] = useState(null);
 
-  const handleBack = () => navigate(-1);
+  const handleBack = () => navigate('/');
 
-  // Filter categories
   const categories = useMemo(
     () => ['All', ...new Set(metrics.map((m) => m.category))],
     [metrics]
@@ -195,7 +138,6 @@ const SystemLogs = () => {
     [metrics]
   );
 
-  // KPI Summary
   const kpiData = useMemo(() => {
     const total = metrics.length;
     const critical = metrics.filter(m => m.status === 'Critical').length;
@@ -210,20 +152,10 @@ const SystemLogs = () => {
     ];
   }, [metrics]);
 
-  // Handle filter change
   const onFilterChange = (filters) => {
     setLoading(true);
     setTimeout(() => {
       let temp = [...metrics];
-
-      if (filters.search) {
-        temp = temp.filter(
-          (m) =>
-            m.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-            m.id.toLowerCase().includes(filters.search.toLowerCase()) ||
-            m.sourceService.toLowerCase().includes(filters.search.toLowerCase())
-        );
-      }
 
       if (filters.category && filters.category !== 'All') {
         temp = temp.filter((m) => m.category === filters.category);
@@ -249,199 +181,77 @@ const SystemLogs = () => {
     }, 500);
   };
 
-  // Handle metric selection
-  const handleSelectMetric = (metric, isSelected) => {
-    if (isSelected) {
-      setSelectedMetrics((prev) => [...prev, metric]);
-    } else {
-      setSelectedMetrics((prev) => prev.filter((m) => m.id !== metric.id));
-    }
-  };
-
-  const isMetricSelected = (metric) => {
-    return selectedMetrics.some((m) => m.id === metric.id);
-  };
-
-  // Handle acknowledge alert
-  const handleAcknowledge = (metric) => {
-    setConfirmDialog({
-      type: 'info',
-      title: 'Acknowledge Alert',
-      message: `Are you sure you want to acknowledge the alert for "${metric.name}"?`,
-      confirmText: 'Yes, Acknowledge',
-      cancelText: 'Cancel',
-      onConfirm: () => {
-        // Update the metric's acknowledged status
-        setMetrics(prevMetrics =>
-          prevMetrics.map(m =>
-            m.id === metric.id ? { ...m, acknowledged: true } : m
-          )
-        );
-        
-        // Update filtered metrics if needed
-        if (filteredMetrics.length > 0) {
-          setFilteredMetrics(prevFiltered =>
-            prevFiltered.map(m =>
-              m.id === metric.id ? { ...m, acknowledged: true } : m
-            )
-          );
-        }
-
-        setToast({
-          type: 'success',
-          title: 'Alert Acknowledged',
-          message: `Alert for "${metric.name}" has been acknowledged successfully.`,
-        });
-        setConfirmDialog(null);
-      },
-      onCancel: () => setConfirmDialog(null),
-    });
-  };
-
-  // Handle set threshold
-  const handleSetThreshold = (metric) => {
-    // Get the latest metric data from state
-    const latestMetric = metrics.find(m => m.id === metric.id) || metric;
-    setThresholdModal(latestMetric);
-  };
-
-  // Handle save threshold
-  const handleSaveThreshold = (newThreshold) => {
-    // Update the metric's threshold
-    setMetrics(prevMetrics =>
-      prevMetrics.map(m =>
-        m.id === thresholdModal.id ? { ...m, threshold: newThreshold } : m
-      )
-    );
+  const categoriesData = useMemo(() => {
+    const categoryMap = {};
+    const allMetrics = filteredMetrics.length > 0 ? filteredMetrics : metrics;
     
-    // Update filtered metrics if needed
-    if (filteredMetrics.length > 0) {
-      setFilteredMetrics(prevFiltered =>
-        prevFiltered.map(m =>
-          m.id === thresholdModal.id ? { ...m, threshold: newThreshold } : m
-        )
-      );
-    }
-
-    setToast({
-      type: 'success',
-      title: 'Threshold Updated',
-      message: `Threshold for "${thresholdModal.name}" has been updated to ${newThreshold}.`,
+    allMetrics.forEach(metric => {
+      if (!categoryMap[metric.category]) {
+        categoryMap[metric.category] = {
+          name: metric.category,
+          totalMetrics: 0,
+          critical: 0,
+          warning: 0,
+          normal: 0,
+        };
+      }
+      categoryMap[metric.category].totalMetrics++;
+      if (metric.status === 'Critical') categoryMap[metric.category].critical++;
+      else if (metric.status === 'Warning') categoryMap[metric.category].warning++;
+      else categoryMap[metric.category].normal++;
     });
-    setThresholdModal(null);
-  };
+    
+    return Object.values(categoryMap);
+  }, [filteredMetrics, metrics]);
 
-  // Export to PDF
-  const handleExportPDF = () => {
-    setLoadingPDF(true);
-    setTimeout(() => {
-      const doc = new jsPDF();
-      doc.setFontSize(18);
-      const exportTitle = selectedMetrics.length > 0 ? 'Selected Metrics Data' : 'All Metrics Data';
-      doc.text(exportTitle, 14, 15);
+  const CategoryCard = ({ categoryData }) => {
+    const handleClick = () => {
+      navigate(`/system/logs/category/${encodeURIComponent(categoryData.name)}`);
+    };
 
-      const dataToExport = selectedMetrics.length > 0 ? selectedMetrics : (filteredMetrics.length > 0 ? filteredMetrics : metrics);
-
-      const tableColumn = ['Metric ID', 'Category', 'Metric Name', 'Value', 'Threshold', 'Status', 'Source Service', 'Timestamp'];
-      const tableRows = dataToExport.map((m) => [
-        m.id,
-        m.category,
-        m.name,
-        m.value,
-        m.threshold || 'N/A',
-        m.status,
-        m.sourceService,
-        new Date(m.timestamp).toLocaleString(),
-      ]);
-
-      autoTable(doc, {
-        head: [tableColumn],
-        body: tableRows,
-        startY: 25,
-        theme: 'grid',
-        headStyles: {
-          fillColor: [41, 92, 191],
-          textColor: 255,
-          fontStyle: 'bold',
-        },
-        bodyStyles: { fontSize: 10 },
-        alternateRowStyles: { fillColor: [240, 240, 240] },
-      });
-
-      doc.save('system-metrics.pdf');
-      setLoadingPDF(false);
-    }, 1000);
-  };
-
-  // Table columns
-  const columns = [
-    {
-      header: 'Select',
-      key: 'checkbox',
-      render: (row) => (
-        <input
-          type="checkbox"
-          checked={isMetricSelected(row)}
-          onChange={(e) => {
-            e.stopPropagation();
-            handleSelectMetric(row, e.target.checked);
-          }}
-          onClick={(e) => e.stopPropagation()}
-          style={{ cursor: 'pointer' }}
-        />
-      ),
-    },
-    { header: 'Metric ID', key: 'id' },
-    { header: 'Category', key: 'category' },
-    { header: 'Metric Name', key: 'name' },
-    { header: 'Value', key: 'value' },
-    { header: 'Threshold', key: 'threshold', render: (row) => row.threshold || 'N/A' },
-    {
-      header: 'Status',
-      key: 'status',
-      styleMap: {
-        Normal: styles.statusNormal,
-        Warning: styles.statusWarning,
-        Critical: styles.statusCritical,
-      },
-    },
-    { header: 'Source Service', key: 'sourceService' },
-    {
-      header: 'Timestamp',
-      key: 'timestamp',
-      render: (row) => new Date(row.timestamp).toLocaleString(),
-    },
-    {
-      header: 'Actions',
-      key: 'actions',
-      render: (row) => (
-        <div className={styles.actionButtons}>
-          <button
-            className={styles.actionBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSetThreshold(row);
-            }}
-            title="Set Threshold"
-          >
-            <Settings size={16} />
-          </button>
-          {row.status !== 'Normal' && !row.acknowledged && (
-            <button
-              className={styles.actionBtn}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAcknowledge(row);
-              }}
-              title="Acknowledge Alert"
-            >
-              <CheckCircle size={16} />
-            </button>
-          )}
+    return (
+      <div className={styles.sourceServiceCard} onClick={handleClick}>
+        <div className={styles.sourceServiceCardHeader}>
+          <h3 className={styles.sourceServiceName}>{categoryData.name}</h3>
+          <div className={styles.sourceServiceArrow}>
+            <ArrowRight size={24} />
+          </div>
         </div>
-      ),
-    },
-  ];
+        
+        <div className={styles.sourceServiceStats}>
+          <div className={styles.sourceServiceStat}>
+            <span className={styles.sourceServiceStatLabel}>Total Metrics</span>
+            <span className={styles.sourceServiceStatValue}>{categoryData.totalMetrics}</span>
+          </div>
+          
+          <div className={styles.sourceServiceStatRow}>
+            <div className={styles.sourceServiceStat}>
+              <span className={styles.sourceServiceStatLabel}>Critical</span>
+              <span className={styles.sourceServiceStatValue} style={{ color: '#ef4444' }}>
+                {categoryData.critical}
+              </span>
+            </div>
+            <div className={styles.sourceServiceStat}>
+              <span className={styles.sourceServiceStatLabel}>Warning</span>
+              <span className={styles.sourceServiceStatValue} style={{ color: '#f59e0b' }}>
+                {categoryData.warning}
+              </span>
+            </div>
+            <div className={styles.sourceServiceStat}>
+              <span className={styles.sourceServiceStatLabel}>Normal</span>
+              <span className={styles.sourceServiceStatValue} style={{ color: '#10b981' }}>
+                {categoryData.normal}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div className={styles.sourceServiceClickHint}>
+          Click to view all metrics
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Div className="system-logs-section">
@@ -455,7 +265,6 @@ const SystemLogs = () => {
         </div>
       </Div>
 
-      {/* KPI Cards */}
       <div className={styles.kpiGrid}>
         {kpiData.map((kpi, index) => (
           <div key={index} className={styles.kpiCard}>
@@ -467,118 +276,47 @@ const SystemLogs = () => {
         ))}
       </div>
 
-      {/* Filters */}
       <FilterSearch
         config={{
-          showSearch: true,
-          searchPlaceholder: 'Search by metric name, ID, or service...',
+          showSearch: false,
           dropdowns: [
             { key: 'category', label: 'Category', options: categories },
             { key: 'status', label: 'Status', options: statuses },
             { key: 'service', label: 'Source Service', options: services },
           ],
           showDate: true,
+          heading: 'Filter',
         }}
         onFilterChange={onFilterChange}
       />
 
-      {/* Table */}
       <Div className="table-wrapper">
         <Div className="table-header flexRow">
-          <h3>System Metrics</h3>
+          <h3>Metric Categories</h3>
           <span className={styles.recordCount}>
-            {filteredMetrics.length > 0 ? filteredMetrics.length : metrics.length} records
+            {categoriesData.length} categor{categoriesData.length !== 1 ? 'ies' : 'y'}
           </span>
         </Div>
 
-        {selectedMetrics.length > 0 && (
-          <Div className="selection-info flexRow" style={{
-            marginTop: '12px',
-            marginBottom: '12px',
-            padding: '8px 16px',
-            backgroundColor: '#eff6ff',
-            borderRadius: '6px',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <span style={{ fontSize: '14px', color: '#295cbf', fontWeight: '500' }}>
-              {selectedMetrics.length} metric{selectedMetrics.length !== 1 ? 's' : ''} selected
-            </span>
-            <button
-              onClick={() => setSelectedMetrics([])}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: '#295cbf',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500',
-                textDecoration: 'underline',
-                padding: '4px 8px'
-              }}
-            >
-              Clear selection
-            </button>
-          </Div>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '60px', color: '#6b7280' }}>
+            <Loader2 className={styles.spin} size={32} style={{ margin: '0 auto' }} />
+            <p style={{ marginTop: '16px' }}>Loading categories...</p>
+          </div>
+        ) : categoriesData.length === 0 ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyStateIcon}>📊</div>
+            <div className={styles.emptyStateText}>No categories found</div>
+          </div>
+        ) : (
+          <div className={styles.sourceServicesGrid}>
+            {categoriesData.map((categoryData, index) => (
+              <CategoryCard key={index} categoryData={categoryData} />
+            ))}
+          </div>
         )}
-
-        <DataTable
-          columns={columns}
-          data={filteredMetrics.length > 0 ? filteredMetrics : metrics}
-          scrollHeight={500}
-          onRowClick={(row) => console.log('Metric clicked:', row)}
-          loading={loading}
-        />
       </Div>
 
-      {/* Export Button */}
-      <button
-        className={styles.exportBtn}
-        onClick={handleExportPDF}
-        disabled={loadingPDF}
-      >
-        {loadingPDF ? (
-          <Loader2 className={styles.spin} size={16} />
-        ) : (
-          <>
-            <UploadIcon size={20} color="#fff" />
-            {selectedMetrics.length > 0 ? `Export Selected Metrics (${selectedMetrics.length})` : 'Export All Metrics'}
-          </>
-        )}
-      </button>
-
-      {/* Set Threshold Modal */}
-      {thresholdModal && (
-        <ThresholdModal
-          metric={thresholdModal}
-          onClose={() => setThresholdModal(null)}
-          onSave={handleSaveThreshold}
-        />
-      )}
-
-      {/* Confirmation Dialog */}
-      {confirmDialog && (
-        <ConfirmDialog
-          isOpen={!!confirmDialog}
-          type={confirmDialog.type}
-          title={confirmDialog.title}
-          message={confirmDialog.message}
-          confirmText={confirmDialog.confirmText}
-          cancelText={confirmDialog.cancelText}
-          onConfirm={confirmDialog.onConfirm}
-          onCancel={confirmDialog.onCancel}
-        />
-      )}
-
-      {/* Toast */}
-      {toast && (
-        <Toast
-          type={toast.type}
-          title={toast.title}
-          message={toast.message}
-          onClose={() => setToast(null)}
-        />
-      )}
     </Div>
   );
 };

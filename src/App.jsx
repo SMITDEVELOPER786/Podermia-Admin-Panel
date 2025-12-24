@@ -13,6 +13,7 @@ import TwoFactorPage from "./auth/Twofactorauth";
 import Notifications from "./adminDashboardTabs/Notifications";
 import AllTransactions from "./adminDashboardTabs/AllTransactions";
 import SystemLogs from "./adminDashboardTabs/SystemLogs";
+import CategoryMetrics from "./adminDashboardTabs/CategoryMetrics";
 const isAuthenticated = () => !!localStorage.getItem("token");
 const isTwoFAComplete = () => !!localStorage.getItem("2fa");
 
@@ -97,6 +98,14 @@ const App = () => {
         element={
           <PrivateRoute>
             <SystemLogs />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/system/logs/category/:categoryName"
+        element={
+          <PrivateRoute>
+            <CategoryMetrics />
           </PrivateRoute>
         }
       />

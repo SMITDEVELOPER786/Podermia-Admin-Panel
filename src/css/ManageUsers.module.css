@@ -186,6 +186,43 @@
   display: inline-block;
   min-width: 80px;
 }
+
+/* Risk Level */
+.riskLow {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
+}
+
+.riskMedium {
+  background-color: #fff3cd;
+  color: #664d03;
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
+}
+
+.riskHigh {
+  background-color: #f8d7da;
+  color: #842029;
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  min-width: 80px;
+}
 .exportBtn{
     background-color: var(--btnColor);
     color: #fff;
@@ -262,7 +299,10 @@
 .detailValue.statusActive,
 .detailValue.statusSuspended,
 .detailValue.statusFrozen,
-.detailValue.statusClosed {
+.detailValue.statusClosed,
+.detailValue.riskLow,
+.detailValue.riskMedium,
+.detailValue.riskHigh {
   width: auto;
   flex: none;
   text-align: center;
