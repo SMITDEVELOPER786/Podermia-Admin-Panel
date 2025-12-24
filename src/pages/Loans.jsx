@@ -819,7 +819,8 @@ function DefaultManagementTab() {
 }
 
 // collateral
-function CollateralTab() {
+function CollateralTab({ setActiveTab }) {
+  const [selectedLoan, setSelectedLoan] = useState(null);
   const [filters, setFilters] = useState({
     collateralStatus: "Collateral Status",
     assetType: "Asset Type",
@@ -970,7 +971,7 @@ if (showLiquidation) {
                 </td>
 
                 <td>
-                 <img src={eyeIcon} alt="view" style={{ cursor: "pointer" }} onClick={() => { setSelectedLoan(r); setActiveTab("Review"); }} />
+                 <img src={eyeIcon} alt="view" style={{ cursor: "pointer" }} onClick={() => { setSelectedLoan(row); setActiveTab("Review"); }} />
                 </td>
 
               </tr>
