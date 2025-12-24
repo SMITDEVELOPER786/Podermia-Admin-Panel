@@ -253,9 +253,7 @@
   font-size: 24px;
   font-weight: 600;
   color: #295cbf;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e5e7eb;
+ 
 }
 
 .userDetailsContent {
@@ -403,4 +401,282 @@
 .closeBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Modal Tabs */
+.modalTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.modalTab {
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.modalTab:hover {
+  color: #295cbf;
+}
+
+.modalTab.activeTab {
+  color: #295cbf;
+  border-bottom-color: #295cbf;
+  font-weight: 600;
+}
+
+.modalTabContent {
+ 
+  padding-right: 8px;
+}
+
+/* Section Styles */
+.section {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #295cbf;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Module Links Grid */
+.moduleLinksGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.moduleLinkCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.moduleLinkCard:hover {
+  background: #f3f4f6;
+  border-color: #295cbf;
+  transform: translateY(-2px);
+}
+
+.moduleLinkCard svg {
+  color: #295cbf;
+  flex-shrink: 0;
+}
+
+.moduleLinkTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.moduleLinkValue {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.moduleLinkIcon {
+  margin-left: auto;
+  color: #9ca3af;
+}
+
+/* Quick Actions Grid */
+.quickActionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.quickActionBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #295cbf;
+  transition: all 0.2s ease;
+}
+
+.quickActionBtn:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.quickActionBtn svg {
+  flex-shrink: 0;
+}
+
+/* Override Sub-tabs */
+.overrideSubTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.overrideSubTab {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.overrideSubTab:hover {
+  color: #295cbf;
+}
+
+.overrideSubTab.activeSubTab {
+  color: #295cbf;
+  border-bottom-color: #295cbf;
+  font-weight: 600;
+}
+
+/* Override Section */
+.overrideSection {
+  margin-bottom: 24px;
+}
+
+.overrideForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formRow label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.formRow input[type="text"],
+.formRow input[type="date"],
+.formRow select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.formRow input[type="text"]:focus,
+.formRow input[type="date"]:focus,
+.formRow select:focus {
+  outline: none;
+  border-color: #295cbf;
+  box-shadow: 0 0 0 3px rgba(41, 92, 191, 0.1);
+}
+
+.formRow input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.formRow label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.saveOverrideBtn {
+  padding: 12px 24px;
+  background: #295cbf;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.saveOverrideBtn:hover {
+  background: #1e3a5f;
+}
+
+/* Security Tab */
+.securityTab {
+  padding: 8px 0;
+}
+
+.securityActionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.securityActionBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #dc2626;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.securityActionBtn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  transform: translateY(-2px);
+}
+
+.securityActionBtn svg {
+  flex-shrink: 0;
+  color: #dc2626;
+}
+
+/* Overview Tab */
+.overviewTab {
+  padding: 8px 0;
+}
+
+/* Overrides Tab */
+.overridesTab {
+  padding: 8px 0;
 }
