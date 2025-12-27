@@ -1,0 +1,112 @@
+/* LoanDetailsModal*/
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalBoxLarge {
+  background: #fff;
+  border-radius: 10px;
+  width: 700px;
+  max-width: 90%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 20px;
+}
+
+.detailGrid label {
+  font-weight: 600;
+  color: #555;
+}
+
+.detailGrid p {
+  margin: 5px 0 10px 0;
+  color: #333;
+}
+
+.statusBadge {
+  background: #f44336;
+  color: #fff !important;
+  margin-left: 10px !important;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.divider {
+  height: 1px;
+  background: #eee;
+  margin: 10px 0;
+}
+
+.extraInfo h4 {
+  margin-bottom: 5px;
+}
+
+.extraInfo p {
+  color: #555;
+  font-size: 14px;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.secondaryBtn {
+  background: #246daf;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .modalBoxLarge {
+    width: 95%;
+    padding: 15px;
+        max-height: 70vh;
+        overflow-y: auto;
+
+  }
+
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+}
