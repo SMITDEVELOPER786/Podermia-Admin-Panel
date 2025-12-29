@@ -184,7 +184,7 @@
 .styleGrids p{
   color: #675F5F;
 }
-/* CriticalActionModal.module.css */
+/* CriticalActionModal*/
 
 .modalOverlay {
   position: fixed;
@@ -192,7 +192,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.45); /* slightly lighter dim */
+  background-color: rgba(0, 0, 0, 0.45); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -202,7 +202,7 @@
 
 .modalContent {
   background-color: #ffffff;
-  border-radius: 8px; /* square-ish sharp edges */
+  border-radius: 8px; 
   padding: 30px 25px;
   width: 40% !important;
   max-width: 400px;
@@ -353,101 +353,286 @@
   width: 16px;
 }
 /* settings tab */
-.container {
-  width: 100%;
-  padding: 10px 25px;
 
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.topBar h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #246daf;
+}
+
+.productSection {
+  margin-top: 20px;
 }
 
 .sectionTitle {
-  font-size: 20px;
-  margin-bottom: 15px;
-  color: #000000;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #246daf;
 }
 
 .card {
-  border: 1px solid #264DAF;
-  border-radius: 12px;
-  padding: 18px;
-  margin-bottom: 18px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
 }
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
-.editBtn {
-  border: 1px solid #264DAF;
-  padding: 4px 14px;
-  border-radius: 4px;
-  background: white;
-  color: #264DAF;
-  cursor: pointer;
+.cardHeader h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #246daf;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
 }
 
 .cardGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  row-gap: 4px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px 20px;
 }
 
-.addProductBtn {
-  background: #ffffff;
-  border: 1px solid #264DAF;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 500;
-  cursor: pointer;
-  width: 260px;
-  color: #264DAF;
-  margin-top: 10px;
-  margin-bottom: 35px;
-   margin: 10px auto 35px auto;  
-   display: block;  
+.cardGrid p {
+  margin: 4px 0;
+  font-size: 15px;
+  color: #374151;
 }
 
-.bigSection {
-  border: 1px solid #E5E7EB;
-  border-radius: 12px;
-  padding: 18px;
-  margin-bottom: 20px;
-  margin-top: 40px;
+.cardGrid strong {
+  color: #111827;
 }
 
-.bigSection h3 {
-  margin-bottom: 14px;
-}
-
-.inputRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.inputRow input {
-  padding: 10px;
-  border: 1px solid #D0D5DD;
-  border-radius: 8px;
-}
-
-.saveBtn {
-  background: #264DAF;
-  color: #fff;
+.settingAddBtn {
+  display: block;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 600;
   border: none;
-  padding: 12px 22px;
-  border-radius: 10px;
+  border-radius: 8px;
+  background-color: #246daf;
+  color: white;
   cursor: pointer;
-  margin-top: 10px;
-}
-.inputRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  transition: background-color 0.2s;
 }
 
+.settingAddBtn:hover {
+  background-color: #1d5799;
+}
+
+.settingEditBtn {
+  background-color: #246daf;
+  color: white;
+  padding: 6px 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settingEditBtn:hover {
+  background-color: #063092;
+}
+
+.settingViewBtn {
+  background-color: white;
+  border: 1px solid #246daf;
+  color: #173A8A;
+  padding: 6px 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settingViewBtn:hover {
+  background-color: #1d5799;
+  color: #fff;
+}
+
+.settingModalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.settingModalButtons button:first-child {
+  background-color: #ffffff;
+  color: rgb(7, 18, 116);
+  padding: 8px 16px;
+  border: 1px solid blue !important;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settingModalButtons button:last-child {
+  background-color: #246daf;
+  color: white;
+  padding: 8px 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settingModalButtons button:last-child:hover {
+  background-color: #1d5799;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: #246daf;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 10px;
+  white-space: nowrap; 
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: blue;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modalContent {
+  background: #fff;
+  width: 90%;
+  max-width: 700px;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.modalHeader h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #246daf;
+  margin: 0;
+}
+
+.closeIcon {
+  font-size: 50px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.errorText {
+  color: #dc2626;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+@media (min-width: 768px) {
+  .productSection {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .productSection {
+    display: block;
+  }
+
+  .cardActions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .cardActions button {
+    flex: 1;
+  }
+
+  .modalHeader h3 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardHeader h4{
+    color: #000000;
+    font-size: 11px;
+  }
+}
 /* default tab */
+.searchInput {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  min-width: 240px;
+  font-size: 14px;
+  background-color: #f5f3f3;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.15);
+}
+
 .wrapper {
   width: 100%;
   padding: 0%;
@@ -478,8 +663,8 @@ font-weight: 600;
   background: #fff;
 }
 
-.applyBtn {
-  padding: 10px 18px;
+.applBtn {
+  padding: 4px 18px;
   background: #264db1;
   color: #fff;
   font-size: 14px;
@@ -1424,7 +1609,7 @@ color: #9F0712 !important;
 }
 
 .modalButtons button {
-  padding: 8px 20px;
+  padding: 10px 20px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -1575,7 +1760,6 @@ color: #9F0712 !important;
   font-size: 14px;
 }
 
-
 .otherActionsMenu {
   position: absolute;
   top: 100%;
@@ -1617,14 +1801,12 @@ color: #9F0712 !important;
 
 .cancelButton {
   padding: 10px 20px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #144fa7 !important;
   border-radius: 6px;
   background: #fff;
   cursor: pointer;
   font-weight: 500;
 }
-
-
 
 .saveButton {
   padding: 10px 20px;
@@ -1691,8 +1873,7 @@ padding: 0%;
     width: 100%;
   }
 }
-/* default tab action btns */
-/* ActionButtons.module.css */
+
 
 .tableCellRelative {
   position: relative;
@@ -1727,8 +1908,8 @@ padding: 0%;
   display: flex;
   flex-direction: column;
   padding: 4px 0;
-  max-height: 240px; /* jitna table visible, uske liye height fix */
-  overflow-y: auto; /* zyada items ho to scroll aaye */
+  max-height: 240px; 
+  overflow-y: auto; 
 }
 
 .actionMenuItem {
@@ -1771,76 +1952,333 @@ padding: 0%;
     padding: 6px 12px;
   }
 }
-/* Default action menu */
-/* DefaultManagementTabAction.module.css */
-
-/* Table cell relative positioning */
-.tableWrapper table tbody tr td:last-child {
-  position: relative;
+.fixedActionMenu {
+  position: fixed;
+  top: 330px;
+  right: 100px;
+  width: 240px;
+  background: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  z-index: 10000;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-/* Action button */
-.actionButton {
+.actionMenuItem {
+  width: 100%;
+  padding: 10px 14px;
   background: transparent;
   border: none;
-  cursor: pointer;
-}
-
-/* Dropdown container */
-.actionMenu {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 220px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 10;
-  max-height: 280px;
-  overflow-y: auto;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-}
-
-/* Show dropdown on button hover/focus */
-.tableWrapper table tbody tr td:last-child:hover .actionMenu,
-.tableWrapper table tbody tr td:last-child:focus-within .actionMenu {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Dropdown open below by default */
-.actionMenu {
-  top: 100%;
-  bottom: auto;
-  margin-top: 4px;
-}
-
-/* Dropdown items */
-.actionMenuItem {
-  padding: 8px 12px;
-  width: 100%;
-  background: #fff;
-  border: none;
   text-align: left;
-  cursor: pointer;
   font-size: 14px;
-  color: #333;
-  transition: background 0.2s;
+  color: #2f2f2f;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .actionMenuItem:hover {
-  background: #f0f0f0;
+  background: #f3f6fa;
 }
 
-/* Scrollbar styling */
-.actionMenu::-webkit-scrollbar {
+@media (max-width: 768px) {
+  .fixedActionMenu {
+    top: auto;
+    bottom: 0px;
+    left: 40%;
+    width: 200px !important;
+    right: auto;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-height: 60vh;
+    border-radius: 12px;
+  }
+
+  .actionMenuItem {
+    font-size: 12px;
+  }
+}
+@media (max-width: 1024px) {
+  .fixedActionMenu {
+    right: 20px;
+    width: 320px;
+  }
+}
+/* default & collateral tab action btns */
+
+.actionCell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.actionBtn {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionDropdown {
+  position: absolute;
+  right: 0;
+  width: 220px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.actionItem {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+}
+
+.actionItem:last-child {
+  border-bottom: none;
+}
+
+.actionItem:hover {
+  background: #f0f4ff;
+  color: #264DAF;
+}
+
+@media (max-width: 768px) {
+  .actionDropdown {
+    width: 180px;
+    right: -10px;
+  }
+
+  .actionItem {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+}
+.fixedActionMenu button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.fixedActionMenu button:last-child {
+  border-bottom: none;
+}
+
+.fixedActionMenu button:hover {
+  background: #f0f4ff;
+  color: #264DAF;
+}
+
+.fixedActionMenu {
+  position: fixed;
+  right: 40px;
+  top: 43%;
+  bottom: 0%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  min-width: 260px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  z-index: 20;
+}
+
+.dropdownItem {
+  width: 100%;
+}
+
+.dropdownRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.dropdownRow:hover {
+  background: #f0f4ff;
+  color: #264DAF;
+}
+
+.arrow {
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.subMenu {
+  padding-left: 18px;
+  background: #f9fafb;
+  border-left: 2px blue solid !important;
+  border-radius: 10px;
+}
+
+.subMenu button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.subMenu button:hover {
+  background: #e0e7ff;
+}
+.circle {
   width: 6px;
+  height: 6px;
+  background: #264DAF;
+  border-radius: 50%;
 }
 
-.actionMenu::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0,0.2);
-  border-radius: 3px;
+
+.tableCellRelative {
+  position: relative;
+}
+
+.actionButton {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background: #f5f5f5;
+  transform: scale(1.05);
+}
+
+.actionMenu {
+  position: absolute;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  width: 220px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  max-height: 240px; 
+  overflow-y: auto; 
+}
+
+.actionMenuItem {
+  padding: 10px 16px;
+  background: #fff;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.actionMenuItem:hover {
+  background: #f0f4ff;
+  color: #1a73e8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .actionMenu {
+    width: 180px;
+    max-height: 200px;
+  }
+
+  .actionMenuItem {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .actionMenu {
+    width: 150px;
+    max-height: 120px;
+  }
+
+  .actionMenuItem {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+.fixedActionMenu {
+  position: fixed;
+  top: 330px;
+  right: 100px;
+  width: 240px;
+  background: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  z-index: 10000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.actionMenuItem {
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #2f2f2f;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.actionMenuItem:hover {
+  background: #f3f6fa;
+}
+
+@media (max-width: 768px) {
+  .fixedActionMenu {
+    top: auto;
+    bottom: 0px;
+    left: 40%;
+    width: 200px !important;
+    right: auto;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-height: 60vh;
+    border-radius: 12px;
+  }
+
+  .actionMenuItem {
+    font-size: 12px;
+  }
+}
+@media (max-width: 1024px) {
+  .fixedActionMenu {
+    right: 20px;
+    width: 320px;
+  }
 }

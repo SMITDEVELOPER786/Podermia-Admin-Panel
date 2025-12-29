@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import styles from "../css/SavingGoals.module.css";
-
+import SavingsVaultSettings from "../Savingsgoalstab/SavingsVaultSettings";
 import FixedSavings from "../Savingsgoalstab/FixedSavings";
 import GoalSavings from "../Savingsgoalstab/Goalsavings";
 import InterestSettings from "../Savingsgoalstab/Interestsettings";
@@ -32,7 +32,6 @@ export default function SavingGoals() {
     { id: "WR003", user: "Mike Brown", amount: 30000, plan: "Fixed Savings", status: "Active", penalty: 0, date: "2024-06-05" },
   ];
 
-  // Filter function for search + status
   const filterData = (data) =>
     data
       .filter((row) => statusFilter === "All" || row.status === statusFilter)
@@ -58,6 +57,12 @@ export default function SavingGoals() {
       </div>
 
       <div className={styles.tabs}>
+        <button
+  onClick={() => setActiveTab("vault")}
+  className={activeTab === "vault" ? styles.active : ""}
+>
+  Savings Vault Settings
+</button>
         <button
           onClick={() => setActiveTab("fixed")}
           className={activeTab === "fixed" ? styles.active : ""}
@@ -92,6 +97,7 @@ export default function SavingGoals() {
 
       <div className={styles.headerRow}>
         <h3>
+          {activeTab === "vault" && "Savings Vault Settings"}
           {activeTab === "fixed" && "Fixed Saving Management"}
           {activeTab === "goal" && "Goal Saving Management"}
           {activeTab === "interest" && "Interest Settings"}
@@ -122,7 +128,7 @@ export default function SavingGoals() {
           </div>
         )}
       </div>
-
+      {activeTab === "vault" && <SavingsVaultSettings />}
       {activeTab === "fixed" && <FixedSavings data={filterData(fixedSavingsData)} />}
       {activeTab === "goal" && <GoalSavings data={filterData(goalSavingsData)} />}
       {activeTab === "interest" && <InterestSettings />}

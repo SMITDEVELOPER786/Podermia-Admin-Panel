@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import styles from '../css/ManualRepaymentModal.module.css';
 
 const ManualRepaymentModal = ({ isOpen, onClose, loan }) => {
   const [amount, setAmount] = useState('');
@@ -23,59 +24,29 @@ const ManualRepaymentModal = ({ isOpen, onClose, loan }) => {
         </div>
 
         <div className={styles.modalBody}>
-          <div style={{ marginBottom: '12px' }}>
-            <label htmlFor="repaymentAmount">Repayment Amount:</label>
-            <input
-              type="number"
-              id="repaymentAmount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter amount"
-              style={{
-                width: '100%',
-                padding: '8px 10px',
-                borderRadius: '6px',
-                border: '1px solid #ccc',
-                marginTop: '4px'
-              }}
-            />
-          </div>
+          <label htmlFor="repaymentAmount">Repayment Amount:</label>
+          <input
+            type="number"
+            id="repaymentAmount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Enter amount"
+            className={styles.inputField}
+          />
 
-          <div>
-            <label htmlFor="paymentDate">Payment Date:</label>
-            <input
-              type="date"
-              id="paymentDate"
-              value={paymentDate}
-              onChange={(e) => setPaymentDate(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 10px',
-                borderRadius: '6px',
-                border: '1px solid #ccc',
-                marginTop: '4px'
-              }}
-            />
-          </div>
+          <label htmlFor="paymentDate" style={{ marginTop: '12px' }}>Payment Date:</label>
+          <input
+            type="date"
+            id="paymentDate"
+            value={paymentDate}
+            onChange={(e) => setPaymentDate(e.target.value)}
+            className={styles.inputField}
+          />
         </div>
 
         <div className={styles.modalFooter}>
           <button className={styles.secondaryBtn} onClick={onClose}>Cancel</button>
-          <button
-            style={{
-              marginLeft: '12px',
-              backgroundColor: '#3f51b5',
-              color: '#fff',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: 500
-            }}
-            onClick={handleSubmitRepayment}
-          >
-            Post Repayment
-          </button>
+          <button className={styles.primaryBtn} onClick={handleSubmitRepayment}>Post Repayment</button>
         </div>
       </div>
     </div>

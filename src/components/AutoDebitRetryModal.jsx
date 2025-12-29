@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import styles from '../css/AutoDebitRetryModal.module.css';
 
 const AutoDebitRetryModal = ({ isOpen, onClose, loan }) => {
   const [retryCount, setRetryCount] = useState(1);
@@ -30,31 +31,12 @@ const AutoDebitRetryModal = ({ isOpen, onClose, loan }) => {
             max={5}
             value={retryCount}
             onChange={(e) => setRetryCount(parseInt(e.target.value))}
-            style={{
-              width: '100%',
-              padding: '8px 10px',
-              borderRadius: '6px',
-              border: '1px solid #ccc',
-              marginTop: '4px'
-            }}
           />
         </div>
 
         <div className={styles.modalFooter}>
           <button className={styles.secondaryBtn} onClick={onClose}>Cancel</button>
-          <button
-            style={{
-              marginLeft: '12px',
-              backgroundColor: '#4caf50',
-              color: '#fff',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: 500
-            }}
-            onClick={handleRetry}
-          >
+          <button className={styles.primaryBtn} onClick={handleRetry}>
             Retry
           </button>
         </div>

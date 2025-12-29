@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import styles from '../css/WaivePenaltiesModal.module.css';
 
 const WaivePenaltiesModal = ({ isOpen, onClose, loan }) => {
   const [reason, setReason] = useState('');
@@ -28,35 +29,13 @@ const WaivePenaltiesModal = ({ isOpen, onClose, loan }) => {
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder="Enter reason"
-            style={{
-              width: '100%',
-              padding: '8px 10px',
-              borderRadius: '6px',
-              border: '1px solid #ccc',
-              marginTop: '4px',
-              minHeight: '80px',
-              resize: 'vertical'
-            }}
+            className={styles.textAreaInput}
           />
         </div>
 
         <div className={styles.modalFooter}>
           <button className={styles.secondaryBtn} onClick={onClose}>Cancel</button>
-          <button
-            style={{
-              marginLeft: '12px',
-              backgroundColor: '#4caf50',
-              color: '#fff',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: 500
-            }}
-            onClick={handleWaive}
-          >
-            Waive Penalties
-          </button>
+          <button className={styles.primaryBtn} onClick={handleWaive}>Waive Pealties</button>
         </div>
       </div>
     </div>

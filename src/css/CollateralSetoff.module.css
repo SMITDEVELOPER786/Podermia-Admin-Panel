@@ -1,0 +1,77 @@
+/* collateralsetoff.module.css */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalBox {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 25px 30px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modalBox h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #246daf;
+}
+
+.modalBox p {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.modalBox select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  outline: none;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modalActions button {
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.modalActions button.primary {
+  background-color: #246daf;
+  color: #fff;
+}
+
+.modalActions button:hover {
+  opacity: 0.9;
+}
+
+.modalActions button:first-child {
+  background-color: #f0f0f0;
+  color: #333;
+}

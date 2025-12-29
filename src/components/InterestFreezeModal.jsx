@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import styles from '../css/InterestFreezeModal.module.css';
 
 const InterestFreezeModal = ({ isOpen, onClose, loan }) => {
   const [freezeDuration, setFreezeDuration] = useState('');
@@ -23,61 +24,29 @@ const InterestFreezeModal = ({ isOpen, onClose, loan }) => {
         </div>
 
         <div className={styles.modalBody}>
-          <div style={{ marginBottom: '12px' }}>
-            <label htmlFor="freezeDuration">Freeze Duration (days):</label>
-            <input
-              type="number"
-              id="freezeDuration"
-              value={freezeDuration}
-              onChange={(e) => setFreezeDuration(e.target.value)}
-              placeholder="Enter duration in days"
-              style={{
-                width: '100%',
-                padding: '8px 10px',
-                borderRadius: '6px',
-                border: '1px solid #ccc',
-                marginTop: '4px'
-              }}
-            />
-          </div>
+          <label htmlFor="freezeDuration">Freeze Duration (days):</label>
+          <input
+            type="number"
+            id="freezeDuration"
+            value={freezeDuration}
+            onChange={(e) => setFreezeDuration(e.target.value)}
+            placeholder="Enter duration in days"
+            className={styles.inputField}
+          />
 
-          <div>
-            <label htmlFor="notes">Notes:</label>
-            <textarea
-              id="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Optional notes"
-              style={{
-                width: '100%',
-                padding: '8px 10px',
-                borderRadius: '6px',
-                border: '1px solid #ccc',
-                marginTop: '4px',
-                minHeight: '80px',
-                resize: 'vertical'
-              }}
-            />
-          </div>
+          <label htmlFor="notes" style={{ marginTop: '12px' }}>Notes:</label>
+          <textarea
+            id="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Optional notes"
+            className={styles.textAreaInput}
+          />
         </div>
 
         <div className={styles.modalFooter}>
           <button className={styles.secondaryBtn} onClick={onClose}>Cancel</button>
-          <button
-            style={{
-              marginLeft: '12px',
-              backgroundColor: '#3f51b5',
-              color: '#fff',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: 500
-            }}
-            onClick={handleApproveFreeze}
-          >
-            Approve Freeze
-          </button>
+          <button className={styles.primaryBtn} onClick={handleApproveFreeze}>Approve Freeze</button>
         </div>
       </div>
     </div>
