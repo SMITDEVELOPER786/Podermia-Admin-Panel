@@ -638,6 +638,9 @@
   text-align: center;
 }}
 @media (min-width: 481px) and (max-width: 768px) {
+ .cardBVN{
+  padding-left: 100px !important;
+ }
   .bigValue {
     font-size: 15px;
   }

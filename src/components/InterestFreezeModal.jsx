@@ -1,0 +1,56 @@
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
+import styles from '../css/InterestFreezeModal.module.css';
+
+const InterestFreezeModal = ({ isOpen, onClose, loan }) => {
+  const [freezeDuration, setFreezeDuration] = useState('');
+  const [notes, setNotes] = useState('');
+
+  if (!isOpen) return null;
+
+  const handleApproveFreeze = () => {
+    console.log(`Interest freeze approved for Loan ID: ${loan?.id}`, { freezeDuration, notes });
+    onClose();
+  };
+
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalBoxLarge}>
+        <div className={styles.modalHeader}>
+          <h3>Approve Interest Freeze - Loan ID: {loan?.id}</h3>
+          <button className={styles.closeBtn} onClick={onClose}>
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className={styles.modalBody}>
+          <label htmlFor="freezeDuration">Freeze Duration (days):</label>
+          <input
+            type="number"
+            id="freezeDuration"
+            value={freezeDuration}
+            onChange={(e) => setFreezeDuration(e.target.value)}
+            placeholder="Enter duration in days"
+            className={styles.inputField}
+          />
+
+          <label htmlFor="notes" style={{ marginTop: '12px' }}>Notes:</label>
+          <textarea
+            id="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Optional notes"
+            className={styles.textAreaInput}
+          />
+        </div>
+
+        <div className={styles.modalFooter}>
+          <button className={styles.secondaryBtn} onClick={onClose}>Cancel</button>
+          <button className={styles.primaryBtn} onClick={handleApproveFreeze}>Approve Freeze</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default InterestFreezeModal;

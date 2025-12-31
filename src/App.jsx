@@ -7,6 +7,7 @@ import ActivityLog from "./OverviewTabs/ActivityLog";
 import ManageUsers from "./OverviewTabs/ManageUsers";
 import AdminReferrals from "./OverviewTabs/AdminReferrals";
 import LoansPage from "../src/pages/Loans";
+import LoanProductView from "./pages/LoanProductView";
 import AdminPanel from "./adminDashboardTabs/AdminPanel";
 import LoginPage from "./auth/Login";
 import TwoFactorPage from "./auth/Twofactorauth";
@@ -69,6 +70,8 @@ const App = () => {
           </PrivateRoute>
         }
       />
+      <Route path="/loan-product-view/:index" element={<LoanProductView />} />
+
       <Route
         path="/admin-panel"
         element={
