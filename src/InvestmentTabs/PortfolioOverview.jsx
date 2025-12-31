@@ -4,35 +4,22 @@ import jsPDF from 'jspdf';
 
 const PortfolioOverview = ({
   portfolioItems,
-  setPortfolioItems,
-  editingItem,
-  setEditingItem,
-  formData,
-  setFormData,
-  errors,
-  setErrors,
-  setConfirmDialog,
   setToast,
   handleEdit,
-  handleDelete,
-  handleUpdateItem,
-  handleCancelEdit
+  handleDelete
 }) => {
   const handleExport = () => {
     const doc = new jsPDF();
     
-    // Header Background
-    doc.setFillColor(240, 248, 255); // Light blue
+    doc.setFillColor(240, 248, 255);
     doc.rect(0, 0, 210, 30, 'F');
     
-    // Title
     doc.setFontSize(22);
-    doc.setTextColor(41, 92, 191); // Primary blue
+    doc.setTextColor(41, 92, 191);
     doc.setFont(undefined, 'bold');
     doc.text('Investment Portfolio Report', 105, 18, { align: 'center' });
     
-    // Stats Summary Box
-    doc.setFillColor(247, 250, 252); // Very light gray
+    doc.setFillColor(247, 250, 252);
     doc.roundedRect(15, 35, 180, 35, 3, 3, 'F');
     
     doc.setFontSize(11);
@@ -50,7 +37,6 @@ const PortfolioOverview = ({
     doc.text(`Avg. Expected Return: ${avgReturn}`, 25, 61);
     doc.text(`Total Products: ${portfolioItems.length}`, 120, 45);
     
-    // Section Header
     doc.setFillColor(245, 247, 250);
     doc.rect(15, 78, 180, 10, 'F');
     doc.setFontSize(13);
@@ -67,26 +53,22 @@ const PortfolioOverview = ({
         yPos = 20;
       }
       
-      // Card Background
       doc.setFillColor(252, 252, 253);
       doc.roundedRect(15, yPos - 5, 180, 42, 2, 2, 'F');
       
-      // Border
       doc.setDrawColor(220, 220, 225);
       doc.setLineWidth(0.3);
       doc.roundedRect(15, yPos - 5, 180, 42, 2, 2, 'S');
       
-      // Product Name
       doc.setFont(undefined, 'bold');
       doc.setTextColor(30, 30, 30);
       doc.text(`${index + 1}. ${item.name}`, 20, yPos);
       
-      // Status Badge
       if (item.status === 'Active') {
-        doc.setFillColor(220, 252, 231); // Light green
+        doc.setFillColor(220, 252, 231);
         doc.setTextColor(22, 101, 52);
       } else {
-        doc.setFillColor(254, 226, 226); // Light red
+        doc.setFillColor(254, 226, 226);
         doc.setTextColor(153, 27, 27);
       }
       doc.roundedRect(160, yPos - 4, 30, 6, 1, 1, 'F');
@@ -102,7 +84,7 @@ const PortfolioOverview = ({
       doc.text(`Category: ${item.category}`, 100, yPos);
       
       yPos += 5;
-      doc.setTextColor(22, 163, 74); // Green for amount
+      doc.setTextColor(22, 163, 74);
       doc.text(`Amount: ₦${item.amount}`, 22, yPos);
       doc.setTextColor(80, 80, 80);
       doc.text(`Return: ${item.expectedReturn}`, 100, yPos);
@@ -121,7 +103,6 @@ const PortfolioOverview = ({
       yPos += 15;
     });
     
-    // Footer on each page
     const pageCount = doc.internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
@@ -193,7 +174,6 @@ const PortfolioOverview = ({
           <button className={styles.exportBtn} onClick={handleExport}>Export Data</button>
         </div>
 
-        {/* Dynamic Investment Cards */}
         {portfolioItems.length === 0 ? (
           <div className={styles.emptyState}>
             <p>No investment products yet. Create your first product using the Investment Form.</p>

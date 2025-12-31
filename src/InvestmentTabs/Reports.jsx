@@ -9,12 +9,18 @@ const Reports = () => {
   const [timeRange, setTimeRange] = useState('Last 6 months')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [userType, setUserType] = useState('All User Types')
+  const [userClassification, setUserClassification] = useState('All Classifications')
   const [showReportDropdown, setShowReportDropdown] = useState(false)
   const [showTimeDropdown, setShowTimeDropdown] = useState(false)
+  const [showUserTypeDropdown, setShowUserTypeDropdown] = useState(false)
+  const [showUserClassificationDropdown, setShowUserClassificationDropdown] = useState(false)
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false)
 
   const reportTypes = ['Performance Overview', 'Investment Analysis', 'Payout Report', 'Risk Assessment']
   const timeRanges = ['Last 6 months', 'Last 12 months', 'Last 3 months', 'Custom Range']
+  const userTypeOptions = ['All User Types', 'Individual', 'Business']
+  const userClassificationOptions = ['All Classifications', 'Retail', 'HNI', 'Institutional']
 
   // Custom bar shape with rounded top corners
   const RoundedBar = (props) => {
@@ -156,6 +162,58 @@ const Reports = () => {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
+          </div>
+
+          <div className={styles.configField}>
+            <label>User Type</label>
+            <div className={styles.customDropdown}>
+              <div className={styles.dropdownHeader} onClick={() => setShowUserTypeDropdown(!showUserTypeDropdown)}>
+                <span>{userType}</span>
+                <ChevronDown size={16} className={showUserTypeDropdown ? styles.rotated : ''} />
+              </div>
+              {showUserTypeDropdown && (
+                <div className={styles.dropdownMenu}>
+                  {userTypeOptions.map((type) => (
+                    <div
+                      key={type}
+                      className={styles.dropdownItem}
+                      onClick={() => {
+                        setUserType(type)
+                        setShowUserTypeDropdown(false)
+                      }}
+                    >
+                      {type}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.configField}>
+            <label>User Classification</label>
+            <div className={styles.customDropdown}>
+              <div className={styles.dropdownHeader} onClick={() => setShowUserClassificationDropdown(!showUserClassificationDropdown)}>
+                <span>{userClassification}</span>
+                <ChevronDown size={16} className={showUserClassificationDropdown ? styles.rotated : ''} />
+              </div>
+              {showUserClassificationDropdown && (
+                <div className={styles.dropdownMenu}>
+                  {userClassificationOptions.map((classification) => (
+                    <div
+                      key={classification}
+                      className={styles.dropdownItem}
+                      onClick={() => {
+                        setUserClassification(classification)
+                        setShowUserClassificationDropdown(false)
+                      }}
+                    >
+                      {classification}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

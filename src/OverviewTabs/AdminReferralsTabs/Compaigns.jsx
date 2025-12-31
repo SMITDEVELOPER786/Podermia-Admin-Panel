@@ -34,8 +34,10 @@ const Compaigns = () => {
   const [minReferredUsers, setMinReferredUsers] = useState('');
   const [rewardPayoutType, setRewardPayoutType] = useState('Wallet Credit');
   const [rewardLockInPeriod, setRewardLockInPeriod] = useState('0');
+  const [payoutApprovalMode, setPayoutApprovalMode] = useState('Automatic');
   const [payoutTypeDropdown, setPayoutTypeDropdown] = useState(false);
   const [lockInDropdown, setLockInDropdown] = useState(false);
+  const [payoutApprovalDropdown, setPayoutApprovalDropdown] = useState(false);
 
   const options = [
     "Ongoing",
@@ -55,6 +57,11 @@ const Compaigns = () => {
     "90",
     "180",
     "365"
+  ];
+
+  const payoutApprovalModeOptions = [
+    "Automatic",
+    "Admin Review"
   ];
 
   const handleSelect = (value) => {
@@ -143,6 +150,7 @@ const Compaigns = () => {
       setMinReferredUsers('');
       setRewardPayoutType('Wallet Credit');
       setRewardLockInPeriod('0');
+      setPayoutApprovalMode('Automatic');
       setSelected('Ongoing');
       
       // Success - save configuration
@@ -150,6 +158,17 @@ const Compaigns = () => {
         show: true, 
         message: 'Campaign settings updated successfully!', 
         type: 'success' 
+      });
+      
+      setTimeout(() => {
+        setToast({ show: false, message: '', type: '' });
+      }, 3000);
+    } else {
+      // Show error toast when validation fails
+      setToast({ 
+        show: true, 
+        message: 'Please fix all errors before updating campaign settings.', 
+        type: 'error' 
       });
       
       setTimeout(() => {
@@ -431,6 +450,37 @@ const Compaigns = () => {
                   }}
                 >
                   {opt} days
+                </div>
+              ))}
+            </div>
+          )}
+        </Div>
+
+        {/* Payout Approval Mode Dropdown */}
+        <Div className="input-block full-width">
+          <label>Payout Approval Mode</label>
+          <span className={styles.smallText}>How payout requests are processed</span>
+          <div 
+            className={styles.dropdownWrapper}
+            onClick={() => isCampaignActive && setPayoutApprovalDropdown(!payoutApprovalDropdown)}
+            style={{ opacity: !isCampaignActive ? 0.5 : 1, pointerEvents: !isCampaignActive ? 'none' : 'auto' }}
+          >
+            <span>{payoutApprovalMode}</span>
+            <ChevronDown size={18} />
+          </div>
+
+          {payoutApprovalDropdown && (
+            <div className={styles.dropdownList}>
+              {payoutApprovalModeOptions.map((opt) => (
+                <div 
+                  key={opt}
+                  className={styles.dropdownItem}
+                  onClick={() => {
+                    setPayoutApprovalMode(opt);
+                    setPayoutApprovalDropdown(false);
+                  }}
+                >
+                  {opt}
                 </div>
               ))}
             </div>

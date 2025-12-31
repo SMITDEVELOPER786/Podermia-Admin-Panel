@@ -93,7 +93,9 @@ const EditModal = ({
   const productCategoryOptions = ['Treasury Bill', 'Bond', 'Commercial Paper'];
   const investmentObjectiveOptions = ['Growth', 'Income', 'Capital Preservation'];
   const interestTypeOptions = ['Simple', 'Compound', 'Discount'];
-  const payoutFrequencyOptions = ['Upfront', 'Monthly', 'Quarterly', 'Bi-annually', 'End of Tenor'];
+  const payoutFrequencyOptions = ['Upfront', 'Monthly', 'Quarterly', 'Bi-annually', 'Annually', 'End of Tenor'];
+  const processingFeeTypeOptions = ['%', 'Flat'];
+  const approvalModeOptions = ['Automatic', 'Admin Review'];
   const statusControlOptions = ['Active', 'Inactive', 'Sold-Out'];
   const earlyRedemptionOptions = ['Yes', 'No'];
   const maturityTypeOptions = ['Fixed', 'Open-ended'];
@@ -173,11 +175,21 @@ const EditModal = ({
               />
 
               <div className={styles.formGroup}>
-                <label>Product Activation Time</label>
+                <label>Product Activation Time - Open</label>
                 <input
                   type="time"
-                  name="productActivationTime"
-                  value={formData.productActivationTime || ''}
+                  name="productActivationTimeOpen"
+                  value={formData.productActivationTimeOpen || ''}
+                  onChange={onInputChange}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Product Activation Time - Close</label>
+                <input
+                  type="time"
+                  name="productActivationTimeClose"
+                  value={formData.productActivationTimeClose || ''}
                   onChange={onInputChange}
                 />
               </div>
@@ -262,17 +274,43 @@ const EditModal = ({
               />
 
               <div className={styles.formGroup}>
+                <label>Processing Fee Type <span style={{color: '#dc2626'}}>*</span></label>
+                <CustomDropdown
+                  name="processingFeeType"
+                  value={formData.processingFeeType || '%'}
+                  options={processingFeeTypeOptions}
+                  onChange={onInputChange}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
                 <label>Processing Fees <span style={{color: '#dc2626'}}>*</span></label>
                 <input
                   type="number"
                   name="processingFees"
-                  placeholder="Enter processing fees"
+                  placeholder={formData.processingFeeType === 'Flat' ? "Enter amount (₦)" : "Enter percentage (%)"}
                   value={formData.processingFees || ''}
                   onChange={onInputChange}
                   min="0"
                   step="0.01"
                 />
               </div>
+
+              <CustomDropdown
+                label="Investment Approval Mode"
+                name="investmentApprovalMode"
+                value={formData.investmentApprovalMode || 'Automatic'}
+                options={approvalModeOptions}
+                onChange={onInputChange}
+              />
+
+              <CustomDropdown
+                label="Coupon Payout Mode"
+                name="couponPayoutMode"
+                value={formData.couponPayoutMode || 'Automatic'}
+                options={approvalModeOptions}
+                onChange={onInputChange}
+              />
 
               <div className={styles.formGroup}>
                 <label>Withholding Tax <span style={{color: '#dc2626'}}>*</span></label>

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from '../css/Investment.module.css';
 import { Upload, ChevronDown } from 'lucide-react';
 
-// Custom Dropdown Component
 const CustomDropdown = ({ label, value, options, onChange, name, error, disabled = false, placeholder = "Select..." }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -62,7 +61,6 @@ const CustomDropdown = ({ label, value, options, onChange, name, error, disabled
   );
 };
 
-// Toggle Switch Component
 const ToggleSwitch = ({ label, name, checked, onChange, disabled = false }) => {
   return (
     <div className={styles.formGroup}>
@@ -81,7 +79,6 @@ const ToggleSwitch = ({ label, name, checked, onChange, disabled = false }) => {
   );
 };
 
-// Slider Component
 const Slider = ({ label, name, value, onChange, min = 0, max = 100, error }) => {
   return (
     <div className={styles.formGroup}>
@@ -113,23 +110,22 @@ const InvestmentForm = ({
   handleCancelEdit,
   handleUpdateItem
 }) => {
-  // Dropdown options
   const productCategoryOptions = ['Treasury Bill', 'Bond', 'Commercial Paper'];
   const investmentObjectiveOptions = ['Growth', 'Income', 'Capital Preservation'];
   const interestTypeOptions = ['Simple', 'Compound', 'Discount'];
-  const payoutFrequencyOptions = ['Upfront', 'Monthly', 'Quarterly', 'Bi-annually', 'End of Tenor'];
+  const payoutFrequencyOptions = ['Upfront', 'Monthly', 'Quarterly', 'Bi-annually', 'Annually', 'End of Tenor'];
+  const processingFeeTypeOptions = ['%', 'Flat'];
+  const approvalModeOptions = ['Automatic', 'Admin Review'];
   const statusControlOptions = ['Active', 'Inactive', 'Sold-Out'];
   const earlyRedemptionOptions = ['Yes', 'No'];
   const maturityTypeOptions = ['Fixed', 'Open-ended'];
   const riskLevelOptions = ['Low', 'Moderate', 'High'];
   const kycTierOptions = ['Tier 1', 'Tier 2', 'Tier 3'];
 
-  // Handle toggle changes
   const handleToggleChange = (e) => {
     handleInputChange(e);
   };
 
-  // Handle slider changes
   const handleSliderChange = (e) => {
     handleInputChange(e);
   };
@@ -141,7 +137,6 @@ const InvestmentForm = ({
       </h2>
 
       <div className={styles.formGrid}>
-        {/* Section 1: Product Information */}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Product Information</h3>
           
@@ -210,17 +205,26 @@ const InvestmentForm = ({
           />
 
           <div className={styles.formGroup}>
-            <label>Product Activation Time</label>
+            <label>Product Activation Time - Open</label>
             <input
               type="time"
-              name="productActivationTime"
-              value={formData.productActivationTime}
+              name="productActivationTimeOpen"
+              value={formData.productActivationTimeOpen || ''}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Product Activation Time - Close</label>
+            <input
+              type="time"
+              name="productActivationTimeClose"
+              value={formData.productActivationTimeClose || ''}
               onChange={handleInputChange}
             />
           </div>
         </div>
 
-        {/* Section 2: Investment Details */}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Investment Details</h3>
           
@@ -302,12 +306,39 @@ const InvestmentForm = ({
             error={errors.payoutFrequency}
           />
 
+          <CustomDropdown
+            label="Investment Approval Mode"
+            name="investmentApprovalMode"
+            value={formData.investmentApprovalMode || 'Automatic'}
+            options={approvalModeOptions}
+            onChange={handleInputChange}
+            error={errors.investmentApprovalMode}
+          />
+
+          <CustomDropdown
+            label="Coupon Payout Mode"
+            name="couponPayoutMode"
+            value={formData.couponPayoutMode || 'Automatic'}
+            options={approvalModeOptions}
+            onChange={handleInputChange}
+            error={errors.couponPayoutMode}
+          />
+
+          <CustomDropdown
+            label="Processing Fee Type"
+            name="processingFeeType"
+            value={formData.processingFeeType || '%'}
+            options={processingFeeTypeOptions}
+            onChange={handleInputChange}
+            error={errors.processingFeeType}
+          />
+
           <div className={styles.formGroup}>
             <label>Processing Fees <span className={styles.required}>*</span></label>
             <input
               type="number"
               name="processingFees"
-              placeholder="Enter processing fees"
+              placeholder={formData.processingFeeType === 'Flat' ? "Enter amount (₦)" : "Enter percentage (%)"}
               value={formData.processingFees}
               onChange={handleInputChange}
               className={errors.processingFees ? styles.inputError : ''}
@@ -333,7 +364,6 @@ const InvestmentForm = ({
           </div>
         </div>
 
-        {/* Section 3: Terms & Conditions */}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Terms & Conditions</h3>
           
@@ -445,7 +475,6 @@ const InvestmentForm = ({
           </div>
         </div>
 
-        {/* Section 4: Additional Settings & Documents */}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Additional Settings & Documents</h3>
           

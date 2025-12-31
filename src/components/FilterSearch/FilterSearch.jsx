@@ -60,9 +60,10 @@ const FilterSearch = ({
   const {
     showSearch = true,
     searchPlaceholder = "Search...",
-    dropdowns = [],         // [{ key: "module", label: "Module", options: [...] }]
+    dropdowns = [],
     showDate = false,
     showMonth = false,
+    showDatePeriod = false,
     heading = "Filter & Search",
   } = config;
 
@@ -171,6 +172,18 @@ const FilterSearch = ({
                 type="month"
                 value={filters.month}
                 onChange={(e) => updateFilter("month", e.target.value)}
+              />
+            </div>
+          )}
+
+          {/* ===== Date Period (Conditional) ===== */}
+          {showDatePeriod && (
+            <div className={styles.inputWrapper}>
+              <Calendar size={18} className={styles.icon} />
+              <input
+                type="date"
+                value={filters.date}
+                onChange={(e) => updateFilter("date", e.target.value)}
               />
             </div>
           )}
