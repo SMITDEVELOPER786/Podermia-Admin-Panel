@@ -1,6 +1,6 @@
 // src/components/collateralsetoff.jsx
 import React from "react";
-import styles from "../css/collateralsetoff.module.css";
+import styles from "../css/CollateralSetoff.module.css";
 
 export default function CollateralSetoffModal({ loan, onClose }) {
   return (
