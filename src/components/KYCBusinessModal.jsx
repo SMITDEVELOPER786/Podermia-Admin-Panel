@@ -6,6 +6,51 @@ import uploadImg from "../assets/upload.png";
 import document1 from "../assets/document1.png";
 import document2 from "../assets/document2.png";
 import document3 from "../assets/document3.png";
+import maryAvatar from "../assets/avatar.jpeg"; // make sure this image exists
+
+const stakeholders = {
+  directors: [
+    {
+      name: "John Doe",
+      role: "Director",
+      bvn: "12345678",
+      badge: "Verified",
+      phone: "+234 801 111 1111",
+      email: "john.doe@company.com",
+      address: "Lagos, Nigeria",
+      country: "Nigeria",
+      citizenship: "Nigerian",
+    },
+  ],
+  signatories: [
+    {
+      name: "Mary Johnson",
+      role: "Signatory",
+      tin: "56789876-0001",
+      badge: "Verified",
+      phone: "+234 801 999 9999",
+      email: "mary.sign@company.com",
+      address: "Lekki 2, Lagos",
+      country: "Nigeria",
+      citizenship: "Nigerian",
+      userImage: maryAvatar,
+    },
+  ],
+  ubos: [
+    {
+      name: "Alice Smith",
+      ownership: "40%",
+      bvn: "98765432",
+      badge: "Verified",
+      phone: "+234 802 222 2222",
+      email: "alice.smith@company.com",
+      address: "Victoria Island, Lagos",
+      type: "UBO",
+      country: "Nigeria",
+      citizenship: "Nigerian",
+    },
+  ],
+};
 
 export default function KYCBusinessModal({ open, onClose, user, onSave }) {
   if (!open || !user) return null;
@@ -56,19 +101,6 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
     { title: "Board Resolution", img: document1 },
   ];
 
-  
-  const stakeholders = {
-    directors: [
-      { name: "John Doe", role: "Director", bvn: "12345678", badge: "Verified", phone: "+234 801 111 1111", email: "john.doe@company.com", address: "Lagos, Nigeria" },
-    ],
-    signatories: [
-      { name: "Mary Johnson", role: "Signatory", tin: "56789876-0001", badge: "Signature Uploaded", phone: "+234 801 999 9999", email: "mary.sign@company.com", address: "Lekki 2, Lagos" },
-    ],
-    ubos: [
-      { name: "Alice Smith", ownership: "40%", bvn: "98765432", badge: "Verified", phone: "+234 802 222 2222", email: "alice.smith@company.com", address: "Victoria Island, Lagos", type: "UBO" },
-    ],
-  };
-
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
@@ -86,30 +118,27 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
           </button>
         </div>
 
-       <div className={styles.tabs}>
-  {["summary", "bvn", "documents", "business", "stakeholder"].map((tab) => (
-    <div
-      key={tab}
-      className={`${styles.tab} ${activeTab === tab ? styles.activeTab : ""}`}
-      onClick={() => setActiveTab(tab)}
-    >
-      {tab === "bvn"
-        ? "BVN/NIN"
-        : tab.charAt(0).toUpperCase() + tab.slice(1)}
-    </div>
-  ))}
-</div>
-
+        <div className={styles.tabs}>
+          {["summary", "bvn", "documents", "business", "stakeholder"].map((tab) => (
+            <div
+              key={tab}
+              className={`${styles.tab} ${activeTab === tab ? styles.activeTab : ""}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab === "bvn" ? "BVN/NIN" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </div>
+          ))}
+        </div>
 
         <div className={styles.modalContent}>
-          {/* SUMMARY */}
+          {/* SUMMARY TAB */}
           {activeTab === "summary" && (
             <>
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
                   <div className={styles.avatarRow}>
                     <img src={userIcon} alt="user" className={styles.userIcon} />
-                    <span className={styles.cardTitle} style={{color: "black"}}>User Summary</span>
+                    <span className={styles.cardTitle}>User Summary</span>
                   </div>
 
                   {!edit ? (
@@ -202,24 +231,41 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                   <span>• Stakeholder Information</span>
                 </div>
               </div>
-               <div className={styles.footerButtons}>
-  <button className={styles.approve}>Approve</button>
-  <button className={styles.reject}>Reject</button>
-  <button className={styles.pending}>Mark as Pending</button>
-</div>
+
+              <div className={styles.footerButtons}>
+                <button className={styles.approve}>Approve</button>
+                <button className={styles.reject}>Reject</button>
+                <button className={styles.pending}>Mark as Pending</button>
+              </div>
             </>
-            
           )}
-         
 
+          {/* BVN/NIN TAB */}
+          {activeTab === "bvn" && (
+            <div className={styles.cardBVN}>
+              <h3 className={styles.bvnTitle}>Business Verification</h3>
+              <div className={styles.bvnGrid}>
+                <div style={{ paddingLeft: "30px" }}>
+                  <label className={styles.bvnLabel}>RC Number</label>
+                  <p className={styles.bvnValue}>{form.rcNumber || "RC123456"}</p>
+                  <span className={styles.bvnVerified}>Verified</span>
+                </div>
+                <div>
+                  <label className={styles.bvnLabel} style={{ paddingLeft: "200px" }}>TIN Number</label>
+                  <p className={styles.bvnValue} style={{ paddingLeft: "200px" }}>{form.tinNumber || "12345678-0001"}</p>
+                  <span className={styles.bvnVerified} style={{ marginLeft: "200px" }}>Verified</span>
+                </div>
+              </div>
+            </div>
+          )}
 
-          {/* DOCUMENTS */}
+          {/* DOCUMENTS TAB */}
           {activeTab === "documents" && (
             <div className={styles.card}>
-                        <div className={styles.uploadRow}>
-                          <img src={uploadImg} className={styles.uploadIconImg} />
-                          <span className={styles.uploadText}>Upload Documents</span>
-                        </div>
+              <div className={styles.uploadRow}>
+                <img src={uploadImg} className={styles.uploadIconImg} />
+                <span className={styles.uploadText}>Upload Documents</span>
+              </div>
               <div className={styles.docsGrid}>
                 {docs.map((d, i) => (
                   <div key={i} className={styles.docBox}>
@@ -228,27 +274,6 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                     <span className={styles.uploadedBadge}>Uploaded</span>
                   </div>
                 ))}
-              </div>
-            </div>
-          )}
-
-          {/* BVN */}
-          {activeTab === "bvn" && (
-            <div className={styles.cardBVN}>
-              <h3 className={styles.bvnTitle}>Business Verification</h3>
-
-              <div className={styles.bvnGrid}>
-                <div style={{paddingLeft: "30px"}}>
-                  <label className={styles.bvnLabel}>RC Number</label>
-                  <p className={styles.bvnValue}>{form.rcNumber || "RC123456"}</p>
-                  <span className={styles.bvnVerified}>Verified</span>
-                </div>
-
-                <div>
-                  <label className={styles.bvnLabel} style={{paddingLeft: "200px"}}>TIN Number</label>
-                  <p className={styles.bvnValue} style={{paddingLeft: "200px"}}>{form.tinNumber || "12345678-0001"}</p>
-                  <span className={styles.bvnVerified}  style={{marginLeft: "200px"}}>Verified</span>
-                </div>
               </div>
             </div>
           )}
@@ -328,8 +353,7 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
               </div>
             </>
           )}
-
-          {/* STAKEHOLDER */}
+          {/* STAKEHOLDER TAB */}
           {activeTab === "stakeholder" && (
             <>
               {selectedStake ? (
@@ -340,32 +364,53 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
 
                   <div className={styles.uboCard}>
                     <div className={styles.uboHeaderRow}>
+                      {selectedStake.role === "Signatory" && selectedStake.userImage && (
+                        <img src={selectedStake.userImage} alt="profile" className={styles.stakeholderImg} />
+                        
+                      )}
                       <p className={styles.uboName}>{selectedStake.name}</p>
-                      <span className={styles.verifiedTag}>{selectedStake.badge}</span>
+                      <span className={styles.verifiedTag}>Verified</span>
                     </div>
 
                     {selectedStake.ownership && (
-                      <p className={styles.uboOwnership}>Ownership: <strong>{selectedStake.ownership}</strong></p>
+                      <p className={styles.uboOwnership}>
+                        Ownership: <strong>{selectedStake.ownership}</strong>
+                      </p>
                     )}
 
                     <div className={styles.uboGrid}>
-                      {selectedStake.tin && (<><strong>TIN:</strong><span>{selectedStake.tin}</span></>)}
-                      {selectedStake.bvn && (<><strong>BVN:</strong><span>{selectedStake.bvn}</span></>)}
-                      <strong>Phone:</strong><span>{selectedStake.phone}</span>
-                      <strong>Email:</strong><span>{selectedStake.email}</span>
-                      <strong>Address:</strong><span>{selectedStake.address}</span>
+                      {selectedStake.tin && (
+                        <>
+                          <strong>BVN:</strong>
+                          <span>{selectedStake.tin}</span>
+                        </>
+                      )}
+                      
+                      {selectedStake.bvn && (
+                        <>
+                          <strong>BVN:</strong>
+                          <span>{selectedStake.bvn}</span>
+                        </>
+                      )}
+                      <strong>Phone:</strong>
+                      <span>{selectedStake.phone}</span>
+                      <strong>Email:</strong>
+                      <span>{selectedStake.email}</span>
+                      <strong>Address:</strong>
+                      <span>{selectedStake.address}</span>
+                      {selectedStake.country && (
+                        <>
+                          <strong>Country:</strong>
+                          <span>{selectedStake.country}</span>
+                        </>
+                      )}
+                      {selectedStake.citizenship && (
+                        <>
+                          <strong>Citizenship:</strong>
+                          <span>{selectedStake.citizenship}</span>
+                        </>
+                      )}
                     </div>
-
-                    {selectedStake.type === "UBO" && (
-                      <div className={styles.uboDocsBox}>
-                        <strong>Required Documents:</strong>
-                        <div className={styles.uboDocRow}>
-                          <span className={styles.docBadge}>Valid ID: Uploaded</span>
-                          <span className={styles.docBadge}>Proof of Address: Uploaded</span>
-                          <span className={styles.docBadge}>Selfie: Uploaded</span>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               ) : (
@@ -390,12 +435,13 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                     <h3 className={styles.sectionTitle}>Signatories</h3>
                     {stakeholders.signatories.map((person, idx) => (
                       <div key={idx} className={styles.personCard} onClick={() => setSelectedStake(person)}>
+                        {person.userImage && <img src={person.userImage} alt="profile" className={styles.stakeholderImg} />}
                         <div>
                           <p className={styles.personName}>{person.name}</p>
                           <p className={styles.personRole}>{person.role}</p>
                           <p className={styles.personBvn}>TIN: {person.tin}</p>
                         </div>
-                        <span className={styles.badgeSignature}>{person.badge}</span>
+                        <span className={styles.badgeVerified}>Verified</span>
                       </div>
                     ))}
                   </div>

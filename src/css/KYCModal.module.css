@@ -87,7 +87,7 @@
   justify-content: flex-start;
   font-weight: 700;
   color: #000000;
-  font-size: 16px;
+  font-size: 16=4px;
 }
 
 .editBtn {
@@ -112,6 +112,7 @@ border: 1px solid #264daf;
   border-radius: 6px;
   cursor: pointer;
    margin-left: 300px;
+   margin-top: 40px !important;
    color: #264DAF;
    background-color: white;
 }
@@ -123,12 +124,15 @@ border: 1px solid #264daf;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
+right: 59px;
+     margin-top: 40px !important;
    
 }
 
 .editBtns {
   display: flex;
-  gap: 10px;
+  gap: 6px;
+  margin-left: -100px !important;
 }
 
 .summaryGrid {
@@ -415,11 +419,13 @@ border: 1px solid #264daf;
   }
 .editBtn{
   margin-left: 170px;
+  width: 34%;
 }
   .editBtns {
     width: 100%;
     display: flex;
      justify-content: flex-end;
+     margin-top: 0% !important;
   }
 
   .saveBtn {
@@ -545,6 +551,16 @@ border: 1px solid #264daf;
   .bigValue {
     font-size: 15px;
   }
+  
+.cancelBtn{
+  margin-top: 0px !important;
+}
+.saveBtn{
+  margin-top: 0px !important;
+}
+.editBtns{
+  margin-left: 10px !important;
+}
 
   .verifiedTag {
     display: inline-block;
@@ -603,4 +619,27 @@ border: 1px solid #264daf;
   .docsGrid {
     grid-template-columns: 1fr 1fr !important;
   }
+}
+.userImageWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.userImgLarge {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 6px;
+  border: 2px solid #246daf;
+}
+
+.userImageInput {
+  width: 6rem !important;
+  padding: 6px 8px;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
 }

@@ -5,6 +5,12 @@ import document1Img from "../assets/document1.png";
 import document2Img from "../assets/document2.png";
 import document3Img from "../assets/document3.png";
 import userIconImg from "../assets/userIcon.png";
+import AvatarImg from "../assets/avatar.jpeg"
+
+// Mock data defaults
+const MOCK_COUNTRY = "United States";
+const MOCK_CITIZENSHIP = "US Citizen";
+const MOCK_USER_IMAGE = AvatarImg; 
 
 export default function KYCModal({ open, onClose, user, onSave }) {
   if (!open || !user) return null;
@@ -12,13 +18,23 @@ export default function KYCModal({ open, onClose, user, onSave }) {
   const LOCAL_KEY = "kyc_ui_data";
   const [edit, setEdit] = useState(false);
   const [activeTab, setActiveTab] = useState("summary");
-  const [form, setForm] = useState({ ...user });
+  const [form, setForm] = useState({
+    ...user,
+    country: user.country || MOCK_COUNTRY,
+    citizenship: user.citizenship || MOCK_CITIZENSHIP,
+    userImage: user.userImage || MOCK_USER_IMAGE,
+  });
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}");
-    setForm(saved[user.userId] || { ...user });
+    setForm({
+      ...user,
+      country: saved[user.userId]?.country || user.country || MOCK_COUNTRY,
+      citizenship: saved[user.userId]?.citizenship || user.citizenship || MOCK_CITIZENSHIP,
+      userImage: saved[user.userId]?.userImage || user.userImage || MOCK_USER_IMAGE,
+      ...saved[user.userId],
+    });
   }, [open, user]);
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,7 +47,6 @@ export default function KYCModal({ open, onClose, user, onSave }) {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(saved));
     setEdit(false);
 
-   
     if (onSave) onSave(form);
   };
 
@@ -44,6 +59,8 @@ export default function KYCModal({ open, onClose, user, onSave }) {
     ["Registration Date", "submitted", true],
     ["TIN Number", "trn"],
     ["Address", "address"],
+    ["Country of Residence", "country"],
+    ["Citizenship", "citizenship"],
   ];
 
   return (
@@ -87,7 +104,20 @@ export default function KYCModal({ open, onClose, user, onSave }) {
           <>
             <div className={styles.card}>
               <div className={styles.cardHeader}>
-                <img src={userIconImg} alt="user" className={styles.userImg} />
+                <div className={styles.userImageWrapper}>
+                  <img src={form.userImage || MOCK_USER_IMAGE} alt="user" className={styles.userImgLarge} />
+
+                  {edit && (
+                    <input
+                      type="text"
+                      name="userImage"
+                      placeholder="Image URL"
+                      value={form.userImage || ""}
+                      onChange={handleChange}
+                      className={styles.userImageInput}
+                    />
+                  )}
+                </div>
                 <span>User Summary</span>
                 {!edit ? (
                   <button className={styles.editBtn} onClick={() => setEdit(true)}>
@@ -102,7 +132,13 @@ export default function KYCModal({ open, onClose, user, onSave }) {
                       className={styles.cancelBtn}
                       onClick={() => {
                         const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}");
-                        setForm(saved[user.userId] || user);
+                        setForm({
+                          ...user,
+                          country: saved[user.userId]?.country || user.country || MOCK_COUNTRY,
+                          citizenship: saved[user.userId]?.citizenship || user.citizenship || MOCK_CITIZENSHIP,
+                          userImage: saved[user.userId]?.userImage || user.userImage || MOCK_USER_IMAGE,
+                          ...saved[user.userId],
+                        });
                         setEdit(false);
                       }}
                     >
@@ -263,19 +299,18 @@ export default function KYCModal({ open, onClose, user, onSave }) {
             </div>
 
             <div className={styles.docsGrid}>
-  {[ 
-    { img: document1Img, name: "National ID" },
-    { img: document2Img, name: "Passport Photo" },
-    { img: document3Img, name: "Utility Bills" }
-  ].map((doc, i) => (
-    <div key={i} className={styles.docBox}>
-      <img src={doc.img} className={styles.docImg} />
-      <p className={styles.docName}>{doc.name}</p>
-      <span className={styles.docStatus}>Uploaded</span>
-    </div>
-  ))}
-</div>
-
+              {[ 
+                { img: document1Img, name: "National ID" },
+                { img: document2Img, name: "Passport Photo" },
+                { img: document3Img, name: "Utility Bills" }
+              ].map((doc, i) => (
+                <div key={i} className={styles.docBox}>
+                  <img src={doc.img} className={styles.docImg} />
+                  <p className={styles.docName}>{doc.name}</p>
+                  <span className={styles.docStatus}>Uploaded</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
