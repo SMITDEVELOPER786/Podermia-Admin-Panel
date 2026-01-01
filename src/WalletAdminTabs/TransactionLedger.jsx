@@ -12,7 +12,10 @@ const TransactionLedger = () => {
   const [filters, setFilters] = useState({
     search: '',
     type: '',
-    status: ''
+    status: '',
+    accountType: '',
+    startDate: '',
+    endDate: ''
   })
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -95,8 +98,10 @@ const TransactionLedger = () => {
   const mockData = [
     {
       transactionId: 'TXN001',
+      userId: 'USR001',
       user: 'John Smith',
       type: 'Credit',
+      accountType: 'Cash & Cash Equivalents',
       amount: '$500.00',
       status: 'Completed',
       date: 'Jan 15,2024',
@@ -105,8 +110,10 @@ const TransactionLedger = () => {
     },
     {
       transactionId: 'TXN002',
+      userId: 'USR002',
       user: 'Sarah Johnson',
       type: 'Debit',
+      accountType: 'Investment Assets',
       amount: '$150.00',
       status: 'Completed',
       date: 'Jan 15,2024',
@@ -115,8 +122,10 @@ const TransactionLedger = () => {
     },
     {
       transactionId: 'TXN003',
+      userId: 'USR003',
       user: 'Mike Wilson',
-      type: 'Transfer',
+      type: 'Credit',
+      accountType: 'Savings Liability',
       amount: '$75.00',
       status: 'Pending',
       date: 'Jan 14,2024',
@@ -125,8 +134,10 @@ const TransactionLedger = () => {
     },
     {
       transactionId: 'TXN004',
+      userId: 'USR004',
       user: 'Emily Davis',
       type: 'Debit',
+      accountType: 'Wallet Liability',
       amount: '$200.00',
       status: 'Failed',
       date: 'Jan 14,2024',
@@ -135,8 +146,10 @@ const TransactionLedger = () => {
     },
     {
       transactionId: 'TXN005',
+      userId: 'USR005',
       user: 'David Brown',
       type: 'Credit',
+      accountType: 'Receivables',
       amount: '$1000.00',
       status: 'Completed',
       date: 'Jan 13,2024',
@@ -147,23 +160,46 @@ const TransactionLedger = () => {
 
   const filterConfig = {
     showSearch: true,
-    searchPlaceholder: 'Search by user, refrence,or ID',
+    searchPlaceholder: 'Search by user, reference, or ID',
+    showDatePeriod: true,
     dropdowns: [
       {
         key: 'type',
         label: 'All Types',
-        options: ['All Types', 'Credit', 'Debit', 'Transfer']
+        options: ['All Types', 'Credit', 'Debit']
       },
       {
         key: 'status',
         label: 'All Status',
         options: ['All Status', 'Completed', 'Pending', 'Failed']
+      },
+      {
+        key: 'accountType',
+        label: 'All Account Types',
+        options: [
+          'All Account Types',
+          'Cash & Cash Equivalents',
+          'Receivables',
+          'Investment Assets',
+          'Wallet Liability',
+          'Savings Liability',
+          'Investment Liability',
+          'Loan Collateral Liability',
+          'Payables',
+          'Equity Account',
+          'Interest Income',
+          'Fee & Commission Income',
+          'Direct Costs',
+          'Interest Expense',
+          'Operating Expenses'
+        ]
       }
     ]
   }
 
   const columns = [
     { header: 'Transaction ID', key: 'transactionId' },
+    { header: 'User ID', key: 'userId' },
     { header: 'User', key: 'user' },
     { 
       header: 'Type', 
@@ -174,6 +210,7 @@ const TransactionLedger = () => {
         'Transfer': styles.typeTransfer
       }
     },
+    { header: 'Account Type', key: 'accountType' },
     { header: 'Amount', key: 'amount' },
     { 
       header: 'Status', 
@@ -193,6 +230,7 @@ const TransactionLedger = () => {
     return mockData.filter(item => {
       const searchMatch = !filters.search || 
         item.user.toLowerCase().includes(filters.search.toLowerCase()) ||
+        item.userId.toLowerCase().includes(filters.search.toLowerCase()) ||
         item.transactionId.toLowerCase().includes(filters.search.toLowerCase()) ||
         item.reference.toLowerCase().includes(filters.search.toLowerCase())
       
@@ -204,7 +242,27 @@ const TransactionLedger = () => {
         filters.status === 'All Status' ||
         item.status === filters.status
       
-      return searchMatch && typeMatch && statusMatch
+      const accountTypeMatch = !filters.accountType || 
+        filters.accountType === 'All Account Types' ||
+        item.accountType === filters.accountType
+      
+      const dateMatch = (!filters.startDate && !filters.endDate) || (() => {
+        if (!filters.startDate && !filters.endDate) return true
+        const itemDate = new Date(item.date.replace(/,/g, ''))
+        const startDate = filters.startDate ? new Date(filters.startDate) : null
+        const endDate = filters.endDate ? new Date(filters.endDate) : null
+        
+        if (startDate && endDate) {
+          return itemDate >= startDate && itemDate <= endDate
+        } else if (startDate) {
+          return itemDate >= startDate
+        } else if (endDate) {
+          return itemDate <= endDate
+        }
+        return true
+      })()
+      
+      return searchMatch && typeMatch && statusMatch && accountTypeMatch && dateMatch
     })
   }, [filters])
 
@@ -307,13 +365,15 @@ const TransactionLedger = () => {
     setLoadingCSV(true);
     setTimeout(() => {
       try {
-        const headers = ['Transaction ID', 'User', 'Type', 'Amount', 'Status', 'Date', 'Description', 'Reference'];
+        const headers = ['Transaction ID', 'User ID', 'User', 'Type', 'Account Type', 'Amount', 'Status', 'Date', 'Description', 'Reference'];
         const csvContent = [
           headers.join(','),
           ...filteredData.map(transaction => [
             transaction.transactionId,
+            transaction.userId,
             `"${transaction.user}"`,
             transaction.type,
+            transaction.accountType,
             transaction.amount,
             transaction.status,
             transaction.date,
@@ -371,11 +431,13 @@ const TransactionLedger = () => {
         doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 23);
         doc.text(`Total Transactions: ${filteredData.length}`, 14, 30);
 
-        const tableColumn = ['Transaction ID', 'User', 'Type', 'Amount', 'Status', 'Date', 'Description', 'Reference'];
+        const tableColumn = ['Transaction ID', 'User ID', 'User', 'Type', 'Account Type', 'Amount', 'Status', 'Date', 'Description', 'Reference'];
         const tableRows = filteredData.map(transaction => [
           transaction.transactionId,
+          transaction.userId,
           transaction.user,
           transaction.type,
+          transaction.accountType,
           transaction.amount,
           transaction.status,
           transaction.date,
@@ -400,14 +462,16 @@ const TransactionLedger = () => {
           },
           alternateRowStyles: { fillColor: [245, 245, 245] },
           columnStyles: {
-            0: { cellWidth: 35 },
-            1: { cellWidth: 30 },
-            2: { cellWidth: 20 },
-            3: { cellWidth: 25 },
-            4: { cellWidth: 25 },
-            5: { cellWidth: 30 },
-            6: { cellWidth: 50 },
-            7: { cellWidth: 30 }
+            0: { cellWidth: 30 },
+            1: { cellWidth: 25 },
+            2: { cellWidth: 25 },
+            3: { cellWidth: 18 },
+            4: { cellWidth: 35 },
+            5: { cellWidth: 22 },
+            6: { cellWidth: 22 },
+            7: { cellWidth: 25 },
+            8: { cellWidth: 45 },
+            9: { cellWidth: 25 }
           }
         });
 

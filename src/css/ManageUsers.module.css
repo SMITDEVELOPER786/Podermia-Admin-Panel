@@ -588,6 +588,7 @@
 }
 
 .formRow input[type="text"],
+.formRow input[type="email"],
 .formRow input[type="date"],
 .formRow select {
   padding: 10px 12px;
@@ -598,6 +599,7 @@
 }
 
 .formRow input[type="text"]:focus,
+.formRow input[type="email"]:focus,
 .formRow input[type="date"]:focus,
 .formRow select:focus {
   outline: none;

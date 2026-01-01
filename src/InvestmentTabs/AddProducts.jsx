@@ -89,25 +89,24 @@ const AddProducts = () => {
   ]);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({
-    // Basic Information
     productName: '',
     productCategory: '',
     issuerName: '',
     description: '',
     investmentObjective: '',
-    
-    // Financial Details
     minInvestment: '',
     maxInvestment: '',
     couponInterestRate: '',
     annualYield: '',
-    
-    // Admin Updates
     interestType: '',
     payoutFrequency: '',
+    processingFeeType: '%',
     processingFees: '',
     withholdingTax: '',
-    productActivationTime: '',
+    productActivationTimeOpen: '',
+    productActivationTimeClose: '',
+    investmentApprovalMode: 'Automatic',
+    couponPayoutMode: 'Automatic',
     statusControl: 'Active',
     penaltyOnEarlyRedemption: '0',
     earlyRedemptionOption: 'No',
@@ -130,8 +129,6 @@ const AddProducts = () => {
     archiveProduct: false,
     referralEligibility: false,
     notifyUser: false,
-    
-    // Legacy fields (keeping for backward compatibility)
     productType: '',
     sector: '',
     interestRate: '',
@@ -152,7 +149,6 @@ const AddProducts = () => {
       [name]: value
     }));
     
-    // Real-time validation for Minimum Investment
     if (name === 'minInvestment') {
       if (!value || value.trim() === '') {
         setErrors(prev => ({
@@ -172,7 +168,6 @@ const AddProducts = () => {
             [name]: 'Minimum investment must be at least ₦1,000'
           }));
         } else {
-          // Clear error if valid
           setErrors(prev => ({
             ...prev,
             [name]: ''
@@ -180,7 +175,6 @@ const AddProducts = () => {
         }
       }
     } else if (name === 'couponInterestRate' || name === 'annualYield') {
-      // Clear error while typing - validate on blur/submit only
       if (errors[name]) {
         setErrors(prev => ({
           ...prev,
@@ -188,7 +182,6 @@ const AddProducts = () => {
         }));
       }
     } else {
-      // Clear error when user starts typing for other fields
       if (errors[name]) {
         setErrors(prev => ({
           ...prev,
@@ -245,7 +238,6 @@ const AddProducts = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Basic Information validation
     if (!formData.productName.trim()) {
       newErrors.productName = 'Product name is required';
     } else {
@@ -262,7 +254,6 @@ const AddProducts = () => {
       newErrors.issuerName = 'Issuer name is required';
     }
 
-    // Financial Details validation
     if (!formData.minInvestment || formData.minInvestment.trim() === '') {
       newErrors.minInvestment = 'Minimum investment is required';
     } else {
@@ -296,7 +287,6 @@ const AddProducts = () => {
       }
     }
 
-    // Additional validations
     if (!formData.productCategory) {
       newErrors.productCategory = 'Product category is required';
     }
@@ -377,7 +367,6 @@ const AddProducts = () => {
   };
 
   const handleSaveDraft = () => {
-    console.log('Saving draft...', formData);
     setToast({
       type: 'success',
       title: 'Draft Saved Successfully',
@@ -400,7 +389,6 @@ const AddProducts = () => {
       return;
     }
 
-    // Generate product code
     const productCode = `PROD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
     
     const newItem = {
@@ -418,7 +406,6 @@ const AddProducts = () => {
       description: formData.description || 'New investment product',
       tags: ['SEC-Compliant', 'FINRA-Approved'],
       badges: [formData.statusControl || 'Active'],
-      // All new fields
       productCategory: formData.productCategory,
       investmentObjective: formData.investmentObjective,
       minInvestment: formData.minInvestment,
@@ -427,9 +414,13 @@ const AddProducts = () => {
       annualYield: formData.annualYield,
       interestType: formData.interestType,
       payoutFrequency: formData.payoutFrequency,
+      processingFeeType: formData.processingFeeType || '%',
       processingFees: formData.processingFees,
       withholdingTax: formData.withholdingTax,
-      productActivationTime: formData.productActivationTime,
+      productActivationTimeOpen: formData.productActivationTimeOpen,
+      productActivationTimeClose: formData.productActivationTimeClose,
+      investmentApprovalMode: formData.investmentApprovalMode || 'Automatic',
+      couponPayoutMode: formData.couponPayoutMode || 'Automatic',
       statusControl: formData.statusControl,
       penaltyOnEarlyRedemption: formData.penaltyOnEarlyRedemption || '0',
       earlyRedemptionOption: formData.earlyRedemptionOption,
@@ -456,7 +447,6 @@ const AddProducts = () => {
 
     setPortfolioItems(prev => [...prev, newItem]);
 
-    console.log('Creating product...', formData);
     setToast({
       type: 'success',
       title: 'Product Created Successfully',
@@ -465,25 +455,24 @@ const AddProducts = () => {
     
     setTimeout(() => {
       setFormData({
-        // Basic Information
         productName: '',
         productCategory: '',
         issuerName: '',
         description: '',
         investmentObjective: '',
-        
-        // Financial Details
         minInvestment: '',
         maxInvestment: '',
         couponInterestRate: '',
         annualYield: '',
-        
-        // Admin Updates
         interestType: '',
         payoutFrequency: '',
+        processingFeeType: '%',
         processingFees: '',
         withholdingTax: '',
-        productActivationTime: '',
+        productActivationTimeOpen: '',
+        productActivationTimeClose: '',
+        investmentApprovalMode: 'Automatic',
+        couponPayoutMode: 'Automatic',
         statusControl: 'Active',
         penaltyOnEarlyRedemption: '0',
         earlyRedemptionOption: 'No',
@@ -506,8 +495,6 @@ const AddProducts = () => {
         archiveProduct: false,
         referralEligibility: false,
         notifyUser: false,
-        
-        // Legacy fields
         productType: '',
         sector: '',
         interestRate: '',
@@ -586,25 +573,24 @@ const AddProducts = () => {
   const handleEdit = (item) => {
     setEditingItem(item);
     setFormData({
-      // Basic Information
       productName: item.name || '',
       productCategory: item.productCategory || item.productType || '',
       issuerName: item.issuerName || '',
       description: item.description || '',
       investmentObjective: item.investmentObjective || '',
-      
-      // Financial Details
       minInvestment: item.minInvestment || '',
       maxInvestment: item.maxInvestment || '',
       couponInterestRate: item.couponInterestRate || (item.expectedReturn ? item.expectedReturn.replace('%', '') : ''),
       annualYield: item.annualYield || '',
-      
-      // Admin Updates
       interestType: item.interestType || '',
       payoutFrequency: item.payoutFrequency || item.couponFrequency || '',
+      processingFeeType: item.processingFeeType || '%',
       processingFees: item.processingFees || '',
       withholdingTax: item.withholdingTax || '',
-      productActivationTime: item.productActivationTime || '',
+      productActivationTimeOpen: item.productActivationTimeOpen || item.productActivationTime || '',
+      productActivationTimeClose: item.productActivationTimeClose || '',
+      investmentApprovalMode: item.investmentApprovalMode || 'Automatic',
+      couponPayoutMode: item.couponPayoutMode || 'Automatic',
       statusControl: item.statusControl || item.status || 'Active',
       penaltyOnEarlyRedemption: item.penaltyOnEarlyRedemption || '0',
       earlyRedemptionOption: item.earlyRedemptionOption || 'No',
@@ -627,8 +613,6 @@ const AddProducts = () => {
       archiveProduct: item.archiveProduct || false,
       referralEligibility: item.referralEligibility || false,
       notifyUser: item.notifyUser || false,
-      
-      // Legacy fields (for backward compatibility)
       productType: item.productType || '',
       sector: item.category || '',
       interestRate: item.expectedReturn ? item.expectedReturn.replace('%', '') : '',
@@ -641,14 +625,11 @@ const AddProducts = () => {
       status: item.status || 'Active',
       termSheet: item.termSheet || null,
     });
-    // Don't switch tab - keep Portfolio Overview active
   };
 
   const handleUpdateItem = () => {
-    // Validate only business rules (like minimum investment >= 1000)
     const newErrors = {};
     
-    // Check minimum investment if provided
     if (formData.minInvestment && formData.minInvestment.trim() !== '') {
       const minInv = parseFloat(formData.minInvestment);
       if (isNaN(minInv)) {
@@ -658,7 +639,6 @@ const AddProducts = () => {
       }
     }
     
-    // Check coupon/interest rate if provided
     if (formData.couponInterestRate && formData.couponInterestRate.trim() !== '') {
       const rate = parseFloat(formData.couponInterestRate);
       if (isNaN(rate)) {
@@ -668,7 +648,6 @@ const AddProducts = () => {
       }
     }
     
-    // Check annual yield if provided
     if (formData.annualYield && formData.annualYield.trim() !== '') {
       const yieldVal = parseFloat(formData.annualYield);
       if (isNaN(yieldVal)) {
@@ -678,7 +657,6 @@ const AddProducts = () => {
       }
     }
     
-    // If there are validation errors, show them and don't update
     if (Object.keys(newErrors).length > 0) {
       setErrors(prev => ({ ...prev, ...newErrors }));
       setToast({
@@ -691,24 +669,17 @@ const AddProducts = () => {
 
     const updatedItem = {
       ...editingItem,
-      // Basic fields
       name: formData.productName?.trim() ? formData.productName : editingItem.name,
       issuerName: formData.issuerName?.trim() ? formData.issuerName : editingItem.issuerName,
       productType: formData.productCategory?.trim() || formData.productType?.trim() ? (formData.productCategory || formData.productType) : editingItem.productType,
       category: formData.productCategory?.trim() || formData.sector?.trim() ? (formData.productCategory || formData.sector) : editingItem.category,
       description: formData.description?.trim() ? formData.description : editingItem.description,
-      
-      // Financial fields
       amount: formData.totalOffering?.trim() || formData.minInvestment ? (formData.totalOffering || formData.minInvestment) : editingItem.amount,
       expectedReturn: formData.annualYield ? `${formData.annualYield}%` : (formData.couponInterestRate ? `${formData.couponInterestRate}%` : (formData.interestRate ? `${formData.interestRate}%` : editingItem.expectedReturn)),
       maturity: formData.maturityDate?.trim() ? formData.maturityDate : editingItem.maturity,
       risk: formData.riskLevel?.trim() || formData.riskRating?.trim() ? (formData.riskLevel || formData.riskRating) : editingItem.risk,
-      
-      // Status
       status: formData.statusControl || formData.status || editingItem.status,
       badges: formData.statusControl ? [formData.statusControl] : (formData.status ? [formData.status] : editingItem.badges),
-      
-      // All new fields
       productCategory: formData.productCategory || editingItem.productCategory || '',
       investmentObjective: formData.investmentObjective || editingItem.investmentObjective,
       minInvestment: formData.minInvestment || editingItem.minInvestment,
@@ -717,9 +688,13 @@ const AddProducts = () => {
       annualYield: formData.annualYield || editingItem.annualYield,
       interestType: formData.interestType || editingItem.interestType,
       payoutFrequency: formData.payoutFrequency || editingItem.payoutFrequency,
+      processingFeeType: formData.processingFeeType || editingItem.processingFeeType || '%',
       processingFees: formData.processingFees || editingItem.processingFees,
       withholdingTax: formData.withholdingTax || editingItem.withholdingTax,
-      productActivationTime: formData.productActivationTime || editingItem.productActivationTime,
+      productActivationTimeOpen: formData.productActivationTimeOpen || editingItem.productActivationTimeOpen || editingItem.productActivationTime || '',
+      productActivationTimeClose: formData.productActivationTimeClose || editingItem.productActivationTimeClose || '',
+      investmentApprovalMode: formData.investmentApprovalMode || editingItem.investmentApprovalMode || 'Automatic',
+      couponPayoutMode: formData.couponPayoutMode || editingItem.couponPayoutMode || 'Automatic',
       statusControl: formData.statusControl || editingItem.statusControl,
       penaltyOnEarlyRedemption: formData.penaltyOnEarlyRedemption || editingItem.penaltyOnEarlyRedemption,
       earlyRedemptionOption: formData.earlyRedemptionOption || editingItem.earlyRedemptionOption,
@@ -742,8 +717,6 @@ const AddProducts = () => {
       referralEligibility: formData.referralEligibility !== undefined ? formData.referralEligibility : editingItem.referralEligibility,
       notifyUser: formData.notifyUser !== undefined ? formData.notifyUser : editingItem.notifyUser,
     };
-
-    console.log('Updating item:', updatedItem);
 
     setPortfolioItems(prev => 
       prev.map(item => item.id === editingItem.id ? updatedItem : item)
@@ -833,19 +806,9 @@ const AddProducts = () => {
       {activeTab === 'Portfolio Overview' && (
         <PortfolioOverview
           portfolioItems={portfolioItems}
-          setPortfolioItems={setPortfolioItems}
-          editingItem={editingItem}
-          setEditingItem={setEditingItem}
-          formData={formData}
-          setFormData={setFormData}
-          errors={errors}
-          setErrors={setErrors}
-          setConfirmDialog={setConfirmDialog}
           setToast={setToast}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
-          handleUpdateItem={handleUpdateItem}
-          handleCancelEdit={handleCancelEdit}
         />
       )}
 
@@ -864,8 +827,7 @@ const AddProducts = () => {
           handleUpdateItem={handleUpdateItem}
         />
       )}
-
-      {/* EditModal - Always available regardless of active tab */}
+      
       <EditModal
         isOpen={!!editingItem}
         item={editingItem}

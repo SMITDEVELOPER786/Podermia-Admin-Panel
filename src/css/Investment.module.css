@@ -416,22 +416,6 @@
   margin: 0;
 }
 
-.exportBtn {
-  padding: 8px 16px;
-  background: var(--btnColor);
-  border: 1px solid var(--btnColor);
-  border-radius: 6px;
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.exportBtn:hover {
-  background: var(--btnHover);
-  border-color: var(--btnHover);
-}
-
 .investmentCard {
   background: #f9fafb;
   border: 1px solid #e5e7eb;
@@ -1013,11 +997,166 @@
   margin-top: 30px;
 }
 
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.tableActions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.recordCount {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
 .sectionTitle {
   font-size: 20px;
   font-weight: 600;
   color: #111827;
-  margin-bottom: 20px;
+  margin-bottom: 0;
+}
+
+.criticalActionsSection {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.criticalActionsBox {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.actionStatus {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusLabel {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.statusBadge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statusBadge.active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.statusBadge.paused {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pauseBtn,
+.restartBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pauseBtn {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.pauseBtn:hover:not(.disabled) {
+  background-color: #d97706;
+}
+
+.restartBtn {
+  background-color: #10b981;
+  color: white;
+}
+
+.restartBtn:hover:not(.disabled) {
+  background-color: #059669;
+}
+
+.pauseBtn.disabled,
+.restartBtn.disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.exportBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--btnColor);
+  border: 1px solid var(--btnColor);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exportBtn:hover:not(:disabled) {
+  background: var(--btnHover);
+  border-color: var(--btnHover);
+}
+
+.exportBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Status badge colors for table */
@@ -2705,6 +2844,31 @@
   .exportBtn{
     /* align-self: flex-end; */
     width: 100%;
+  }
+
+  .tableHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tableActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .criticalActionsBox {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actionButtons {
+    width: 100%;
+  }
+
+  .pauseBtn,
+  .restartBtn {
+    flex: 1;
+    justify-content: center;
   }
 
   .processModalActions {

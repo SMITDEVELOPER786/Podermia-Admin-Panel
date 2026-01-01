@@ -551,6 +551,163 @@
   border-color: #9ca3af;
 }
 
+/* Withdrawal Approval Modal Styles */
+.withdrawalApprovalContainer {
+  padding: 10px 5px;
+ 
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.withdrawalList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.withdrawalItem {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.withdrawalItem:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.withdrawalInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.withdrawalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.withdrawalRow:last-child {
+  border-bottom: none;
+}
+
+.withdrawalLabel {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.withdrawalValue {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+}
+
+.statusPending {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  width: fit-content;
+}
+
+.withdrawalActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+}
+
+.approveBtn {
+  padding: 8px 20px;
+  background: #10b981;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.approveBtn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.approveBtn:active {
+  transform: translateY(0);
+}
+
+.rejectBtn {
+  padding: 8px 20px;
+  background: #ef4444;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.rejectBtn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.rejectBtn:active {
+  transform: translateY(0);
+}
+
+/* Custom Scrollbar for Withdrawal Approval Container */
+.withdrawalApprovalContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.withdrawalApprovalContainer::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.withdrawalApprovalContainer::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.withdrawalApprovalContainer::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.withdrawalApprovalContainer {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .walletManagementContainer,
@@ -603,6 +760,29 @@
   .cancelButton,
   .saveButton,
   .resetButton {
+    width: 100%;
+  }
+
+  .withdrawalRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .withdrawalLabel {
+    min-width: auto;
+  }
+
+  .withdrawalValue {
+    text-align: left;
+  }
+
+  .withdrawalActions {
+    flex-direction: column;
+  }
+
+  .approveBtn,
+  .rejectBtn {
     width: 100%;
   }
 }

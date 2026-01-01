@@ -16,8 +16,13 @@ const WalletManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showChangeModal, setShowChangeModal] = useState(false)
+  const [showWithdrawalApprovalModal, setShowWithdrawalApprovalModal] = useState(false)
   const [currentAction, setCurrentAction] = useState(null)
   const [showOtherActionsDropdown, setShowOtherActionsDropdown] = useState(false)
+  const [pendingWithdrawals, setPendingWithdrawals] = useState([
+    { id: 1, userId: 'USR001', userName: 'John Doe', amount: '₦25,000', date: '2024-12-15', status: 'Pending' },
+    { id: 2, userId: 'USR003', userName: 'Michael Brown', amount: '₦15,000', date: '2024-12-14', status: 'Pending' }
+  ])
   const otherActionsRef = useRef(null)
 
   // Mock data
@@ -132,7 +137,6 @@ const WalletManagement = () => {
     ]
   }
 
-  // Other Actions options (excluding View user details)
   const otherActionsOptions = [
     'Change Wallet Category',
     'Change Wallet Sweep Category',
@@ -140,9 +144,13 @@ const WalletManagement = () => {
     'Change Auto-Sweep Frequency',
     'Change Deposit Fees',
     'Change Withdrawal Fees',
+    'Change EMTL Fee',
+    'Change Transfer Fee',
+    'Change Maintenance Fee',
     'Change Withdrawal Mode',
     'Change Maximum Daily Withdrawal',
-    'Freeze Withdrawals'
+    'Freeze Withdrawals',
+    'Withdrawal Approval'
   ]
 
   // Filtered data
@@ -201,13 +209,18 @@ const WalletManagement = () => {
   const handleOtherActionSelect = (action) => {
     setCurrentAction(action)
     setShowOtherActionsDropdown(false)
-    setShowViewModal(false) // Close view modal
-    setShowChangeModal(true) // Open change modal
+    setShowViewModal(false)
+    if (action === 'Withdrawal Approval') {
+      setShowWithdrawalApprovalModal(true)
+    } else {
+      setShowChangeModal(true)
+    }
   }
 
   const handleCloseModals = () => {
     setShowViewModal(false)
     setShowChangeModal(false)
+    setShowWithdrawalApprovalModal(false)
     setSelectedUser(null)
     setCurrentAction(null)
     setShowOtherActionsDropdown(false)
@@ -440,6 +453,104 @@ const WalletManagement = () => {
           />
         )}
       </CustomModal>
+
+      {/* Withdrawal Approval Modal */}
+      <CustomModal
+        isOpen={showWithdrawalApprovalModal}
+        onClose={handleCloseModals}
+        title="Withdrawal Approval"
+        width="700px"
+      >
+        <WithdrawalApprovalTab
+          pendingWithdrawals={pendingWithdrawals}
+          setPendingWithdrawals={setPendingWithdrawals}
+          onClose={handleCloseModals}
+        />
+      </CustomModal>
+    </div>
+  )
+}
+
+// Withdrawal Approval Component
+const WithdrawalApprovalTab = ({ pendingWithdrawals, setPendingWithdrawals, onClose }) => {
+  const handleApprove = (withdrawal) => {
+    setPendingWithdrawals(prev => 
+      prev.map(item => 
+        item.id === withdrawal.id 
+          ? { ...item, status: 'Approved' }
+          : item
+      )
+    )
+  }
+
+  const handleReject = (withdrawal) => {
+    setPendingWithdrawals(prev => 
+      prev.map(item => 
+        item.id === withdrawal.id 
+          ? { ...item, status: 'Rejected' }
+          : item
+      )
+    )
+  }
+
+  return (
+    <div className={styles.withdrawalApprovalContainer}>
+      {pendingWithdrawals.length === 0 ? (
+        <div className={styles.emptyState}>
+          <p>No pending withdrawals</p>
+        </div>
+      ) : (
+        <div className={styles.withdrawalList}>
+          {pendingWithdrawals.map((withdrawal) => (
+            <div key={withdrawal.id} className={styles.withdrawalItem}>
+              <div className={styles.withdrawalInfo}>
+                <div className={styles.withdrawalRow}>
+                  <span className={styles.withdrawalLabel}>User ID:</span>
+                  <span className={styles.withdrawalValue}>{withdrawal.userId}</span>
+                </div>
+                <div className={styles.withdrawalRow}>
+                  <span className={styles.withdrawalLabel}>User Name:</span>
+                  <span className={styles.withdrawalValue}>{withdrawal.userName}</span>
+                </div>
+                <div className={styles.withdrawalRow}>
+                  <span className={styles.withdrawalLabel}>Amount:</span>
+                  <span className={styles.withdrawalValue}>{withdrawal.amount}</span>
+                </div>
+                <div className={styles.withdrawalRow}>
+                  <span className={styles.withdrawalLabel}>Date:</span>
+                  <span className={styles.withdrawalValue}>{withdrawal.date}</span>
+                </div>
+                <div className={styles.withdrawalRow}>
+                  <span className={styles.withdrawalLabel}>Status:</span>
+                  <span className={`${styles.statusBadge} ${
+                    withdrawal.status === 'Approved' ? styles.statusActive :
+                    withdrawal.status === 'Rejected' ? styles.statusSuspended :
+                    styles.statusPending
+                  }`}>
+                    {withdrawal.status}
+                  </span>
+                </div>
+              </div>
+              {withdrawal.status === 'Pending' && (
+                <div className={styles.withdrawalActions}>
+                  <button
+                    className={styles.approveBtn}
+                    onClick={() => handleApprove(withdrawal)}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className={styles.rejectBtn}
+                    onClick={() => handleReject(withdrawal)}
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -480,10 +591,43 @@ const ChangeSettingsForm = ({ user, action, onSave, onCancel }) => {
         setFormData({ autoSweepFrequency: frequencyValue })
         break
       case 'Change Deposit Fees':
-        setFormData({ depositFees: user.depositFees || '' })
+        const depositFeeValue = user.depositFees || ''
+        const depositFeeType = depositFeeValue.includes('%') ? '%' : 'Flat'
+        const depositFeeAmount = depositFeeValue.replace(/[%₦,]/g, '').trim()
+        setFormData({ 
+          depositFees: depositFeeAmount,
+          depositFeeType: depositFeeType
+        })
         break
       case 'Change Withdrawal Fees':
-        setFormData({ withdrawalFees: user.withdrawalFees || '' })
+        const withdrawalFeeValue = user.withdrawalFees || ''
+        const withdrawalFeeType = withdrawalFeeValue.includes('%') ? '%' : 'Flat'
+        const withdrawalFeeAmount = withdrawalFeeValue.replace(/[%₦,]/g, '').trim()
+        setFormData({ 
+          withdrawalFees: withdrawalFeeAmount,
+          withdrawalFeeType: withdrawalFeeType
+        })
+        break
+      case 'Change EMTL Fee':
+        setFormData({ 
+          emtlFee: user.emtlFee || '',
+          emtlFeeType: user.emtlFeeType || '%'
+        })
+        break
+      case 'Change Transfer Fee':
+        setFormData({
+          transferFee0to5000: user.transferFee0to5000 || '',
+          transferFee5001to50000: user.transferFee5001to50000 || '',
+          transferFeeAbove50000: user.transferFeeAbove50000 || '',
+          transferFeeType: user.transferFeeType || '%'
+        })
+        break
+      case 'Change Maintenance Fee':
+        setFormData({
+          maintenanceFee: user.maintenanceFee || '',
+          maintenanceFeeType: user.maintenanceFeeType || '%',
+          maintenanceFeeFrequency: user.maintenanceFeeFrequency || 'Monthly'
+        })
         break
       case 'Change Withdrawal Mode':
         // Map old values to new values
@@ -507,14 +651,44 @@ const ChangeSettingsForm = ({ user, action, onSave, onCancel }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     
-    // Basic validation
     const newErrors = {}
-    if (action === 'Change Deposit Fees' && (!formData.depositFees || !formData.depositFees.includes('%'))) {
-      newErrors.depositFees = 'Please enter a valid fee percentage (e.g., 0.5%)'
+    
+    if (action === 'Change Deposit Fees') {
+      if (!formData.depositFees || formData.depositFees.trim() === '') {
+        newErrors.depositFees = 'Please enter a valid fee amount'
+      }
     }
-    if (action === 'Change Withdrawal Fees' && (!formData.withdrawalFees || !formData.withdrawalFees.includes('%'))) {
-      newErrors.withdrawalFees = 'Please enter a valid fee percentage (e.g., 1.0%)'
+    
+    if (action === 'Change Withdrawal Fees') {
+      if (!formData.withdrawalFees || formData.withdrawalFees.trim() === '') {
+        newErrors.withdrawalFees = 'Please enter a valid fee amount'
+      }
     }
+    
+    if (action === 'Change EMTL Fee') {
+      if (!formData.emtlFee || formData.emtlFee.trim() === '') {
+        newErrors.emtlFee = 'Please enter a valid fee amount'
+      }
+    }
+    
+    if (action === 'Change Transfer Fee') {
+      if (!formData.transferFee0to5000 || formData.transferFee0to5000.trim() === '') {
+        newErrors.transferFee0to5000 = 'Please enter a valid fee amount'
+      }
+      if (!formData.transferFee5001to50000 || formData.transferFee5001to50000.trim() === '') {
+        newErrors.transferFee5001to50000 = 'Please enter a valid fee amount'
+      }
+      if (!formData.transferFeeAbove50000 || formData.transferFeeAbove50000.trim() === '') {
+        newErrors.transferFeeAbove50000 = 'Please enter a valid fee amount'
+      }
+    }
+    
+    if (action === 'Change Maintenance Fee') {
+      if (!formData.maintenanceFee || formData.maintenanceFee.trim() === '') {
+        newErrors.maintenanceFee = 'Please enter a valid fee amount'
+      }
+    }
+    
     if (action === 'Change Maximum Daily Withdrawal' && (!formData.maxDailyWithdrawal || !formData.maxDailyWithdrawal.includes('₦'))) {
       newErrors.maxDailyWithdrawal = 'Please enter a valid amount (e.g., ₦50,000)'
     }
@@ -524,7 +698,45 @@ const ChangeSettingsForm = ({ user, action, onSave, onCancel }) => {
       return
     }
 
-    onSave(formData)
+    const formattedData = { ...formData }
+    
+    if (action === 'Change Deposit Fees') {
+      formattedData.depositFees = formData.depositFeeType === '%' 
+        ? `${formData.depositFees}%` 
+        : `₦${formData.depositFees}`
+    }
+    
+    if (action === 'Change Withdrawal Fees') {
+      formattedData.withdrawalFees = formData.withdrawalFeeType === '%' 
+        ? `${formData.withdrawalFees}%` 
+        : `₦${formData.withdrawalFees}`
+    }
+    
+    if (action === 'Change EMTL Fee') {
+      formattedData.emtlFee = formData.emtlFeeType === '%' 
+        ? `${formData.emtlFee}%` 
+        : `₦${formData.emtlFee}`
+    }
+    
+    if (action === 'Change Transfer Fee') {
+      if (formData.transferFeeType === '%') {
+        formattedData.transferFee0to5000 = `${formData.transferFee0to5000}%`
+        formattedData.transferFee5001to50000 = `${formData.transferFee5001to50000}%`
+        formattedData.transferFeeAbove50000 = `${formData.transferFeeAbove50000}%`
+      } else {
+        formattedData.transferFee0to5000 = `₦${formData.transferFee0to5000}`
+        formattedData.transferFee5001to50000 = `₦${formData.transferFee5001to50000}`
+        formattedData.transferFeeAbove50000 = `₦${formData.transferFeeAbove50000}`
+      }
+    }
+    
+    if (action === 'Change Maintenance Fee') {
+      formattedData.maintenanceFee = formData.maintenanceFeeType === '%' 
+        ? `${formData.maintenanceFee}%` 
+        : `₦${formData.maintenanceFee}`
+    }
+
+    onSave(formattedData)
   }
 
   const renderFormField = () => {
@@ -595,32 +807,178 @@ const ChangeSettingsForm = ({ user, action, onSave, onCancel }) => {
 
       case 'Change Deposit Fees':
         return (
-          <div className={styles.formGroup}>
-            <label>Deposit Fees (%)</label>
-            <input
-              type="text"
-              className={styles.formInput}
-              value={formData.depositFees || ''}
-              onChange={(e) => setFormData({ ...formData, depositFees: e.target.value })}
-              placeholder="e.g., 0.5%"
-            />
-            {errors.depositFees && <span className={styles.errorText}>{errors.depositFees}</span>}
-          </div>
+          <>
+            <div className={styles.formGroup}>
+              <label>Fee Type</label>
+              <select
+                className={styles.formSelect}
+                value={formData.depositFeeType || '%'}
+                onChange={(e) => setFormData({ ...formData, depositFeeType: e.target.value })}
+              >
+                <option value="%">%</option>
+                <option value="Flat">Flat</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label>Deposit Fees {formData.depositFeeType === '%' ? '(%)' : '(₦)'}</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                value={formData.depositFees || ''}
+                onChange={(e) => setFormData({ ...formData, depositFees: e.target.value })}
+                placeholder={formData.depositFeeType === '%' ? "e.g., 0.5" : "e.g., 100"}
+              />
+              {errors.depositFees && <span className={styles.errorText}>{errors.depositFees}</span>}
+            </div>
+          </>
         )
 
       case 'Change Withdrawal Fees':
         return (
-          <div className={styles.formGroup}>
-            <label>Withdrawal Fees (%)</label>
-            <input
-              type="text"
-              className={styles.formInput}
-              value={formData.withdrawalFees || ''}
-              onChange={(e) => setFormData({ ...formData, withdrawalFees: e.target.value })}
-              placeholder="e.g., 1.0%"
-            />
-            {errors.withdrawalFees && <span className={styles.errorText}>{errors.withdrawalFees}</span>}
-          </div>
+          <>
+            <div className={styles.formGroup}>
+              <label>Fee Type</label>
+              <select
+                className={styles.formSelect}
+                value={formData.withdrawalFeeType || '%'}
+                onChange={(e) => setFormData({ ...formData, withdrawalFeeType: e.target.value })}
+              >
+                <option value="%">%</option>
+                <option value="Flat">Flat</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label>Withdrawal Fees {formData.withdrawalFeeType === '%' ? '(%)' : '(₦)'}</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                value={formData.withdrawalFees || ''}
+                onChange={(e) => setFormData({ ...formData, withdrawalFees: e.target.value })}
+                placeholder={formData.withdrawalFeeType === '%' ? "e.g., 1.0" : "e.g., 200"}
+              />
+              {errors.withdrawalFees && <span className={styles.errorText}>{errors.withdrawalFees}</span>}
+            </div>
+          </>
+        )
+
+      case 'Change EMTL Fee':
+        return (
+          <>
+            <div className={styles.formGroup}>
+              <label>Fee Type</label>
+              <select
+                className={styles.formSelect}
+                value={formData.emtlFeeType || '%'}
+                onChange={(e) => setFormData({ ...formData, emtlFeeType: e.target.value })}
+              >
+                <option value="%">%</option>
+                <option value="Flat">Flat</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label>EMTL Fee {formData.emtlFeeType === '%' ? '(%)' : '(₦)'}</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                value={formData.emtlFee || ''}
+                onChange={(e) => setFormData({ ...formData, emtlFee: e.target.value })}
+                placeholder={formData.emtlFeeType === '%' ? "e.g., 0.5" : "e.g., 50"}
+              />
+              {errors.emtlFee && <span className={styles.errorText}>{errors.emtlFee}</span>}
+            </div>
+          </>
+        )
+
+      case 'Change Transfer Fee':
+        return (
+          <>
+            <div className={styles.formGroup}>
+              <label>Fee Type</label>
+              <select
+                className={styles.formSelect}
+                value={formData.transferFeeType || '%'}
+                onChange={(e) => setFormData({ ...formData, transferFeeType: e.target.value })}
+              >
+                <option value="%">%</option>
+                <option value="Flat">Flat</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label>Transfer Fee (0-5000) {formData.transferFeeType === '%' ? '(%)' : '(₦)'}</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                value={formData.transferFee0to5000 || ''}
+                onChange={(e) => setFormData({ ...formData, transferFee0to5000: e.target.value })}
+                placeholder={formData.transferFeeType === '%' ? "e.g., 0.5" : "e.g., 10"}
+              />
+              {errors.transferFee0to5000 && <span className={styles.errorText}>{errors.transferFee0to5000}</span>}
+            </div>
+            <div className={styles.formGroup}>
+              <label>Transfer Fee (5001-50000) {formData.transferFeeType === '%' ? '(%)' : '(₦)'}</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                value={formData.transferFee5001to50000 || ''}
+                onChange={(e) => setFormData({ ...formData, transferFee5001to50000: e.target.value })}
+                placeholder={formData.transferFeeType === '%' ? "e.g., 0.3" : "e.g., 25"}
+              />
+              {errors.transferFee5001to50000 && <span className={styles.errorText}>{errors.transferFee5001to50000}</span>}
+            </div>
+            <div className={styles.formGroup}>
+              <label>Transfer Fee (Above 50000) {formData.transferFeeType === '%' ? '(%)' : '(₦)'}</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                value={formData.transferFeeAbove50000 || ''}
+                onChange={(e) => setFormData({ ...formData, transferFeeAbove50000: e.target.value })}
+                placeholder={formData.transferFeeType === '%' ? "e.g., 0.2" : "e.g., 50"}
+              />
+              {errors.transferFeeAbove50000 && <span className={styles.errorText}>{errors.transferFeeAbove50000}</span>}
+            </div>
+          </>
+        )
+
+      case 'Change Maintenance Fee':
+        return (
+          <>
+            <div className={styles.formGroup}>
+              <label>Fee Type</label>
+              <select
+                className={styles.formSelect}
+                value={formData.maintenanceFeeType || '%'}
+                onChange={(e) => setFormData({ ...formData, maintenanceFeeType: e.target.value })}
+              >
+                <option value="%">%</option>
+                <option value="Flat">Flat</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label>Maintenance Fee {formData.maintenanceFeeType === '%' ? '(%)' : '(₦)'}</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                value={formData.maintenanceFee || ''}
+                onChange={(e) => setFormData({ ...formData, maintenanceFee: e.target.value })}
+                placeholder={formData.maintenanceFeeType === '%' ? "e.g., 0.1" : "e.g., 100"}
+              />
+              {errors.maintenanceFee && <span className={styles.errorText}>{errors.maintenanceFee}</span>}
+            </div>
+            <div className={styles.formGroup}>
+              <label>Maintenance Fee Frequency</label>
+              <select
+                className={styles.formSelect}
+                value={formData.maintenanceFeeFrequency || 'Monthly'}
+                onChange={(e) => setFormData({ ...formData, maintenanceFeeFrequency: e.target.value })}
+              >
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Bi-Annually">Bi-Annually</option>
+                <option value="Annually">Annually</option>
+              </select>
+            </div>
+          </>
         )
 
       case 'Change Withdrawal Mode':

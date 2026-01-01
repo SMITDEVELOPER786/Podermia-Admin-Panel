@@ -12,10 +12,20 @@ const WalletSettings = () => {
     depositFees: '0.5',
     withdrawalFeeType: 'Percentage',
     withdrawalFees: '1.0',
+    emtlFeeType: 'Percentage',
+    emtlFee: '',
+    transferFeeType: 'Percentage',
+    transferFee0to5000: '',
+    transferFee5001to50000: '',
+    transferFeeAbove50000: '',
+    maintenanceFeeType: 'Percentage',
+    maintenanceFee: '',
+    maintenanceFeeFrequency: 'Monthly',
+    flagTransactionAmount: '',
+    flagTransactionFrequency: '',
     freezeWithdrawals: false,
     withdrawalMode: 'Automatic',
     maxDailyWithdrawal: '',
-    flagTransactionAmount: '',
     suspiciousActivityEnabled: false,
     transactionPinLimit: '',
     twoFALimit: '',
@@ -30,7 +40,12 @@ const WalletSettings = () => {
     
     // For percentage fees, only allow numbers and decimal point
     if ((name === 'depositFees' && formData.depositFeeType === 'Percentage') ||
-        (name === 'withdrawalFees' && formData.withdrawalFeeType === 'Percentage')) {
+        (name === 'withdrawalFees' && formData.withdrawalFeeType === 'Percentage') ||
+        (name === 'emtlFee' && formData.emtlFeeType === 'Percentage') ||
+        (name === 'maintenanceFee' && formData.maintenanceFeeType === 'Percentage') ||
+        (name === 'transferFee0to5000' && formData.transferFeeType === 'Percentage') ||
+        (name === 'transferFee5001to50000' && formData.transferFeeType === 'Percentage') ||
+        (name === 'transferFeeAbove50000' && formData.transferFeeType === 'Percentage')) {
       // Allow only numbers and one decimal point
       const numericValue = value.replace(/[^0-9.]/g, '')
       // Ensure only one decimal point
@@ -114,6 +129,48 @@ const WalletSettings = () => {
     if (formData.withdrawalFeeType === 'Fixed' && (!formData.withdrawalFees || isNaN(formData.withdrawalFees) || parseFloat(formData.withdrawalFees) < 0)) {
       newErrors.withdrawalFees = 'Please enter a valid fixed amount'
     }
+    
+    if (formData.emtlFeeType === 'Percentage' && (!formData.emtlFee || isNaN(formData.emtlFee) || parseFloat(formData.emtlFee) < 0 || parseFloat(formData.emtlFee) > 100)) {
+      newErrors.emtlFee = 'Please enter a valid percentage (0-100)'
+    }
+    
+    if (formData.emtlFeeType === 'Fixed' && (!formData.emtlFee || isNaN(formData.emtlFee) || parseFloat(formData.emtlFee) < 0)) {
+      newErrors.emtlFee = 'Please enter a valid fixed amount'
+    }
+    
+    if (formData.transferFeeType === 'Percentage') {
+      if (!formData.transferFee0to5000 || isNaN(formData.transferFee0to5000) || parseFloat(formData.transferFee0to5000) < 0 || parseFloat(formData.transferFee0to5000) > 100) {
+        newErrors.transferFee0to5000 = 'Please enter a valid percentage (0-100)'
+      }
+      if (!formData.transferFee5001to50000 || isNaN(formData.transferFee5001to50000) || parseFloat(formData.transferFee5001to50000) < 0 || parseFloat(formData.transferFee5001to50000) > 100) {
+        newErrors.transferFee5001to50000 = 'Please enter a valid percentage (0-100)'
+      }
+      if (!formData.transferFeeAbove50000 || isNaN(formData.transferFeeAbove50000) || parseFloat(formData.transferFeeAbove50000) < 0 || parseFloat(formData.transferFeeAbove50000) > 100) {
+        newErrors.transferFeeAbove50000 = 'Please enter a valid percentage (0-100)'
+      }
+    } else {
+      if (!formData.transferFee0to5000 || isNaN(formData.transferFee0to5000) || parseFloat(formData.transferFee0to5000) < 0) {
+        newErrors.transferFee0to5000 = 'Please enter a valid fixed amount'
+      }
+      if (!formData.transferFee5001to50000 || isNaN(formData.transferFee5001to50000) || parseFloat(formData.transferFee5001to50000) < 0) {
+        newErrors.transferFee5001to50000 = 'Please enter a valid fixed amount'
+      }
+      if (!formData.transferFeeAbove50000 || isNaN(formData.transferFeeAbove50000) || parseFloat(formData.transferFeeAbove50000) < 0) {
+        newErrors.transferFeeAbove50000 = 'Please enter a valid fixed amount'
+      }
+    }
+    
+    if (formData.maintenanceFeeType === 'Percentage' && (!formData.maintenanceFee || isNaN(formData.maintenanceFee) || parseFloat(formData.maintenanceFee) < 0 || parseFloat(formData.maintenanceFee) > 100)) {
+      newErrors.maintenanceFee = 'Please enter a valid percentage (0-100)'
+    }
+    
+    if (formData.maintenanceFeeType === 'Fixed' && (!formData.maintenanceFee || isNaN(formData.maintenanceFee) || parseFloat(formData.maintenanceFee) < 0)) {
+      newErrors.maintenanceFee = 'Please enter a valid fixed amount'
+    }
+    
+    if (!formData.flagTransactionFrequency || formData.flagTransactionFrequency.trim() === '') {
+      newErrors.flagTransactionFrequency = 'Please select a frequency'
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -144,10 +201,20 @@ const WalletSettings = () => {
       depositFees: '',
       withdrawalFeeType: 'Percentage',
       withdrawalFees: '',
+      emtlFeeType: 'Percentage',
+      emtlFee: '',
+      transferFeeType: 'Percentage',
+      transferFee0to5000: '',
+      transferFee5001to50000: '',
+      transferFeeAbove50000: '',
+      maintenanceFeeType: 'Percentage',
+      maintenanceFee: '',
+      maintenanceFeeFrequency: 'Monthly',
+      flagTransactionAmount: '',
+      flagTransactionFrequency: '',
       freezeWithdrawals: false,
       withdrawalMode: 'Automatic',
       maxDailyWithdrawal: '',
-      flagTransactionAmount: '',
       suspiciousActivityEnabled: false,
       transactionPinLimit: '',
       twoFALimit: '',
@@ -166,10 +233,20 @@ const WalletSettings = () => {
       depositFees: '0.5',
       withdrawalFeeType: 'Percentage',
       withdrawalFees: '1.0',
+      emtlFeeType: 'Percentage',
+      emtlFee: '',
+      transferFeeType: 'Percentage',
+      transferFee0to5000: '',
+      transferFee5001to50000: '',
+      transferFeeAbove50000: '',
+      maintenanceFeeType: 'Percentage',
+      maintenanceFee: '',
+      maintenanceFeeFrequency: 'Monthly',
+      flagTransactionAmount: '',
+      flagTransactionFrequency: '',
       freezeWithdrawals: false,
       withdrawalMode: 'Automatic',
       maxDailyWithdrawal: '',
-      flagTransactionAmount: '',
       suspiciousActivityEnabled: false,
       transactionPinLimit: '',
       twoFALimit: '',
@@ -356,6 +433,220 @@ const WalletSettings = () => {
               </div>
               {errors.withdrawalFees && <span className={styles.errorText}>{errors.withdrawalFees}</span>}
             </div>
+
+            <div className={styles.formGroup}>
+              <label>EMTL Fee Type</label>
+              <div className={styles.radioGroup}>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="emtlFeeType"
+                    value="Percentage"
+                    checked={formData.emtlFeeType === 'Percentage'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Percentage</span>
+                </label>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="emtlFeeType"
+                    value="Fixed"
+                    checked={formData.emtlFeeType === 'Fixed'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Fixed</span>
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>
+                EMTL Fee {formData.emtlFeeType === 'Percentage' ? '(%)' : '(Amount)'}
+              </label>
+              <div className={styles.inputWithSuffix}>
+                <input
+                  type={formData.emtlFeeType === 'Percentage' ? 'text' : 'number'}
+                  name="emtlFee"
+                  className={`${styles.formInput} ${errors.emtlFee ? styles.inputError : ''}`}
+                  value={formData.emtlFee}
+                  onChange={handleInputChange}
+                  onKeyPress={formData.emtlFeeType === 'Percentage' ? handleNumericKeyPress : undefined}
+                  onWheel={formData.emtlFeeType === 'Fixed' ? handleNumberInputWheel : undefined}
+                  placeholder={formData.emtlFeeType === 'Percentage' ? '0.5' : '50'}
+                  step={formData.emtlFeeType === 'Percentage' ? undefined : '0.01'}
+                  min={formData.emtlFeeType === 'Percentage' ? undefined : '0'}
+                />
+                <span className={styles.inputSuffix}>
+                  {formData.emtlFeeType === 'Percentage' ? '%' : '₦'}
+                </span>
+              </div>
+              {errors.emtlFee && <span className={styles.errorText}>{errors.emtlFee}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Transfer Fee Type</label>
+              <div className={styles.radioGroup}>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="transferFeeType"
+                    value="Percentage"
+                    checked={formData.transferFeeType === 'Percentage'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Percentage</span>
+                </label>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="transferFeeType"
+                    value="Fixed"
+                    checked={formData.transferFeeType === 'Fixed'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Fixed</span>
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>
+                Transfer Fee (0-5000) {formData.transferFeeType === 'Percentage' ? '(%)' : '(Amount)'}
+              </label>
+              <div className={styles.inputWithSuffix}>
+                <input
+                  type={formData.transferFeeType === 'Percentage' ? 'text' : 'number'}
+                  name="transferFee0to5000"
+                  className={`${styles.formInput} ${errors.transferFee0to5000 ? styles.inputError : ''}`}
+                  value={formData.transferFee0to5000}
+                  onChange={handleInputChange}
+                  onKeyPress={formData.transferFeeType === 'Percentage' ? handleNumericKeyPress : undefined}
+                  onWheel={formData.transferFeeType === 'Fixed' ? handleNumberInputWheel : undefined}
+                  placeholder={formData.transferFeeType === 'Percentage' ? '0.5' : '10'}
+                  step={formData.transferFeeType === 'Percentage' ? undefined : '0.01'}
+                  min={formData.transferFeeType === 'Percentage' ? undefined : '0'}
+                />
+                <span className={styles.inputSuffix}>
+                  {formData.transferFeeType === 'Percentage' ? '%' : '₦'}
+                </span>
+              </div>
+              {errors.transferFee0to5000 && <span className={styles.errorText}>{errors.transferFee0to5000}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>
+                Transfer Fee (5001-50000) {formData.transferFeeType === 'Percentage' ? '(%)' : '(Amount)'}
+              </label>
+              <div className={styles.inputWithSuffix}>
+                <input
+                  type={formData.transferFeeType === 'Percentage' ? 'text' : 'number'}
+                  name="transferFee5001to50000"
+                  className={`${styles.formInput} ${errors.transferFee5001to50000 ? styles.inputError : ''}`}
+                  value={formData.transferFee5001to50000}
+                  onChange={handleInputChange}
+                  onKeyPress={formData.transferFeeType === 'Percentage' ? handleNumericKeyPress : undefined}
+                  onWheel={formData.transferFeeType === 'Fixed' ? handleNumberInputWheel : undefined}
+                  placeholder={formData.transferFeeType === 'Percentage' ? '0.3' : '25'}
+                  step={formData.transferFeeType === 'Percentage' ? undefined : '0.01'}
+                  min={formData.transferFeeType === 'Percentage' ? undefined : '0'}
+                />
+                <span className={styles.inputSuffix}>
+                  {formData.transferFeeType === 'Percentage' ? '%' : '₦'}
+                </span>
+              </div>
+              {errors.transferFee5001to50000 && <span className={styles.errorText}>{errors.transferFee5001to50000}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>
+                Transfer Fee (Above 50000) {formData.transferFeeType === 'Percentage' ? '(%)' : '(Amount)'}
+              </label>
+              <div className={styles.inputWithSuffix}>
+                <input
+                  type={formData.transferFeeType === 'Percentage' ? 'text' : 'number'}
+                  name="transferFeeAbove50000"
+                  className={`${styles.formInput} ${errors.transferFeeAbove50000 ? styles.inputError : ''}`}
+                  value={formData.transferFeeAbove50000}
+                  onChange={handleInputChange}
+                  onKeyPress={formData.transferFeeType === 'Percentage' ? handleNumericKeyPress : undefined}
+                  onWheel={formData.transferFeeType === 'Fixed' ? handleNumberInputWheel : undefined}
+                  placeholder={formData.transferFeeType === 'Percentage' ? '0.2' : '50'}
+                  step={formData.transferFeeType === 'Percentage' ? undefined : '0.01'}
+                  min={formData.transferFeeType === 'Percentage' ? undefined : '0'}
+                />
+                <span className={styles.inputSuffix}>
+                  {formData.transferFeeType === 'Percentage' ? '%' : '₦'}
+                </span>
+              </div>
+              {errors.transferFeeAbove50000 && <span className={styles.errorText}>{errors.transferFeeAbove50000}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Maintenance Fee Type</label>
+              <div className={styles.radioGroup}>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="maintenanceFeeType"
+                    value="Percentage"
+                    checked={formData.maintenanceFeeType === 'Percentage'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Percentage</span>
+                </label>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="maintenanceFeeType"
+                    value="Fixed"
+                    checked={formData.maintenanceFeeType === 'Fixed'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Fixed</span>
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>
+                Maintenance Fee {formData.maintenanceFeeType === 'Percentage' ? '(%)' : '(Amount)'}
+              </label>
+              <div className={styles.inputWithSuffix}>
+                <input
+                  type={formData.maintenanceFeeType === 'Percentage' ? 'text' : 'number'}
+                  name="maintenanceFee"
+                  className={`${styles.formInput} ${errors.maintenanceFee ? styles.inputError : ''}`}
+                  value={formData.maintenanceFee}
+                  onChange={handleInputChange}
+                  onKeyPress={formData.maintenanceFeeType === 'Percentage' ? handleNumericKeyPress : undefined}
+                  onWheel={formData.maintenanceFeeType === 'Fixed' ? handleNumberInputWheel : undefined}
+                  placeholder={formData.maintenanceFeeType === 'Percentage' ? '0.1' : '100'}
+                  step={formData.maintenanceFeeType === 'Percentage' ? undefined : '0.01'}
+                  min={formData.maintenanceFeeType === 'Percentage' ? undefined : '0'}
+                />
+                <span className={styles.inputSuffix}>
+                  {formData.maintenanceFeeType === 'Percentage' ? '%' : '₦'}
+                </span>
+              </div>
+              {errors.maintenanceFee && <span className={styles.errorText}>{errors.maintenanceFee}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Maintenance Fee Payment Frequency</label>
+              <select
+                name="maintenanceFeeFrequency"
+                className={styles.formSelect}
+                value={formData.maintenanceFeeFrequency}
+                onChange={handleInputChange}
+              >
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Bi-Annually">Bi-Annually</option>
+                <option value="Annually">Annually</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -436,6 +727,28 @@ const WalletSettings = () => {
               {errors.flagTransactionAmount && <span className={styles.errorText}>{errors.flagTransactionAmount}</span>}
               <p className={styles.helpText}>
                 Transactions above this amount will be flagged for AML review
+              </p>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Flag Transaction (AML Threshold Frequency)</label>
+              <select
+                name="flagTransactionFrequency"
+                className={`${styles.formSelect} ${errors.flagTransactionFrequency ? styles.inputError : ''}`}
+                value={formData.flagTransactionFrequency}
+                onChange={handleInputChange}
+              >
+                <option value="">Select Frequency</option>
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Bi-Annually">Bi-Annually</option>
+                <option value="Annually">Annually</option>
+              </select>
+              {errors.flagTransactionFrequency && <span className={styles.errorText}>{errors.flagTransactionFrequency}</span>}
+              <p className={styles.helpText}>
+                Frequency at which transactions will be flagged for AML review
               </p>
             </div>
 
