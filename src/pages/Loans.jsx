@@ -1521,10 +1521,77 @@ function DefaultManagementTab() {
                   </button>
                   {/* Action Menu Dropdown */}
                   {actionMenuOpen === i && (
-                    <div className={styles.fixedActionMenu}>
-                      {/* Lock / Unlock / Partial / Liquidation / Completion actions */}
-                      {/* ...existing code here... */}
-                    </div>
+                   <div className={styles.fixedActionMenu}>
+    <button onClick={() => setSelectedAction({ loan: row, modal: "LockCollateralModal" })}>
+      Lock collateral on loan disbursement
+    </button>
+    <div className={styles.dropdownItem}>
+      <div className={styles.dropdownRow}>
+        <span>Unlock collateral after</span>
+      <span
+  className={styles.arrow}
+  onClick={(e) => {
+    e.stopPropagation();
+    toggleSub("unlock");
+  }}
+>
+  ▾
+</span>
+
+      </div>
+   {openSub === "unlock" && (
+  <div className={styles.subMenu}>
+
+        <button onClick={() => setSelectedAction({ loan: row, modal: "UnlockFullModal" })}>
+          <span className={styles.circle}></span>
+          Full repayment
+        </button>
+        <button onClick={() => setSelectedAction({ loan: row, modal: "UnlockRestructureModal" })}>
+          <span className={styles.circle}></span>
+          Restructuring
+        </button>
+      </div>
+  )}
+    </div>
+
+    <button onClick={() => setSelectedAction({ loan: row, modal: "PartialReleaseModal" })}>
+      Partial release of collateral
+    </button>
+
+    <button onClick={() => setSelectedAction({ loan: row, modal: "AssetLiquidationModal" })}>
+      Initiate collateral enforcement (set off)
+    </button>
+
+    <button onClick={() => setSelectedAction({ loan: row, modal: "AssetLiquidationModal" })}>
+      Record enforcement (set off) amount
+    </button>
+
+    {/* Completion dropdown */}
+    <div className={styles.dropdownItem}>
+      <div className={styles.dropdownRow}>
+        <span>Mark enforcement (set off) completion</span>
+<span
+  className={styles.arrow}
+  onClick={(e) => {
+    e.stopPropagation();
+    toggleSub("unlock");
+  }}
+>
+  ▾
+</span>
+      </div>
+{openSub === "unlock" && (
+  <div className={styles.subMenu}>
+
+        <button onClick={() => setSelectedAction({ loan: row, modal: "MarkCompletionModal" })}>
+          <span className={styles.circle}></span>
+          Confirm completion
+        </button>
+      </div>
+)}
+    </div>
+
+  </div>
                   )}
                 </td>
               </tr>
