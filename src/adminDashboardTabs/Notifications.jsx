@@ -72,7 +72,7 @@ const Notifications = () => {
         </div>
       </div>
 
-      <KPICards displayNone={true}/>
+      <KPICards displayNone={true} notificationsMode={true}/>
 
       <div className={styles.notificationsContainer}>
         {notifications.map((notification, index) => {

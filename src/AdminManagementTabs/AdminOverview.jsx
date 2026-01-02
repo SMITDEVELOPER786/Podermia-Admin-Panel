@@ -34,7 +34,7 @@ const AdminOverview = () => {
       fullName: 'Emma Davis',
       email: 'emma.davis@podermonie.com',
       department: 'Finance',
-      roles: ['Loan Admin', 'Investment Admin'],
+      roles: ['Loan Admin', 'Support Admin'],
       status: 'Active',
       lastLogin: '2025-01-13 16:45:30',
       createdBy: 'Sarah Wilson',

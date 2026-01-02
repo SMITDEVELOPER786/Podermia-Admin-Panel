@@ -173,6 +173,7 @@ const AdminAuditLogs = () => {
       const matchesAction = !filters.action || filters.action === 'All Actions' || log.actionType === filters.action;
       const matchesRisk = !filters.risk || filters.risk === 'All Risk Levels' || log.risk === filters.risk;
       
+      // Date filter
       let matchesDate = true;
       if (filters.date) {
         const filterDate = new Date(filters.date).toDateString();

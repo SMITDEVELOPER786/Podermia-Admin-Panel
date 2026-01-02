@@ -8,7 +8,9 @@ import CreateAdminModal from './CreateAdminModal';
 import EditAdminModal from './EditAdminModal';
 import AssignRolesModal from './AssignRolesModal';
 import SetExpiryModal from './SetExpiryModal';
-import { Search, Plus, MoreVertical, Edit, UserCheck, UserX, ShieldOff, LogOut, Key, Shield, Calendar, X } from 'lucide-react';
+import { Search, Plus, MoreVertical, Edit, UserCheck, UserX, ShieldOff, LogOut, Key, Shield, Calendar, X, FileText, FileSpreadsheet, Loader2 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const AdminDirectory = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,6 +28,8 @@ const AdminDirectory = () => {
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [toast, setToast] = useState(null);
+  const [loadingCSV, setLoadingCSV] = useState(false);
+  const [loadingPDF, setLoadingPDF] = useState(false);
 
   // Sample admin data - using state so we can update it
   const [admins, setAdmins] = useState([
@@ -58,7 +62,7 @@ const AdminDirectory = () => {
       fullName: 'Emma Davis',
       email: 'emma.davis@podermonie.com',
       department: 'Finance',
-      roles: ['Loan Admin', 'Investment Admin'],
+      roles: ['Loan Admin', 'Support Admin'],
       status: 'Active',
       lastLogin: '2025-01-13 16:45:30',
       createdBy: 'Sarah Wilson',
@@ -111,7 +115,8 @@ const AdminDirectory = () => {
     'Loan Admin',
     'System Setting Admin',
     'KYC Admin',
-    'Wallet Admin'
+    'Wallet Admin',
+    'Support Admin'
   ];
 
   // Available departments
@@ -488,18 +493,190 @@ const AdminDirectory = () => {
     setFilters(newFilters);
   };
 
+  // Export to CSV
+  const handleExportCSV = () => {
+    if (filteredAdmins.length === 0) {
+      setToast({
+        type: 'warning',
+        title: 'No Data',
+        message: 'No admin data available to export'
+      });
+      return;
+    }
+
+    setLoadingCSV(true);
+    setTimeout(() => {
+      try {
+        const headers = ['Admin ID', 'Full Name', 'Corporate Email', 'Department / Team', 'Assigned Role(s)', 'Account Status', 'Last Login', 'Created By', 'Created Date', 'Account Expiry'];
+        const csvContent = [
+          headers.join(','),
+          ...filteredAdmins.map(admin => [
+            admin.id,
+            `"${admin.fullName}"`,
+            admin.email,
+            `"${admin.department}"`,
+            `"${admin.roles.join('; ')}"`,
+            admin.status,
+            admin.lastLogin,
+            admin.createdBy,
+            admin.createdDate,
+            admin.accountExpiry
+          ].join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `admin-directory-${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setToast({
+          type: 'success',
+          title: 'Export Successful',
+          message: `CSV file downloaded successfully (${filteredAdmins.length} admins)`
+        });
+        setLoadingCSV(false);
+      } catch (error) {
+        console.error('CSV Export Error:', error);
+        setLoadingCSV(false);
+        setToast({
+          type: 'error',
+          title: 'Export Failed',
+          message: 'Failed to export CSV file. Please try again.'
+        });
+      }
+    }, 500);
+  };
+
+  // Export to PDF
+  const handleExportPDF = () => {
+    if (filteredAdmins.length === 0) {
+      setToast({
+        type: 'warning',
+        title: 'No Data',
+        message: 'No admin data available to export'
+      });
+      return;
+    }
+
+    setLoadingPDF(true);
+    setTimeout(() => {
+      try {
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+        doc.setFontSize(18);
+        doc.text('Admin Directory Report', 14, 15);
+        doc.setFontSize(11);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 23);
+        doc.text(`Total Admins: ${filteredAdmins.length}`, 14, 30);
+
+        const tableColumn = ['Admin ID', 'Full Name', 'Email', 'Department', 'Roles', 'Status', 'Last Login', 'Created By', 'Created Date', 'Expiry'];
+        const tableRows = filteredAdmins.map(admin => [
+          admin.id,
+          admin.fullName.length > 20 ? admin.fullName.substring(0, 17) + '...' : admin.fullName,
+          admin.email.length > 25 ? admin.email.substring(0, 22) + '...' : admin.email,
+          admin.department.length > 20 ? admin.department.substring(0, 17) + '...' : admin.department,
+          admin.roles.join('; ').length > 25 ? admin.roles.join('; ').substring(0, 22) + '...' : admin.roles.join('; '),
+          admin.status,
+          admin.lastLogin.length > 15 ? admin.lastLogin.substring(0, 12) + '...' : admin.lastLogin,
+          admin.createdBy.length > 15 ? admin.createdBy.substring(0, 12) + '...' : admin.createdBy,
+          admin.createdDate,
+          admin.accountExpiry
+        ]);
+
+        autoTable(doc, {
+          head: [tableColumn],
+          body: tableRows,
+          startY: 37,
+          theme: 'grid',
+          headStyles: {
+            fillColor: [37, 99, 235],
+            textColor: 255,
+            fontStyle: 'bold',
+            fontSize: 8
+          },
+          bodyStyles: {
+            fontSize: 7,
+            cellPadding: 2
+          },
+          alternateRowStyles: {
+            fillColor: [245, 247, 250]
+          },
+          columnStyles: {
+            0: { cellWidth: 25 },
+            1: { cellWidth: 30 },
+            2: { cellWidth: 40 },
+            3: { cellWidth: 30 },
+            4: { cellWidth: 35 },
+            5: { cellWidth: 20 },
+            6: { cellWidth: 30 },
+            7: { cellWidth: 25 },
+            8: { cellWidth: 25 },
+            9: { cellWidth: 25 }
+          }
+        });
+
+        doc.save(`admin-directory-${new Date().toISOString().split('T')[0]}.pdf`);
+
+        setToast({
+          type: 'success',
+          title: 'Export Successful',
+          message: `PDF file downloaded successfully (${filteredAdmins.length} admins)`
+        });
+        setLoadingPDF(false);
+      } catch (error) {
+        console.error('PDF Export Error:', error);
+        setLoadingPDF(false);
+        setToast({
+          type: 'error',
+          title: 'Export Failed',
+          message: 'Failed to export PDF file. Please try again.'
+        });
+      }
+    }, 500);
+  };
+
   return (
     <div className={styles.adminDirectoryContainer}>
-      {/* Header with Create Button */}
+      {/* Header with Create Button and Export Buttons */}
       <div className={styles.headerSection}>
         <h2 className={styles.pageTitle}>Admin Directory</h2>
-        <button 
-          className={styles.createButton}
-          onClick={() => setCreateModalOpen(true)}
-        >
-          <Plus size={18} />
-          Create Admin
-        </button>
+        <div className={styles.exportButtons}>
+          <button
+            className={styles.exportButton}
+            onClick={handleExportCSV}
+            disabled={loadingCSV || filteredAdmins.length === 0}
+          >
+            {loadingCSV ? (
+              <Loader2 size={16} className={styles.spinner} />
+            ) : (
+              <FileSpreadsheet size={16} />
+            )}
+            <span>Export CSV</span>
+          </button>
+          <button
+            className={styles.exportButton}
+            onClick={handleExportPDF}
+            disabled={loadingPDF || filteredAdmins.length === 0}
+          >
+            {loadingPDF ? (
+              <Loader2 size={16} className={styles.spinner} />
+            ) : (
+              <FileText size={16} />
+            )}
+            <span>Export PDF</span>
+          </button>
+          <button 
+            className={styles.createButton}
+            onClick={() => setCreateModalOpen(true)}
+          >
+            <Plus size={18} />
+            Create Admin
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search */}

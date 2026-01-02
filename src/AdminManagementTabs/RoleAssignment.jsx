@@ -39,6 +39,14 @@ const permissionModules = [
     permissions: ["View Loans", "Approve Loans", "Reject Loans", "Loan Report"]
   },
   {
+    module: "Support Management",
+    permissions: ["View Support Tickets", "Assign Tickets", "Resolve Tickets", "Support Report"]
+  },
+  {
+    module: "Savings Management",
+    permissions: ["View Savings", "Create Savings Product", "Edit Savings Product", "Savings Report"]
+  },
+  {
     module: "System Settings",
     permissions: ["System Setting", "System Report", "Audit Logs"]
   }
@@ -147,6 +155,42 @@ export default function RoleAssignment() {
       }
     }));
     setHasUnsavedChanges(true);
+  };
+
+  // Handle "All Roles" toggle - toggles a role for all permissions in a module
+  const handleAllRolesToggle = (module, role) => {
+    const moduleData = permissionModules.find(m => m.module === module);
+    if (!moduleData) return;
+    
+    // Check if this role is checked for all permissions in this module
+    const allChecked = moduleData.permissions.every(permission => {
+      const key = `${module}-${permission}`;
+      return permissions[key]?.[role] === true;
+    });
+    
+    // Toggle this role for all permissions in the module
+    const updatedPermissions = { ...permissions };
+    moduleData.permissions.forEach(permission => {
+      const key = `${module}-${permission}`;
+      updatedPermissions[key] = {
+        ...updatedPermissions[key],
+        [role]: !allChecked
+      };
+    });
+    
+    setPermissions(updatedPermissions);
+    setHasUnsavedChanges(true);
+  };
+
+  // Check if a role is selected for all permissions in a module
+  const isRoleSelectedForAllPermissions = (module, role) => {
+    const moduleData = permissionModules.find(m => m.module === module);
+    if (!moduleData) return false;
+    
+    return moduleData.permissions.every(permission => {
+      const key = `${module}-${permission}`;
+      return permissions[key]?.[role] === true;
+    });
   };
 
   // Handle edit user
@@ -364,6 +408,28 @@ export default function RoleAssignment() {
                     {role}
                   </div>
                 ))}
+              </div>
+              {/* All Roles row */}
+              <div className={styles.matrixRow} style={{ backgroundColor: '#f9fafb', fontWeight: '600' }}>
+                <div className={styles.matrixPermissionCol}>
+                  All Roles
+                </div>
+                {availableRoles.map(role => {
+                  const isSelected = isRoleSelectedForAllPermissions(module, role);
+                  return (
+                    <div key={role} className={styles.matrixCheckboxCol}>
+                      <label className={styles.matrixCheckboxLabel}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleAllRolesToggle(module, role)}
+                          className={styles.matrixCheckbox}
+                        />
+                        <span className={styles.checkboxIndicator}></span>
+                      </label>
+                    </div>
+                  );
+                })}
               </div>
               {perms.map((permission, permIdx) => (
                 <div key={permIdx} className={styles.matrixRow}>

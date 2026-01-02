@@ -71,6 +71,8 @@ const FilterSearch = ({
     search: "",
     date: "",
     month: "",
+    startDate: "",
+    endDate: "",
     ...dropdowns.reduce((acc, d) => ({ ...acc, [d.key]: "" }), {}),
   };
 
@@ -178,14 +180,27 @@ const FilterSearch = ({
 
           {/* ===== Date Period (Conditional) ===== */}
           {showDatePeriod && (
-            <div className={styles.inputWrapper}>
-              <Calendar size={18} className={styles.icon} />
-              <input
-                type="date"
-                value={filters.date}
-                onChange={(e) => updateFilter("date", e.target.value)}
-              />
-            </div>
+            <>
+              <div className={styles.inputWrapper}>
+                <Calendar size={18} className={styles.icon} />
+                <input
+                  type="date"
+                  placeholder="Start Date"
+                  value={filters.startDate}
+                  onChange={(e) => updateFilter("startDate", e.target.value)}
+                />
+              </div>
+              <div className={styles.inputWrapper}>
+                <Calendar size={18} className={styles.icon} />
+                <input
+                  type="date"
+                  placeholder="End Date"
+                  value={filters.endDate}
+                  onChange={(e) => updateFilter("endDate", e.target.value)}
+                  min={filters.startDate}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>
