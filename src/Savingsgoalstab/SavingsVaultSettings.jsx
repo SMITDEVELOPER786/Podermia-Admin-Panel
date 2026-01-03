@@ -1,9 +1,11 @@
 import { useState } from "react";
 import styles from "../css/SavingGoals.module.css";
+import CriticalActionModal from "../components/CriticalActionModal";
 
 export default function SavingsVaultSettings() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showCriticalModal, setShowCriticalModal] = useState(false);
 
   const [settings, setSettings] = useState({
     fixedMinInvestment: "",
@@ -18,6 +20,7 @@ export default function SavingsVaultSettings() {
     goalProductStatus: "",
     referralEligible: false,
     notifyUser: true,
+    savingsApprovalMode: "",
   });
 
   const handleChange = (e) => {
@@ -27,7 +30,6 @@ export default function SavingsVaultSettings() {
 
   const validate = () => {
     const newErrors = {};
-
     Object.entries(settings).forEach(([key, value]) => {
       if (
         value === "" &&
@@ -38,21 +40,31 @@ export default function SavingsVaultSettings() {
         newErrors[key] = "This field is required";
       }
     });
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = () => {
     if (!validate()) return;
-
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 2000);
   };
 
   return (
     <>
+<div className={styles.sectionHeader}>
+  <h3 className={styles.mainTitle}>Savings Vault Settings</h3>
+
+    <button
+          className={styles.criticalBtn}
+          onClick={() => setShowCriticalModal(true)}
+        >
+          Critical Actions
+        </button>
+</div>
+
       <div className={styles.vaultBox}>
+        
         {/* LEFT */}
         <div className={styles.vaultCol}>
           <h4 className={styles.sectionTitle}>Fixed Savings Plan</h4>
@@ -71,10 +83,7 @@ export default function SavingsVaultSettings() {
           />
           {errors.fixedMinBalance && <p className={styles.error}>{errors.fixedMinBalance}</p>}
 
-          <select className={styles.select}
-            name="fixedLockin"
-            onChange={handleChange}
-          >
+          <select className={styles.select} name="fixedLockin" onChange={handleChange}>
             <option value="">Select Lock-in</option>
             <option value="0">0 days</option>
             <option value="30">30 days</option>
@@ -100,10 +109,7 @@ export default function SavingsVaultSettings() {
           />
           {errors.goalMinBalance && <p className={styles.error}>{errors.goalMinBalance}</p>}
 
-          <select className={styles.select}
-            name="goalLockin"
-            onChange={handleChange}
-          >
+          <select className={styles.select} name="goalLockin" onChange={handleChange}>
             <option value="">Select Lock-in</option>
             {[...Array(13)].map((_, i) => (
               <option key={i} value={i}>{i} month</option>
@@ -132,47 +138,37 @@ export default function SavingsVaultSettings() {
           />
           {errors.earlyTerminationPenalty && <p className={styles.error}>{errors.earlyTerminationPenalty}</p>}
 
-          <select className={styles.select}
-            name="fixedProductStatus"
-            onChange={handleChange}
-          >
+          <select className={styles.select} name="fixedProductStatus" onChange={handleChange}>
             <option value="">Fixed Savings Status</option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
           </select>
-          {errors.fixedProductStatus && <p className={styles.error}>{errors.fixedProductStatus}</p>}
 
-          <select className={styles.select}
-            name="goalProductStatus"
-            onChange={handleChange}
-          >
+          <select className={styles.select} name="goalProductStatus" onChange={handleChange}>
             <option value="">Savings Goal Status</option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
           </select>
-          {errors.goalProductStatus && <p className={styles.error}>{errors.goalProductStatus}</p>}
 
-          <div className={styles.toggleRowClean}>
-            <span>Referral Eligibility</span>
-            <label className={styles.switch}>
-              <input type="checkbox" name="referralEligible" onChange={handleChange} />
-              <span className={styles.slider}></span>
-            </label>
-          </div>
-
-          <div className={styles.toggleRowClean}>
-            <span>Notify User</span>
-            <label className={styles.switch}>
-              <input type="checkbox" name="notifyUser" defaultChecked onChange={handleChange} />
-              <span className={styles.slider}></span>
-            </label>
-          </div>
+          <select className={styles.select} name="savingsApprovalMode" onChange={handleChange}>
+            <option value="">Savings Approval Mode</option>
+            <option value="Automatic">Automatic</option>
+            <option value="Admin Review">Admin Review</option>
+          </select>
 
           <button className={styles.savePrimaryBtn} onClick={handleSave}>
             Save Settings
           </button>
         </div>
       </div>
+
+      {/* CRITICAL ACTION MODAL */}
+      {showCriticalModal && (
+        <CriticalActionModal
+          isOpen={showCriticalModal}
+          onClose={() => setShowCriticalModal(false)}
+        />
+      )}
 
       {/* SUCCESS POPUP */}
       {showSuccess && (

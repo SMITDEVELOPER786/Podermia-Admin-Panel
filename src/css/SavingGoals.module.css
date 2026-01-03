@@ -68,7 +68,6 @@
   color: black;
   border-radius: 18px;
 }
-
 .headerRow {
   display: flex;
   justify-content: space-between;
@@ -83,6 +82,23 @@
   display: flex;
   gap: 10px;
   align-items: center;
+}
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 4%;
+}
+.mainTitle{
+  color: #000000 !important;
+}
+.criticalBtn {
+  background: #f6f6f6;
+  border: 1px solid #264DAF;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: #264DAF;
+  margin-left: auto;   
 }
 
 .searchBox {
@@ -218,6 +234,86 @@
   margin-top: 6px;
   font-size: 14px;
   color: #475569;
+}
+
+.export {
+  background: #264daf;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 20px !important;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.export img {
+  width: 16px !important;
+  color: #fff !important;
+}
+.primaryBtn {
+  background-color: #246daf; 
+  color: #fff;
+  border: none;
+  padding: 6px 14px;       
+  border-radius: 6px;       
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.primaryBtn:hover {
+  background-color: #1b5390; 
+}
+
+.dateFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  margin-left: 10px;
+}
+
+/* Date Label */
+.dateFilter label {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Date Input */
+.dateFilter input[type="date"] {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #d1d5db; 
+  border-radius: 5px;
+  background-color: #f1efef;
+  color: #111;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dateFilter input[type="date"]:focus {
+  border-color: #246daf; /* your brand color */
+  box-shadow: 0 0 4px rgba(36, 109, 175, 0.5);
+}
+
+/* Responsive: Stack vertically on small screens */
+@media (max-width: 640px) {
+  .dateFilter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin-left: 0;
+  }
+
+  .dateFilter label {
+    font-size: 13px;
+  }
+
+  .dateFilter input[type="date"] {
+    width: 100%;
+  }
 }
 
 @keyframes pop {
@@ -1005,6 +1101,14 @@ input:checked + .slider:before {
 }
 
 @media (max-width: 768px) {
+  .mainTitle{
+    font-size: 18px !important;
+  }
+  .criticalBtn{
+    font-size: 10px;
+  padding: 6px 2px;
+      white-space: nowrap;
+  }
   .heading {
     font-size: 22px !important;
   }
@@ -1334,4 +1438,72 @@ input:checked + .slider:before {
 
 .declineBtn.active {
   box-shadow: 0 0 5px #f44336;
+}
+/* Filters + Export Button container above table */
+.tableControls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+  background: #f9f9f9;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+/* Each filter group */
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Text / Date Inputs */
+.filterGroup input[type="text"],
+.filterGroup input[type="date"] {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Labels for date filters */
+.filterGroup label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+/* Export Button */
+.exportBtn {
+  background-color: #264daf;
+  color: #fff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.exportBtn:hover {
+  background-color: #1a358f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tableControls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .exportBtn {
+    width: 100%;
+    text-align: center;
+  }
 }

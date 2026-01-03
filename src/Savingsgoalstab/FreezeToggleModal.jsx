@@ -1,6 +1,8 @@
 import styles from "../css/fixedsavingsmodals.module.css";
 
 export default function FreezeToggleModal({ plan, onSave, onClose }) {
+  if (!plan) return null;
+
   const isFrozen = plan.status === "Frozen";
 
   const handleToggle = () => {
@@ -12,14 +14,22 @@ export default function FreezeToggleModal({ plan, onSave, onClose }) {
   };
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <h2>{isFrozen ? "Unfreeze Savings Plan" : "Freeze Savings Plan"}</h2>
 
-        <div className={styles.statusBox}>
-          Current Status:
-          <span className={`${styles.status} ${isFrozen ? styles.frozen : styles.active}`}>
-            {plan.status}
+        {/* Toggle UI */}
+        <div className={styles.toggleWrapper}>
+          <div
+            className={`${styles.toggleSwitch} ${
+              isFrozen ? styles.frozen : styles.active
+            }`}
+            onClick={handleToggle}
+          >
+            <div className={styles.toggleKnob}></div>
+          </div>
+          <span className={styles.toggleLabel}>
+            {isFrozen ? "Frozen" : "Active"}
           </span>
         </div>
 
@@ -30,12 +40,8 @@ export default function FreezeToggleModal({ plan, onSave, onClose }) {
         </p>
 
         <div className={styles.actions}>
-          <button className={styles.cancel} onClick={onClose}>Cancel</button>
-          <button
-            className={isFrozen ? styles.save : styles.freezeBtn}
-            onClick={handleToggle}
-          >
-            {isFrozen ? "Unfreeze Plan" : "Freeze Plan"}
+          <button className={styles.cancel} onClick={onClose}>
+            Close
           </button>
         </div>
       </div>

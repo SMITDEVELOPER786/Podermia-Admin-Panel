@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "../css/SavingGoals.module.css";
-
+import exportIcon from "../assets/export.png";
 // Import all modals
 import FixedSavingsModal from "../Savingsgoalstab/FixedSavingsModal"; // View User
 import EditTermsModal from "../Savingsgoalstab/EditTermsModal";
@@ -20,9 +20,10 @@ export default function FixedSavings({ data }) {
   useEffect(() => {
     localStorage.setItem("fixedSavings", JSON.stringify(plans));
   }, [plans]);
-useEffect(() => {
-  setPlans(data);
-}, [data]);
+
+  useEffect(() => {
+    setPlans(data);
+  }, [data]);
 
   const handleSave = (updatedPlan) => {
     setPlans((prev) =>
@@ -39,11 +40,18 @@ useEffect(() => {
 
   return (
     <div className={styles.tableBox}>
+      {/* TABLE */}
+      
       <table className={styles.styledTable}>
+         <button className={styles.exportBtn}>
+                    <img src={exportIcon} alt="export" /> Export Reports
+                  </button>
         <thead>
           <tr>
             <th>Plan ID</th>
             <th>User</th>
+            <th>User ID</th>
+            <th>Start Date</th>
             <th>Amount</th>
             <th>Duration</th>
             <th>Status</th>
@@ -58,6 +66,8 @@ useEffect(() => {
             <tr key={item.id}>
               <td>{item.id}</td>
               <td>{item.user}</td>
+              <td>{item.userId || "-"}</td>
+              <td>{item.startDate || "-"}</td>
               <td>₦{item.amount.toLocaleString()}</td>
               <td>{item.duration}</td>
               <td>
@@ -101,9 +111,14 @@ useEffect(() => {
       </table>
 
       {/* MODALS */}
-      {selectedPlan && modalType === "viewUser" && (
-        <FixedSavingsModal plan={selectedPlan} onClose={() => setSelectedPlan(null)} />
-      )}
+     {selectedPlan && modalType === "viewUser" && (
+  <FixedSavingsModal
+    plan={selectedPlan}
+    onSave={handleSave}   
+    onClose={() => setSelectedPlan(null)}
+  />
+)}
+
       {selectedPlan && modalType === "editTerms" && (
         <EditTermsModal plan={selectedPlan} onSave={handleSave} onClose={() => setSelectedPlan(null)} />
       )}

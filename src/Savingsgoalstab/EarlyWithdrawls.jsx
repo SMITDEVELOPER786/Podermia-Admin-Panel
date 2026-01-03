@@ -44,6 +44,7 @@ useEffect(() => {
           <tr>
             <th>Request ID</th>
             <th>User</th>
+             <th>User ID</th>
             <th>Amount</th>
             <th>Saving Plan</th>
             <th>Status</th>
@@ -58,6 +59,7 @@ useEffect(() => {
             <tr key={item.id}>
               <td>{item.id}</td>
               <td>{item.user}</td>
+              <td>{item.userId || "-"}</td> 
               <td>₦{Number(item.amount || 0).toLocaleString()}</td>
               <td>{item.plan}</td>
               <td>

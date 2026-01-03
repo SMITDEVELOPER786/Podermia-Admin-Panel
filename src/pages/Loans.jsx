@@ -195,7 +195,6 @@ function LoansQueueTab({ setActiveTab }) {
         </div>
       </div>
 
-      {/* FILTERS */}
       <div className={styles.filters}>
         <input
           type="number"
@@ -246,8 +245,6 @@ function LoansQueueTab({ setActiveTab }) {
           <option>Approved</option>
           <option>Rejected</option>
         </select>
-
-        {/* SINGLE DATE FILTER */}
         <input
           type="date"
           name="maturityDate"
