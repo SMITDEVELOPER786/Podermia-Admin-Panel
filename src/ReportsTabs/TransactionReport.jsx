@@ -4,10 +4,50 @@ import filterIcon from "../assets/filter.png";
 import exportIcon from "../assets/export.png";
 
 const DATA = [
-  { name: "John Doe", type: "Investment", txn: "TXN001", amount: 500000, status: "Completed", time: "2 hour ago", date: "2025-08-02" },
-  { name: "Jane Smith", type: "Withdrawal", txn: "TXN002", amount: 150000, status: "Pending", time: "3 hour ago", date: "2025-08-01" },
-  { name: "Mike Johnson", type: "Loan", txn: "TXN003", amount: 1200000, status: "Approved", time: "5 hour ago", date: "2025-08-03" },
-  { name: "Sara Wilson", type: "Deposit", txn: "TXN004", amount: 750000, status: "Completed", time: "8 hour ago", date: "2025-08-04" },
+  {
+    name: "John Doe",
+    type: "Investment",
+    txn: "TXN001",
+    amount: 500000,
+    status: "Completed",
+    time: "2 hour ago",
+    date: "2025-08-02",
+    userType: "Individual",
+    classification: "Retail",
+  },
+  {
+    name: "Jane Smith",
+    type: "Withdrawal",
+    txn: "TXN002",
+    amount: 150000,
+    status: "Pending",
+    time: "3 hour ago",
+    date: "2025-08-01",
+    userType: "Individual",
+    classification: "HNI",
+  },
+  {
+    name: "Mike Johnson",
+    type: "Loan Disbursement",
+    txn: "TXN003",
+    amount: 1200000,
+    status: "Approved",
+    time: "5 hour ago",
+    date: "2025-08-03",
+    userType: "Business",
+    classification: "Institutional",
+  },
+  {
+    name: "Sara Wilson",
+    type: "Deposits",
+    txn: "TXN004",
+    amount: 750000,
+    status: "Completed",
+    time: "8 hour ago",
+    date: "2025-08-04",
+    userType: "Individual",
+    classification: "Retail",
+  },
 ];
 
 export default function TransactionReports() {
@@ -16,6 +56,8 @@ export default function TransactionReports() {
   const [type, setType] = useState("");
   const [status, setStatus] = useState("");
   const [user, setUser] = useState("");
+  const [userType, setUserType] = useState("");
+  const [classification, setClassification] = useState("");
 
   const filteredData = DATA.filter((tx) => {
     if (fromDate && tx.date < fromDate) return false;
@@ -23,6 +65,8 @@ export default function TransactionReports() {
     if (type && tx.type !== type) return false;
     if (status && tx.status !== status) return false;
     if (user && !tx.name.toLowerCase().includes(user.toLowerCase())) return false;
+    if (userType && tx.userType !== userType) return false;
+    if (classification && tx.classification !== classification) return false;
     return true;
   });
 
@@ -32,18 +76,21 @@ export default function TransactionReports() {
     setType("");
     setStatus("");
     setUser("");
+    setUserType("");
+    setClassification("");
   };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <h2>Transaction Reports</h2>
-       <button className={styles.exportBtn}>
-                 <img src={exportIcon} alt="" className={styles.icon} />
-                 Export
-               </button>
+        <button className={styles.exportBtn}>
+          <img src={exportIcon} alt="" className={styles.icon} />
+          Export
+        </button>
       </div>
-<div className={styles.reportGrid}>
+
+      <div className={styles.reportGrid}>
         <div className={styles.reportCard}>
           <p>Investment</p>
           <h3>45,450,000</h3>
@@ -101,15 +148,14 @@ export default function TransactionReports() {
 
       <div className={styles.filterBox}>
         <div className={styles.filterHeader}>
-  <div className={styles.filterTitle}>
-    <img src={filterIcon} alt="Filter" className={styles.filterIcon} />
-    <span style={{fontSize: "16px"}}>Filter & Search</span>
-  </div>
-  <button onClick={clearFilters} className={styles.clearBtn}>
-    Clear Filter
-  </button>
-</div>
-
+          <div className={styles.filterTitle}>
+            <img src={filterIcon} alt="Filter" className={styles.filterIcon} />
+            <span style={{ fontSize: "16px" }}>Filter & Search</span>
+          </div>
+          <button onClick={clearFilters} className={styles.clearBtn}>
+            Clear Filter
+          </button>
+        </div>
 
         <div className={styles.filterGrid}>
           <div>
@@ -127,19 +173,30 @@ export default function TransactionReports() {
             <select value={type} onChange={(e) => setType(e.target.value)}>
               <option value="">All</option>
               <option>Investment</option>
+              <option>Loan Disbursement</option>
               <option>Withdrawal</option>
-              <option>Deposit</option>
-              <option>Loan</option>
+              <option>Deposits</option>
+              <option>Savings</option>
+              <option>Loan Repayment</option>
             </select>
           </div>
 
           <div>
-            <label>Status</label>
-            <select value={status} onChange={(e) => setStatus(e.target.value)}>
+            <label>User Type</label>
+            <select value={userType} onChange={(e) => setUserType(e.target.value)}>
               <option value="">All</option>
-              <option>Completed</option>
-              <option>Pending</option>
-              <option>Approved</option>
+              <option>Individual</option>
+              <option>Business</option>
+            </select>
+          </div>
+
+          <div>
+            <label>User Classification</label>
+            <select value={classification} onChange={(e) => setClassification(e.target.value)}>
+              <option value="">All</option>
+              <option>Retail</option>
+              <option>HNI</option>
+              <option>Institutional</option>
             </select>
           </div>
 
@@ -155,7 +212,6 @@ export default function TransactionReports() {
         </div>
       </div>
 
-      {/* Recent Transactions */}
       <div className={styles.recentBox}>
         <h3>Recent Transaction</h3>
 

@@ -1494,7 +1494,7 @@ input:checked + .slider:before {
   background-color: #1a358f;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .tableControls {
     flex-direction: column;
@@ -1503,7 +1503,61 @@ input:checked + .slider:before {
   }
 
   .exportBtn {
-    width: 100%;
+    width: 30%;
     text-align: center;
+  }
+}
+/* ================= Generate Report Button ================= */
+.generateBtn {
+  background-color: #246daf; /* primary blue color */
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.generateBtn:hover {
+  background-color: #1b4e8a;
+  transform: translateY(-1px);
+}
+
+.generateBtn:active {
+  background-color: #173b6b;
+  transform: translateY(0);
+}
+
+/* ================= Filters + Button Container ================= */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* spacing between filters and button */
+  flex-wrap: wrap; /* allow wrap on smaller screens */
+  margin-bottom: 20px;
+}
+
+.filters select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* ================= Mobile Responsiveness ================= */
+@media screen and (max-width: 768px) {
+  .filters {
+    flex-direction: column; /* stack filters + button vertically */
+    align-items: stretch;
+  }
+
+  .filters select,
+  .generateBtn {
+    width: 100%; /* full width on mobile */
+    margin-left: 0;
+    margin-bottom: 10px;
   }
 }

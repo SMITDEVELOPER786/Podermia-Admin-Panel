@@ -2465,3 +2465,14 @@ select[name="userType"] option:first-child {
     font-size: 0.9rem;
   }
 }
+@media (max-width: 600px) {
+
+  .reportsActions{
+    display: block;
+  }
+   .reportsActions select,
+  .reportsActions button {
+    width: 100%;
+   margin-bottom: 10px;
+}
+}

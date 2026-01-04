@@ -1,31 +1,98 @@
+import { useState } from "react";
 import styles from "../css/SavingGoals.module.css";
 
 export default function ReportsPage() {
-  const downloadReport = (reportName) => {
-  // Example CSV data
-  const data = [
-    ["User", "Plan", "Amount", "Date"],
-    ["Alice Brown", "Fixed Savings", 100000, "2024-01-01"],
-    ["Bob Wilson", "Goal Savings", 250000, "2024-02-01"],
-  ];
+  // ===== Filter States =====
+  const [datePeriod, setDatePeriod] = useState("");
+  const [userType, setUserType] = useState("");
+  const [userClass, setUserClass] = useState("");
+  const [error, setError] = useState("");
 
-  const csvRows = data.map(row => row.join(",")).join("\n");
-  const blob = new Blob([csvRows], { type: "text/csv" });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${reportName}.csv`;
-  a.click();
-};
+  // ===== CSV Download Function =====
+  const downloadReport = (reportName) => {
+    // Check filters
+    if (!datePeriod || !userType || !userClass) {
+      setError("Please select Date Period, User Type, and User Classification");
+      return;
+    }
+
+    setError(""); // clear error
+
+    // Example CSV data with filters included
+    const data = [
+      [
+        "User",
+        "Plan",
+        "Amount",
+        "Date",
+        "Date Period",
+        "User Type",
+        "User Classification",
+      ],
+      ["Alice Brown", "Fixed Savings", 100000, "2024-01-01", datePeriod, userType, userClass],
+      ["Bob Wilson", "Goal Savings", 250000, "2024-02-01", datePeriod, userType, userClass],
+    ];
+
+    const csvRows = data.map((row) => row.join(",")).join("\n");
+    const blob = new Blob([csvRows], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${reportName}.csv`;
+    a.click();
+  };
+
+  // ===== Single Generate Report Button =====
+  const handleGenerateAllReports = () => {
+    // Generate all reports at once
+    downloadReport("Monthly_Savings_Performance");
+    downloadReport("Savings_Vault_Obligations");
+    downloadReport("User_Activity_Trends");
+  };
 
   return (
     <div className={styles.reportsContainer}>
-
+      {/* ===== Header ===== */}
       <div className={styles.cardBox}>
         <div className={styles.headerRow}>
           <h3>Fixed Savings Rates</h3>
         </div>
 
+        {/* ===== Filters + Generate Button ===== */}
+        <div className={styles.filters}>
+          <select value={datePeriod} onChange={(e) => setDatePeriod(e.target.value)}>
+            <option value="">Select Date Period</option>
+            <option>Last 7 Days</option>
+            <option>Last 30 Days</option>
+            <option>Last 90 Days</option>
+            <option>This Year</option>
+          </select>
+
+          <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+            <option value="">Select User Type</option>
+            <option>Business</option>
+            <option>Individual</option>
+          </select>
+
+          <select value={userClass} onChange={(e) => setUserClass(e.target.value)}>
+            <option value="">Select User Classification</option>
+            <option>Retail</option>
+            <option>HNI</option>
+            <option>Institutional</option>
+          </select>
+
+          {/* Single Generate Report Button */}
+          <button className={styles.generateBtn} onClick={handleGenerateAllReports}>
+            Generate Report
+          </button>
+        </div>
+
+        {/* ===== Error Message ===== */}
+        {error && (
+          <p style={{ color: "red", marginTop: "10px", fontSize: "13px" }}>{error}</p>
+        )}
+
+        {/* ===== Stats ===== */}
         <div className={styles.topStats}>
           <div className={styles.statCard}>
             <div className={styles.statTitle}>Total Fixed Savings</div>
@@ -40,70 +107,37 @@ export default function ReportsPage() {
           </div>
         </div>
 
-       <div
-  className={styles.reportItem}
-  onClick={() => downloadReport("Monthly_Savings_Performance")}
-  style={{ cursor: "pointer" }} // shows pointer on hover
->
-  <div>
-    <h4>Monthly Savings Performance</h4>
-    <p>Detailed breakdown of all savings activities</p>
-  </div>
-  <button
-    className={styles.generateBtn}
-    onClick={(e) => {
-      e.stopPropagation(); // prevent double click
-      downloadReport("Monthly_Savings_Performance");
-    }}
-  >
-    Generate Report
-  </button>
-</div>
+        {/* ===== Individual Reports (optional clickable items) ===== */}
+        <div
+          className={styles.reportItem}
+          style={{ cursor: "pointer" }}
+        >
+          <div>
+            <h4>Monthly Savings Performance</h4>
+            <p>Detailed breakdown of all savings activities</p>
+          </div>
+        </div>
 
-{/* Savings Vault Obligations Report */}
-<div
-  className={styles.reportItem}
-  onClick={() => downloadReport("Savings_Vault_Obligations")}
-  style={{ cursor: "pointer" }}
->
-  <div>
-    <h4>Savings Vault Obligations Report</h4>
-    <p>
-      This report is the analysis of current and upcoming maturity payments.
-    </p>
-  </div>
-  <button
-    className={styles.generateBtn}
-    onClick={(e) => {
-      e.stopPropagation(); // prevent parent div click
-      downloadReport("Savings_Vault_Obligations");
-    }}
-  >
-    Generate Report
-  </button>
-</div>
+        <div
+          className={styles.reportItem}
+          style={{ cursor: "pointer" }}
+        >
+          <div>
+            <h4>Savings Vault Obligations Report</h4>
+            <p>This report is the analysis of current and upcoming maturity payments.</p>
+          </div>
+        </div>
 
-{/* User Activity Trends */}
-<div
-  className={styles.reportItem}
-  onClick={() => downloadReport("User_Activity_Trends")}
-  style={{ cursor: "pointer" }}
->
-  <div>
-    <h4>User Activity Trends</h4>
-    <p>User engagement and savings</p>
-  </div>
-  <button
-    className={styles.generateBtn}
-    onClick={(e) => {
-      e.stopPropagation();
-      downloadReport("User_Activity_Trends");
-    }}
-  >
-    Generate Report
-  </button>
-</div>
-</div>
+        <div
+          className={styles.reportItem}
+          style={{ cursor: "pointer" }}
+        >
+          <div>
+            <h4>User Activity Trends</h4>
+            <p>User engagement and savings</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

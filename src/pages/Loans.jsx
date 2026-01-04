@@ -870,6 +870,41 @@ const EMPTY_PRODUCT = {
     step: ""
   }
 };
+const MOCK_PRODUCTS = [
+  {
+    ...EMPTY_PRODUCT,
+    name: "Home Loan",
+    code: "HL001",
+    category: "Secured Loan",
+    controls: { ...EMPTY_PRODUCT.controls, active: true, minAge: "25", maxAge: "60" },
+    admin: { ...EMPTY_PRODUCT.admin, interestRate: "8%", repaymentMethod: "Wallet debit" },
+  },
+  {
+    ...EMPTY_PRODUCT,
+    name: "Car Loan",
+    code: "CL002",
+    category: "Secured Loan",
+    controls: { ...EMPTY_PRODUCT.controls, active: true, minAge: "21", maxAge: "55" },
+    admin: { ...EMPTY_PRODUCT.admin, interestRate: "10%", repaymentMethod: "Bank auto-debit" },
+  },
+  {
+    ...EMPTY_PRODUCT,
+    name: "Personal Loan",
+    code: "PL003",
+    category: "Un-secured Loan",
+    controls: { ...EMPTY_PRODUCT.controls, active: true, minAge: "22", maxAge: "50" },
+    admin: { ...EMPTY_PRODUCT.admin, interestRate: "12%", repaymentMethod: "Manual" },
+  },
+  {
+    ...EMPTY_PRODUCT,
+    name: "Education Loan",
+    code: "EL004",
+    category: "Secured Loan",
+    controls: { ...EMPTY_PRODUCT.controls, active: true, minAge: "18", maxAge: "35" },
+    admin: { ...EMPTY_PRODUCT.admin, interestRate: "7%", repaymentMethod: "Wallet debit" },
+  },
+];
+
 
  function SettingTab() {
   const [products, setProducts] = useState([]);
@@ -878,6 +913,26 @@ const EMPTY_PRODUCT = {
   const [editingIndex, setEditingIndex] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+useEffect(() => {
+  const stored = localStorage.getItem("loanProducts");
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    const safeData = parsed.map(p => ({
+      ...EMPTY_PRODUCT,
+      ...p,
+      globalInterestRate: { ...EMPTY_PRODUCT.globalInterestRate, ...p.globalInterestRate },
+      ltvSetting: { ...EMPTY_PRODUCT.ltvSetting, ...p.ltvSetting },
+      penaltySetting: { ...EMPTY_PRODUCT.penaltySetting, ...p.penaltySetting },
+      tenorSetting: { ...EMPTY_PRODUCT.tenorSetting, ...p.tenorSetting }
+    }));
+    setProducts(safeData);
+    localStorage.setItem("loanProducts", JSON.stringify(safeData));
+  } else {
+    // If nothing in storage, load mock products
+    setProducts(MOCK_PRODUCTS);
+    localStorage.setItem("loanProducts", JSON.stringify(MOCK_PRODUCTS));
+  }
+}, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("loanProducts");
@@ -1422,12 +1477,12 @@ function DefaultManagementTab() {
           <button className={styles.exportBtn}>
             <img src={exportIcon} alt="" /> Export Reports
           </button>
-          <button className={styles.alertBtn} onClick={() => setShowAutoDebitModal(true)}>
+          {/* <button className={styles.alertBtn} onClick={() => setShowAutoDebitModal(true)}>
             Test Auto-Debit Alert
           </button>
           <button className={styles.liquidationBtn} onClick={() => setShowLiquidation(true)}>
             Test Liquidation Notice
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -1605,9 +1660,43 @@ function DefaultManagementTab() {
       })()}
     </div>
   );
-}
-// reports tab
-function ReportsTab() {
+ }
+ function ReportsTab() {
+  const [datePeriod, setDatePeriod] = useState(""); 
+  const [userType, setUserType] = useState("");     
+  const [userClass, setUserClass] = useState("");   
+  const [error, setError] = useState("");           
+
+  const downloadCSV = (filename, rows) => {
+    const csvContent = rows.map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleGenerate = () => {
+    if (!datePeriod || !userType || !userClass) {
+      setError("Please select Date Period, User Type and User Classification");
+      return;
+    }
+
+    setError(""); // Clear previous error
+
+    const rows = [
+      ["Loan Report", "Date Period", "User Type", "User Classification", "Amount Disbursed", "Amount Repaid"],
+      ["Report 1", datePeriod, userType, userClass, 283000000, 215000000],
+      ["Report 2", datePeriod, userType, userClass, 12000000, 9500000],
+    ];
+
+    downloadCSV("Loan_Report.csv", rows);
+  };
+
+
+
   return (
     <div className={styles.reportsContainer}>
 
@@ -1620,11 +1709,39 @@ function ReportsTab() {
             <option>Weekly</option>
             <option>Yearly</option>
           </select>
+<select className={styles.reportSelect} value={datePeriod} onChange={(e) => setDatePeriod(e.target.value)}>
+    <option value="">Select Date Period</option>
+    <option>Last 7 Days</option>
+    <option>Last 30 Days</option>
+    <option>Last 90 Days</option>
+    <option>This Year</option>
+  </select>
+   <select className={styles.reportSelect} value={userType} onChange={(e) => setUserType(e.target.value)}>
+    <option value="">Select User Type</option>
+    <option>Business</option>
+    <option>Individual</option>
+  </select>
+    <select className={styles.reportSelect} value={userClass} onChange={(e) => setUserClass(e.target.value)}>
+    <option value="">Select User Classification</option>
+    <option>Retail</option>
+    <option>HNI</option>
+    <option>Institutional</option>
+  </select>
+   <button className={styles.exportBtn} onClick={handleGenerate}>
+    <img src={exportIcon} alt="export" />
+    Generate Report
+  </button>
+  {error && (
+  <p style={{ color: "red", marginTop: "10px", fontSize: "13px" }}>
+    {error}
+  </p>
+)}
 
           <button className={styles.exportBtn}>
             <img src={exportIcon} alt="export" />
             Export PDF
           </button>
+          
         </div>
       </div>
 
