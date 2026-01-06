@@ -147,11 +147,11 @@ const SupportQueue = () => {
   const [loadingCSV, setLoadingCSV] = useState(false);
   const [loadingPDF, setLoadingPDF] = useState(false);
 
-  // Filter Configuration
   const filterConfig = {
     showSearch: true,
     searchPlaceholder: "Search by Ticket ID, Subject, User ID...",
-    showDate: true,
+    showDate: false,
+    showDatePeriod: true,
     dropdowns: [
       {
         key: "status",
@@ -195,14 +195,32 @@ const SupportQueue = () => {
       filtered = filtered.filter(ticket => ticket.category === filters.category);
     }
 
-    // Priority Filter
     if (filters.priority && filters.priority !== "All Priority") {
       filtered = filtered.filter(ticket => ticket.autoDelist === filters.priority);
     }
 
-    // Date Filter
-    if (filters.date) {
-      filtered = filtered.filter(ticket => ticket.date === filters.date);
+    if (filters.startDate || filters.endDate) {
+      filtered = filtered.filter(ticket => {
+        const ticketDate = new Date(ticket.date);
+        ticketDate.setHours(0, 0, 0, 0);
+        
+        if (filters.startDate && filters.endDate) {
+          const startDate = new Date(filters.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          const endDate = new Date(filters.endDate);
+          endDate.setHours(23, 59, 59, 999);
+          return ticketDate >= startDate && ticketDate <= endDate;
+        } else if (filters.startDate) {
+          const startDate = new Date(filters.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          return ticketDate >= startDate;
+        } else if (filters.endDate) {
+          const endDate = new Date(filters.endDate);
+          endDate.setHours(23, 59, 59, 999);
+          return ticketDate <= endDate;
+        }
+        return true;
+      });
     }
 
     setFilteredTickets(filtered);

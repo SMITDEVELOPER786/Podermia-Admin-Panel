@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./FilterSearch.module.css";
 import { Search, SlidersHorizontal, Calendar, RotateCcw, ChevronDown } from "lucide-react";
 
-// ===== Reusable Dropdown Component =====
 const CustomSelect = ({ label, value, onChange, options }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -52,7 +51,6 @@ const CustomSelect = ({ label, value, onChange, options }) => {
   );
 };
 
-// ===== Main Filter Component =====
 const FilterSearch = ({
   config = {},
   onFilterChange,
@@ -79,6 +77,26 @@ const FilterSearch = ({
   const [filters, setFilters] = useState(initialFilters);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const totalFilters = React.useMemo(() => {
+    let count = 0;
+    if (showSearch) count += 1;
+    count += dropdowns.length;
+    if (showDate) count += 1;
+    if (showMonth) count += 1;
+    if (showDatePeriod) count += 2;
+    return count;
+  }, [showSearch, dropdowns.length, showDate, showMonth, showDatePeriod]);
+
+  const gridColumns = React.useMemo(() => {
+    if (totalFilters === 5) {
+      return 'repeat(5, 1fr)';
+    } else if (totalFilters === 6) {
+      return 'repeat(3, 1fr)';
+    } else {
+      return 'repeat(auto-fit, minmax(150px, 1fr))';
+    }
+  }, [totalFilters]);
+
   const updateFilter = (key, value) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
@@ -92,12 +110,10 @@ const FilterSearch = ({
 
   return (
     <>
-      {/* Mobile Button */}
       <button className={styles.mobileFilterBtn} onClick={() => setMobileOpen(true)}>
         {heading}
       </button>
 
-      {/* Mobile Search (Conditional) */}
       {showSearch && (
         <div className={styles.mobileSearchWrapper}>
           <Search size={18} className={styles.icon} />
@@ -110,7 +126,6 @@ const FilterSearch = ({
         </div>
       )}
 
-      {/* Filter Box */}
       <div className={`${styles.filterBox} ${mobileOpen ? styles.mobileOpen : ""}`}>
         <div className={styles.header}>
           <div className={styles.heading}>
@@ -129,8 +144,10 @@ const FilterSearch = ({
           </div>
         </div>
 
-        <div className={styles.filtersGrid}>
-          {/* Desktop Search (Conditional) */}
+        <div 
+          className={styles.filtersGrid}
+          style={{ gridTemplateColumns: gridColumns, alignItems:'flex-end' }}
+        >
           {showSearch && (
             <div className={styles.inputWrapper}>
               <Search size={18} className={styles.icon} />
@@ -143,7 +160,6 @@ const FilterSearch = ({
             </div>
           )}
 
-          {/* ===== Dynamic Dropdowns ===== */}
           {dropdowns.map((d) => (
             <CustomSelect
               key={d.key}
@@ -154,7 +170,6 @@ const FilterSearch = ({
             />
           ))}
 
-          {/* ===== Date (Conditional) ===== */}
           {showDate && (
             <div className={styles.inputWrapper}>
               <Calendar size={18} className={styles.icon} />
@@ -166,7 +181,6 @@ const FilterSearch = ({
             </div>
           )}
 
-          {/* ===== Month (Conditional) ===== */}
           {showMonth && (
             <div className={styles.inputWrapper}>
               <Calendar size={18} className={styles.icon} />
@@ -178,27 +192,32 @@ const FilterSearch = ({
             </div>
           )}
 
-          {/* ===== Date Period (Conditional) ===== */}
           {showDatePeriod && (
             <>
-              <div className={styles.inputWrapper}>
-                <Calendar size={18} className={styles.icon} />
-                <input
-                  type="date"
-                  placeholder="Start Date"
-                  value={filters.startDate}
-                  onChange={(e) => updateFilter("startDate", e.target.value)}
-                />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <label style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>Start Date</label>
+                <div className={styles.inputWrapper}>
+                  <Calendar size={18} className={styles.icon} />
+                  <input
+                    type="date"
+                    aria-label="Start Date"
+                    value={filters.startDate}
+                    onChange={(e) => updateFilter("startDate", e.target.value)}
+                  />
+                </div>
               </div>
-              <div className={styles.inputWrapper}>
-                <Calendar size={18} className={styles.icon} />
-                <input
-                  type="date"
-                  placeholder="End Date"
-                  value={filters.endDate}
-                  onChange={(e) => updateFilter("endDate", e.target.value)}
-                  min={filters.startDate}
-                />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <label style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>End Date</label>
+                <div className={styles.inputWrapper}>
+                  <Calendar size={18} className={styles.icon} />
+                  <input
+                    type="date"
+                    aria-label="End Date"
+                    value={filters.endDate}
+                    onChange={(e) => updateFilter("endDate", e.target.value)}
+                    min={filters.startDate}
+                  />
+                </div>
               </div>
             </>
           )}

@@ -7,7 +7,8 @@ import FilterSearch from '../components/FilterSearch/FilterSearch';
 const SystemHealth = () => {
   const [toast, setToast] = useState({ show: false, message: '', type: '', title: '' });
   const [filters, setFilters] = useState({
-    date: ''
+    startDate: '',
+    endDate: ''
   });
 
   const [healthData] = useState({
@@ -17,17 +18,15 @@ const SystemHealth = () => {
     security: { status: 'Secure', health: 100 }
   });
 
-  // Filter Configuration
   const filterConfig = {
     showSearch: false,
-    showDate: true,
+    showDate: false,
+    showDatePeriod: true,
     dropdowns: []
   };
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    // Here you would filter health data based on date
-    // For now, we'll just update the filter state
   };
 
   const getHealthColor = () => {
@@ -45,7 +44,6 @@ const SystemHealth = () => {
         />
       )}
 
-      {/* Header Section */}
       <div className={styles.healthHeader}>
         <div>
           <h2>System Health & Monitoring</h2>
@@ -53,12 +51,10 @@ const SystemHealth = () => {
         </div>
       </div>
 
-      {/* Date Filter */}
       <div style={{ marginBottom: '24px' }}>
         <FilterSearch config={filterConfig} onFilterChange={handleFilterChange} />
       </div>
 
-      {/* System Health Cards */}
       <div className={styles.healthCardsGrid}>
         <div className={styles.healthCard}>
           <Database size={48} color="#2563eb" />

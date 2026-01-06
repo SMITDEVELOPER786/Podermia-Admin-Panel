@@ -76,12 +76,10 @@ const WalletSettings = () => {
   }
 
   const handleNumericKeyPress = (e) => {
-    // For percentage fees, only allow numbers and decimal point
     const char = String.fromCharCode(e.which)
     if (!/[0-9.]/.test(char)) {
       e.preventDefault()
     }
-    // Prevent multiple decimal points
     if (char === '.' && e.target.value.includes('.')) {
       e.preventDefault()
     }
@@ -485,6 +483,79 @@ const WalletSettings = () => {
             </div>
 
             <div className={styles.formGroup}>
+              <label>Maintenance Fee Type</label>
+              <div className={styles.radioGroup}>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="maintenanceFeeType"
+                    value="Percentage"
+                    checked={formData.maintenanceFeeType === 'Percentage'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Percentage</span>
+                </label>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="maintenanceFeeType"
+                    value="Fixed"
+                    checked={formData.maintenanceFeeType === 'Fixed'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Fixed</span>
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>
+                Maintenance Fee {formData.maintenanceFeeType === 'Percentage' ? '(%)' : '(Amount)'}
+              </label>
+              <div className={styles.inputWithSuffix}>
+                <input
+                  type={formData.maintenanceFeeType === 'Percentage' ? 'text' : 'number'}
+                  name="maintenanceFee"
+                  className={`${styles.formInput} ${errors.maintenanceFee ? styles.inputError : ''}`}
+                  value={formData.maintenanceFee}
+                  onChange={handleInputChange}
+                  onKeyPress={formData.maintenanceFeeType === 'Percentage' ? handleNumericKeyPress : undefined}
+                  onWheel={formData.maintenanceFeeType === 'Fixed' ? handleNumberInputWheel : undefined}
+                  placeholder={formData.maintenanceFeeType === 'Percentage' ? '0.1' : '100'}
+                  step={formData.maintenanceFeeType === 'Percentage' ? undefined : '0.01'}
+                  min={formData.maintenanceFeeType === 'Percentage' ? undefined : '0'}
+                />
+                <span className={styles.inputSuffix}>
+                  {formData.maintenanceFeeType === 'Percentage' ? '%' : '₦'}
+                </span>
+              </div>
+              {errors.maintenanceFee && <span className={styles.errorText}>{errors.maintenanceFee}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Maintenance Fee Payment Frequency</label>
+              <select
+                name="maintenanceFeeFrequency"
+                className={styles.formSelect}
+                value={formData.maintenanceFeeFrequency}
+                onChange={handleInputChange}
+              >
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Bi-Annually">Bi-Annually</option>
+                <option value="Annually">Annually</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Transfer Fee Section */}
+        <div className={styles.settingsSection}>
+          <h3 className={styles.sectionTitle}>Transfer Fee</h3>
+          
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
               <label>Transfer Fee Type</label>
               <div className={styles.radioGroup}>
                 <label className={styles.radioLabel}>
@@ -580,72 +651,6 @@ const WalletSettings = () => {
                 </span>
               </div>
               {errors.transferFeeAbove50000 && <span className={styles.errorText}>{errors.transferFeeAbove50000}</span>}
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Maintenance Fee Type</label>
-              <div className={styles.radioGroup}>
-                <label className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="maintenanceFeeType"
-                    value="Percentage"
-                    checked={formData.maintenanceFeeType === 'Percentage'}
-                    onChange={handleInputChange}
-                  />
-                  <span>Percentage</span>
-                </label>
-                <label className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="maintenanceFeeType"
-                    value="Fixed"
-                    checked={formData.maintenanceFeeType === 'Fixed'}
-                    onChange={handleInputChange}
-                  />
-                  <span>Fixed</span>
-                </label>
-              </div>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>
-                Maintenance Fee {formData.maintenanceFeeType === 'Percentage' ? '(%)' : '(Amount)'}
-              </label>
-              <div className={styles.inputWithSuffix}>
-                <input
-                  type={formData.maintenanceFeeType === 'Percentage' ? 'text' : 'number'}
-                  name="maintenanceFee"
-                  className={`${styles.formInput} ${errors.maintenanceFee ? styles.inputError : ''}`}
-                  value={formData.maintenanceFee}
-                  onChange={handleInputChange}
-                  onKeyPress={formData.maintenanceFeeType === 'Percentage' ? handleNumericKeyPress : undefined}
-                  onWheel={formData.maintenanceFeeType === 'Fixed' ? handleNumberInputWheel : undefined}
-                  placeholder={formData.maintenanceFeeType === 'Percentage' ? '0.1' : '100'}
-                  step={formData.maintenanceFeeType === 'Percentage' ? undefined : '0.01'}
-                  min={formData.maintenanceFeeType === 'Percentage' ? undefined : '0'}
-                />
-                <span className={styles.inputSuffix}>
-                  {formData.maintenanceFeeType === 'Percentage' ? '%' : '₦'}
-                </span>
-              </div>
-              {errors.maintenanceFee && <span className={styles.errorText}>{errors.maintenanceFee}</span>}
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Maintenance Fee Payment Frequency</label>
-              <select
-                name="maintenanceFeeFrequency"
-                className={styles.formSelect}
-                value={formData.maintenanceFeeFrequency}
-                onChange={handleInputChange}
-              >
-                <option value="Weekly">Weekly</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Quarterly">Quarterly</option>
-                <option value="Bi-Annually">Bi-Annually</option>
-                <option value="Annually">Annually</option>
-              </select>
             </div>
           </div>
         </div>

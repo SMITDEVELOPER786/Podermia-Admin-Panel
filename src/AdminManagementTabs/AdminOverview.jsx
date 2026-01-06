@@ -3,7 +3,6 @@ import styles from '../css/AdminManagment2.module.css';
 import { Users, Clock, Activity, AlertTriangle } from 'lucide-react';
 
 const AdminOverview = () => {
-  // Sample data - in real app, this would come from API
   const [admins] = React.useState([
     {
       id: 'ADM-001',
@@ -22,7 +21,7 @@ const AdminOverview = () => {
       fullName: 'David Brown',
       email: 'david.brown@podermonie.com',
       department: 'Customer Service',
-      roles: ['KYC Admin', 'Wallet Admin'],
+      roles: ['KYC Admin', 'Wallet Admin', 'Investment Admin'],
       status: 'Active',
       lastLogin: '2025-01-14 10:22:45',
       createdBy: 'Sarah Wilson',
@@ -79,7 +78,6 @@ const AdminOverview = () => {
     }
   ]);
 
-  // Sample activity data (last 30 days)
   const [activities] = React.useState([
     { id: 1, date: '2025-01-15', type: 'User Created', admin: 'Sarah Wilson' },
     { id: 2, date: '2025-01-14', type: 'Role Assigned', admin: 'David Brown' },
@@ -91,7 +89,6 @@ const AdminOverview = () => {
     { id: 8, date: '2025-01-08', type: '2FA Reset', admin: 'Sarah Wilson' }
   ]);
 
-  // Sample failed login attempts (last 30 days)
   const [failedLogins] = React.useState([
     { id: 1, date: '2025-01-15', email: 'unknown@podermonie.com', ip: '192.168.1.100' },
     { id: 2, date: '2025-01-14', email: 'test@podermonie.com', ip: '192.168.1.105' },
@@ -99,18 +96,15 @@ const AdminOverview = () => {
     { id: 4, date: '2025-01-12', email: 'unknown@podermonie.com', ip: '192.168.1.115' }
   ]);
 
-  // Sample pending approvals
   const [pendingApprovals] = React.useState([
     { id: 1, type: 'New Admin Request', requestedBy: 'John Doe', date: '2025-01-14' },
     { id: 2, type: 'Role Assignment', requestedBy: 'Jane Smith', date: '2025-01-13' },
     { id: 3, type: 'Account Reactivation', requestedBy: 'Mike Johnson', date: '2025-01-12' }
   ]);
 
-  // Calculate statistics
   const stats = useMemo(() => {
     const activeAdmins = admins.filter(admin => admin.status === 'Active').length;
     
-    // Count admins by role
     const roleCounts = {};
     admins.forEach(admin => {
       admin.roles.forEach(role => {
@@ -118,7 +112,6 @@ const AdminOverview = () => {
       });
     });
 
-    // Filter activities from last 30 days
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const recentActivities = activities.filter(activity => {
@@ -139,9 +132,7 @@ const AdminOverview = () => {
     <div className={styles.adminOverviewContainer}>
       <h2 className={styles.overviewTitle}>Admin Overview</h2>
       
-      {/* Snapshot Cards */}
       <div className={styles.snapshotCardsGrid}>
-        {/* Total Active Admins */}
         <div className={styles.snapshotCard}>
           <div className={styles.snapshotCardIcon}>
             <Users size={24} />
@@ -152,7 +143,6 @@ const AdminOverview = () => {
           </div>
         </div>
 
-        {/* Pending Approvals */}
         <div className={styles.snapshotCard}>
           <div className={styles.snapshotCardIcon}>
             <Clock size={24} />
@@ -163,7 +153,6 @@ const AdminOverview = () => {
           </div>
         </div>
 
-        {/* Actions (last 30 days) */}
         <div className={styles.snapshotCard}>
           <div className={styles.snapshotCardIcon}>
             <Activity size={24} />
@@ -174,7 +163,6 @@ const AdminOverview = () => {
           </div>
         </div>
 
-        {/* Failed Login Attempts */}
         <div className={styles.snapshotCard}>
           <div className={styles.snapshotCardIcon}>
             <AlertTriangle size={24} />
@@ -186,7 +174,6 @@ const AdminOverview = () => {
         </div>
       </div>
 
-      {/* Detailed Role Breakdown */}
       <div className={styles.roleBreakdownSection}>
         <h3 className={styles.sectionTitle}>Admins by Role Breakdown</h3>
         <div className={styles.roleBreakdownGrid}>
@@ -199,7 +186,6 @@ const AdminOverview = () => {
         </div>
       </div>
 
-      {/* Recent Activities */}
       <div className={styles.activitiesSection}>
         <h3 className={styles.sectionTitle}>Recent Activities (Last 30 Days)</h3>
         <div className={styles.activitiesList}>
@@ -215,7 +201,6 @@ const AdminOverview = () => {
         </div>
       </div>
 
-      {/* Failed Login Attempts Details */}
       <div className={styles.failedLoginsSection}>
         <h3 className={styles.sectionTitle}>Failed Login Attempts (Last 30 Days)</h3>
         <div className={styles.failedLoginsList}>

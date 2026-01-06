@@ -93,10 +93,9 @@ const ManageUsers = () => {
   
   const collateralTypes = [
     'Savings Vault',
+    'Commercial Paper',
     'T-Bills',
-    'Fixed Savings',
-    'Investment Portfolio',
-    'Real Estate'
+    'Bonds'
   ];
   
   const [kycOverrides, setKycOverrides] = useState({

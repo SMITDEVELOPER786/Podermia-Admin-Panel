@@ -59,7 +59,8 @@ const ManualAssignment = () => {
 
   const [filters, setFilters] = useState({
     search: '',
-    date: ''
+    startDate: '',
+    endDate: ''
   });
 
   const [agents] = useState([
@@ -128,7 +129,6 @@ const ManualAssignment = () => {
     }
   };
 
-  // Filter tickets
   const filteredTickets = useMemo(() => {
     return tickets.filter(ticket => {
       const matchesSearch = !filters.search || 
@@ -137,17 +137,37 @@ const ManualAssignment = () => {
         ticket.customer.toLowerCase().includes(filters.search.toLowerCase()) ||
         ticket.userId.toLowerCase().includes(filters.search.toLowerCase());
       
-      const matchesDate = !filters.date || ticket.date === filters.date;
+      let matchesDate = true;
+      if (filters.startDate || filters.endDate) {
+        const ticketDate = new Date(ticket.date);
+        ticketDate.setHours(0, 0, 0, 0);
+        
+        if (filters.startDate && filters.endDate) {
+          const startDate = new Date(filters.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          const endDate = new Date(filters.endDate);
+          endDate.setHours(23, 59, 59, 999);
+          matchesDate = ticketDate >= startDate && ticketDate <= endDate;
+        } else if (filters.startDate) {
+          const startDate = new Date(filters.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          matchesDate = ticketDate >= startDate;
+        } else if (filters.endDate) {
+          const endDate = new Date(filters.endDate);
+          endDate.setHours(23, 59, 59, 999);
+          matchesDate = ticketDate <= endDate;
+        }
+      }
       
       return matchesSearch && matchesDate;
     });
   }, [tickets, filters]);
 
-  // Filter Configuration
   const filterConfig = {
     showSearch: true,
     searchPlaceholder: 'Search by Ticket ID, Subject, User ID...',
-    showDate: true,
+    showDate: false,
+    showDatePeriod: true,
     dropdowns: []
   };
 

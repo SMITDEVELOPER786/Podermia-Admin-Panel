@@ -13,7 +13,8 @@ const AdminAuditLogs = () => {
     search: '',
     admin: '',
     action: '',
-    date: '',
+    startDate: '',
+    endDate: '',
     risk: ''
   });
 
@@ -24,7 +25,6 @@ const AdminAuditLogs = () => {
   const [selectedLog, setSelectedLog] = useState(null);
   const [toast, setToast] = useState(null);
 
-  // Sample audit logs data
   const [auditLogs] = useState([
     {
       id: 1,
@@ -158,7 +158,6 @@ const AdminAuditLogs = () => {
     }
   ]);
 
-  // Filter data based on search and filters
   const filteredLogs = useMemo(() => {
     return auditLogs.filter(log => {
       const matchesSearch = !filters.search.trim() || 
@@ -173,19 +172,32 @@ const AdminAuditLogs = () => {
       const matchesAction = !filters.action || filters.action === 'All Actions' || log.actionType === filters.action;
       const matchesRisk = !filters.risk || filters.risk === 'All Risk Levels' || log.risk === filters.risk;
       
-      // Date filter
       let matchesDate = true;
-      if (filters.date) {
-        const filterDate = new Date(filters.date).toDateString();
-        const logDate = new Date(log.timestamp).toDateString();
-        matchesDate = filterDate === logDate;
+      if (filters.startDate || filters.endDate) {
+        const logDate = new Date(log.timestamp);
+        logDate.setHours(0, 0, 0, 0);
+        
+        if (filters.startDate && filters.endDate) {
+          const startDate = new Date(filters.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          const endDate = new Date(filters.endDate);
+          endDate.setHours(23, 59, 59, 999);
+          matchesDate = logDate >= startDate && logDate <= endDate;
+        } else if (filters.startDate) {
+          const startDate = new Date(filters.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          matchesDate = logDate >= startDate;
+        } else if (filters.endDate) {
+          const endDate = new Date(filters.endDate);
+          endDate.setHours(23, 59, 59, 999);
+          matchesDate = logDate <= endDate;
+        }
       }
       
       return matchesSearch && matchesAdmin && matchesAction && matchesRisk && matchesDate;
     });
   }, [auditLogs, filters]);
 
-  // Get unique values for filters
   const uniqueAdmins = useMemo(() => {
     return ['All Admins', ...new Set(auditLogs.map(log => log.admin))];
   }, [auditLogs]);
@@ -204,7 +216,6 @@ const AdminAuditLogs = () => {
 
   const riskLevels = ['All Risk Levels', 'Low', 'Medium', 'High'];
 
-  // Render risk badge
   const renderRisk = (risk) => {
     const riskClass = risk === 'High' 
       ? styles.riskHigh 
@@ -215,7 +226,6 @@ const AdminAuditLogs = () => {
     return <span className={riskClass}>{risk}</span>;
   };
 
-  // Render status badge
   const renderStatus = (status) => {
     const statusClass = status === 'Success' 
       ? styles.statusSuccess 
@@ -224,18 +234,15 @@ const AdminAuditLogs = () => {
     return <span className={statusClass}>{status}</span>;
   };
 
-  // Render action type badge
   const renderActionType = (actionType) => {
     return <span className={styles.actionTypeBadge}>{actionType}</span>;
   };
 
-  // Handle detail view
   const handleViewDetail = (log) => {
     setSelectedLog(log);
     setDetailModalOpen(true);
   };
 
-  // Table columns
   const columns = [
     { header: 'Timestamp', key: 'timestamp' },
     { 
@@ -288,11 +295,11 @@ const AdminAuditLogs = () => {
     }
   ];
 
-  // Filter configuration
   const filterConfig = {
     showSearch: true,
     searchPlaceholder: 'Search by admin, action, IP address, or detail...',
-    showDate: true,
+    showDate: false,
+    showDatePeriod: true,
     dropdowns: [
       {
         key: 'admin',
@@ -316,7 +323,6 @@ const AdminAuditLogs = () => {
     setFilters(newFilters);
   };
 
-  // Get exportable value from log
   const getExportValue = (log, column) => {
     if (column.key === 'admin') {
       return `${log.admin} (${log.email})`;
@@ -336,7 +342,6 @@ const AdminAuditLogs = () => {
     return log[column.key] || '';
   };
 
-  // Export to CSV
   const handleExportCSV = () => {
     if (filteredLogs.length === 0) {
       setToast({
@@ -354,7 +359,6 @@ const AdminAuditLogs = () => {
         const rows = filteredLogs.map(log => 
           columns.map(c => {
             const value = getExportValue(log, c);
-            // Escape quotes and wrap in quotes
             const escapedValue = String(value).replace(/"/g, '""');
             return `"${escapedValue}"`;
           }).join(',')
@@ -387,7 +391,6 @@ const AdminAuditLogs = () => {
     }, 500);
   };
 
-  // Export to PDF
   const handleExportPDF = () => {
     if (filteredLogs.length === 0) {
       setToast({
@@ -401,7 +404,6 @@ const AdminAuditLogs = () => {
     setLoadingPDF(true);
     setTimeout(() => {
       try {
-        // Use landscape orientation for wider table
         const doc = new jsPDF('landscape', 'mm', 'a4');
         doc.setFontSize(18);
         doc.text('Admin Audit Logs Report', 14, 15);
@@ -409,12 +411,10 @@ const AdminAuditLogs = () => {
         doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 23);
         doc.text(`Total Records: ${filteredLogs.length}`, 14, 30);
 
-        // Prepare table data with proper values
         const tableColumn = columns.map(c => c.header);
         const tableRows = filteredLogs.map(log => 
           columns.map(c => {
             const value = getExportValue(log, c);
-            // Truncate long values for PDF
             if (typeof value === 'string' && value.length > 40) {
               return value.substring(0, 37) + '...';
             }
@@ -445,14 +445,14 @@ const AdminAuditLogs = () => {
             halign: 'left'
           },
           columnStyles: {
-            0: { cellWidth: 35 }, // Timestamp
-            1: { cellWidth: 45 }, // Admin
-            2: { cellWidth: 50 }, // Action
-            3: { cellWidth: 25 }, // Risk
-            4: { cellWidth: 25 }, // Status
-            5: { cellWidth: 30 }, // IP Address
-            6: { cellWidth: 40 }, // Module
-            7: { cellWidth: 50 }  // Details
+            0: { cellWidth: 35 },
+            1: { cellWidth: 45 },
+            2: { cellWidth: 50 },
+            3: { cellWidth: 25 },
+            4: { cellWidth: 25 },
+            5: { cellWidth: 30 },
+            6: { cellWidth: 40 },
+            7: { cellWidth: 50 }
           }
         });
 
@@ -475,7 +475,6 @@ const AdminAuditLogs = () => {
     }, 500);
   };
 
-  // Compliance Report State
   const [complianceForm, setComplianceForm] = useState({
     reportType: '',
     startDate: '',
@@ -484,10 +483,8 @@ const AdminAuditLogs = () => {
   });
   const [loadingCompliance, setLoadingCompliance] = useState(false);
 
-  // Generate Compliance Report
   const handleGenerateComplianceReport = () => {
     setComplianceModalOpen(true);
-    // Reset form
     setComplianceForm({
       reportType: '',
       startDate: '',
@@ -542,10 +539,9 @@ const AdminAuditLogs = () => {
     setLoadingCompliance(true);
 
     try {
-      // Filter logs based on date range
       const startDate = new Date(complianceForm.startDate);
       const endDate = new Date(complianceForm.endDate);
-      endDate.setHours(23, 59, 59, 999); // Include full end date
+      endDate.setHours(23, 59, 59, 999);
 
       const filteredComplianceLogs = auditLogs.filter(log => {
         const logDate = new Date(log.timestamp);
@@ -562,9 +558,7 @@ const AdminAuditLogs = () => {
         return;
       }
 
-      // Generate report based on format
       if (complianceForm.format === 'PDF') {
-        // Use landscape orientation for wider table
         const doc = new jsPDF('landscape', 'mm', 'a4');
         doc.setFontSize(18);
         doc.text(`${complianceForm.reportType} - Compliance Report`, 14, 15);
@@ -607,21 +601,20 @@ const AdminAuditLogs = () => {
             halign: 'left'
           },
           columnStyles: {
-            0: { cellWidth: 35 }, // Timestamp
-            1: { cellWidth: 45 }, // Admin
-            2: { cellWidth: 50 }, // Action
-            3: { cellWidth: 25 }, // Risk
-            4: { cellWidth: 25 }, // Status
-            5: { cellWidth: 30 }, // IP Address
-            6: { cellWidth: 40 }, // Module
-            7: { cellWidth: 50 }  // Details
+            0: { cellWidth: 35 },
+            1: { cellWidth: 45 },
+            2: { cellWidth: 50 },
+            3: { cellWidth: 25 },
+            4: { cellWidth: 25 },
+            5: { cellWidth: 30 },
+            6: { cellWidth: 40 },
+            7: { cellWidth: 50 }
           }
         });
 
         const fileName = `compliance-report-${complianceForm.reportType.toLowerCase().replace(/\s+/g, '-')}-${complianceForm.startDate}.pdf`;
         doc.save(fileName);
       } else {
-        // CSV Export
         const headers = columns.map(c => c.header).join(',');
         const rows = filteredComplianceLogs.map(log => 
           columns.map(c => {
@@ -662,7 +655,6 @@ const AdminAuditLogs = () => {
 
   return (
     <div className={styles.auditLogsContainer}>
-      {/* Header with Export Buttons */}
       <div className={styles.auditLogsHeader}>
         <h2 className={styles.auditLogsTitle}>Admin Audit Logs</h2>
         <div className={styles.exportButtons}>
@@ -700,18 +692,15 @@ const AdminAuditLogs = () => {
         </div>
       </div>
 
-      {/* Filter and Search */}
       <FilterSearch 
         config={filterConfig}
         onFilterChange={handleFilterChange}
       />
 
-      {/* Records Count */}
       <div className={styles.recordsCount}>
         Showing {filteredLogs.length} of {auditLogs.length} audit log records
       </div>
 
-      {/* Data Table */}
       <div className={styles.tableSection}>
         <DataTables 
           columns={columns} 
@@ -720,7 +709,6 @@ const AdminAuditLogs = () => {
         />
       </div>
 
-      {/* Detail View Modal */}
       {detailModalOpen && selectedLog && (
         <CustomModal
           isOpen={detailModalOpen}
@@ -776,7 +764,6 @@ const AdminAuditLogs = () => {
         </CustomModal>
       )}
 
-      {/* Compliance Report Modal */}
       {complianceModalOpen && (
         <CustomModal
           isOpen={complianceModalOpen}
@@ -880,7 +867,6 @@ const AdminAuditLogs = () => {
         </CustomModal>
       )}
 
-      {/* Toast Notification */}
       {toast && (
         <Toast
           type={toast.type}
