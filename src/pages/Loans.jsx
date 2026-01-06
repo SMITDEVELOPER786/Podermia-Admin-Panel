@@ -103,6 +103,8 @@ function LoansQueueTab({ setActiveTab }) {
     status: "Status",
     userType: "User Type",
     maturityDate: "",
+      dateFrom: "",
+  dateTo: "",
   });
 
   const [showCriticalModal, setShowCriticalModal] = useState(false);
@@ -144,6 +146,17 @@ function LoansQueueTab({ setActiveTab }) {
       filtered = filtered.filter(
         (r) => r.maturityDate === filters.maturityDate
       );
+if (filters.dateFrom) {
+  filtered = filtered.filter(
+    (r) => new Date(r.maturityDate) >= new Date(filters.dateFrom)
+  );
+}
+
+if (filters.dateTo) {
+  filtered = filtered.filter(
+    (r) => new Date(r.maturityDate) <= new Date(filters.dateTo)
+  );
+}
 
     setRows(filtered);
   };
@@ -245,12 +258,22 @@ function LoansQueueTab({ setActiveTab }) {
           <option>Approved</option>
           <option>Rejected</option>
         </select>
-        <input
-          type="date"
-          name="maturityDate"
-          value={filters.maturityDate}
-          onChange={handleInputChange}
-        />
+      <input
+  type="date"
+  name="dateFrom"
+  value={filters.dateFrom}
+  onChange={handleInputChange}
+  placeholder="From Date"
+/>
+
+<input
+  type="date"
+  name="dateTo"
+  value={filters.dateTo}
+  onChange={handleInputChange}
+  placeholder="To Date"
+/>
+
 
         <button className={styles.applyBtn} onClick={applyFilters}>
           Apply Filters

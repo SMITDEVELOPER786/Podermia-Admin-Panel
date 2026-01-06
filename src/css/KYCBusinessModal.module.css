@@ -901,19 +901,16 @@
     margin-left: 0 !important;
   }
 }
-/* KYCBusinessModal.module.css */
 
-/* Stakeholder profile image */
 .stakeholderImg {
-  width: 60px;        /* default size */
-  height: 60px;       /* default size */
-  border-radius: 50%; /* circular */
-  object-fit: cover;  /* crop properly */
-  border: 2px solid #246daf; /* nice blue border */
-  margin-right: 12px; /* spacing from name */
+  width: 60px;        
+  height: 60px;      
+  border-radius: 50%; 
+  object-fit: cover;  
+  border: 2px solid #246daf; 
+  margin-right: 12px; 
 }
 
-/* Larger image for detailed view */
 .uboCard .stakeholderImg {
   width: 100px;
   height: 100px;
@@ -943,4 +940,10 @@
     width: 60px;
     height: 60px;
   }
+}
+.personMeta {
+  font-size: 12.5px;
+  color: #666;
+  margin-top: 2px;
+  line-height: 1.4;
 }

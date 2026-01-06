@@ -304,7 +304,17 @@ export default function KYCManagement() {
                 <option value="Individual">Individual</option>
                 <option value="Business">Business</option>
               </select>
-              <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+<input
+  type="date"
+  value={dateFrom}
+  onChange={(e) => setDateFrom(e.target.value)}
+/>
+
+<input
+  type="date"
+  value={dateTo}
+  onChange={(e) => setDateTo(e.target.value)}
+/>
             </div>
 <button className={styles.exportBtn}>
             <img src={exportIcon} alt="export" /> Export Reports
