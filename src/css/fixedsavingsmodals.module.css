@@ -131,3 +131,110 @@
     width: 85%;
   }
 }
+/* Overlay & Modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 25px;
+  font-size: 20px;
+  color: #333;
+}
+
+/* Toggle Wrapper */
+.toggleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Toggle Switch */
+.toggleSwitch {
+  width: 60px;
+  height: 30px;
+  background-color: #ccc;
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggleSwitch.active {
+  background-color: #246daf;
+}
+
+.toggleSwitch.frozen {
+  background-color: #e74c3c;
+}
+
+/* Toggle Knob */
+.toggleKnob {
+  width: 26px;
+  height: 26px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggleSwitch.active .toggleKnob {
+  transform: translateX(30px);
+}
+
+.toggleSwitch.frozen .toggleKnob {
+  transform: translateX(0);
+}
+
+/* Toggle Label */
+.toggleLabel {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Warning Text */
+.warning {
+  font-size: 14px;
+  color: #666;
+  margin: 20px 0;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.cancel {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ccc;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cancel:hover {
+  background-color: #999;
+}

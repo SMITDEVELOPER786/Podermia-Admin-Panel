@@ -8,66 +8,40 @@ import EditGoalSavingsTermsModal from "../Savingsgoalstab/EditGoalSavingsTermsMo
 import FreezeToggleModal from "../Savingsgoalstab/FreezeToggleModal";
 import PenaltyRateModal from "../Savingsgoalstab/PenaltyRateModal";
 
+export default function GoalSavings({
+  data = [],
+  searchTerm = "",
+  statusFilter = "All",
+  startDate = ""
+}) {
+  // Initialize plans with unique per-user values
+  const initialData = data.map((d, i) => ({
+    ...d,
+    interest: d.interest ?? `${8 + i}%`, // unique interest per user
+    maturity: d.maturity ?? `2026-0${(i + 1)}-15`, // unique maturity per user
+    penaltyRate: d.penaltyRate ?? 5 + i, // unique penalty per user
+  }));
 
-  export default function GoalSavings({ data = [] }) {
-
-  // MOCK DATA
-  const initialData = [
-    {
-      id: "GS-101",
-      user: "Ayesha Khan",
-      target: 500000,
-      current: 180000,
-      status: "Active",
-      interest: "10%",
-      maturity: "2026-03-15",
-      autoRollover: true,
-      penaltyRate: 5,
-    },
-    {
-      id: "GS-102",
-      user: "Ali Raza",
-      target: 300000,
-      current: 90000,
-      status: "Frozen",
-      interest: "12%",
-      maturity: "2025-12-01",
-      autoRollover: true,
-      penaltyRate: 8,
-    },
-    {
-      id: "GS-103",
-      user: "Sara Ahmed",
-      target: 1000000,
-      current: 450000,
-      status: "Active",
-      interest: "9%",
-      maturity: "2026-08-20",
-      autoRollover: true,
-      penaltyRate: 6,
-    },
-  ];
-
-  const [plans, setPlans] = useState(() => {
-    const saved = localStorage.getItem("goalSavings");
-    return saved ? JSON.parse(saved) : data;
-
-  });
-useEffect(() => {
-  setPlans(data);
-}, [data]);
-
+  const [plans, setPlans] = useState(initialData);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [modalType, setModalType] = useState("");
   const [activeDropdown, setActiveDropdown] = useState(null);
 
+  // Sync plans whenever parent data changes
   useEffect(() => {
-    localStorage.setItem("goalSavings", JSON.stringify(plans));
-  }, [plans]);
+    const updated = data.map((d, i) => ({
+      ...d,
+      interest: d.interest ?? `${8 + i}%`,
+      maturity: d.maturity ?? `2026-0${(i + 1)}-15`,
+      penaltyRate: d.penaltyRate ?? 5 + i,
+    }));
+    setPlans(updated);
+  }, [data]);
 
+  // Save edits from modals
   const handleSave = (updatedPlan) => {
     setPlans((prev) =>
-      prev.map((p) => (p.id === updatedPlan.id ? updatedPlan : p))
+      prev.map((p) => (p.id === updatedPlan.id ? { ...p, ...updatedPlan } : p))
     );
     setSelectedPlan(null);
     setModalType("");
@@ -79,13 +53,28 @@ useEffect(() => {
     setActiveDropdown(null);
   };
 
+  // Filter logic
+  const filteredPlans = plans.filter((p) => {
+    const matchesSearch =
+      p.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.userId.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = statusFilter === "All" || p.status === statusFilter;
+
+    const matchesDate = !startDate || p.startDate === startDate;
+
+    return matchesSearch && matchesStatus && matchesDate;
+  });
+
   return (
     <div className={styles.tableBox}>
       <table className={styles.styledTable}>
         <thead>
           <tr>
             <th>Goal ID</th>
+            <th>User ID</th>
             <th>User</th>
+            <th>Start Date</th>
             <th>Target Amount</th>
             <th>Current Amount</th>
             <th>Status</th>
@@ -97,19 +86,21 @@ useEffect(() => {
           </tr>
         </thead>
         <tbody>
-          {plans.map((item) => (
+          {filteredPlans.map((item) => (
             <tr key={item.id}>
               <td>{item.id}</td>
+              <td>{item.userId}</td>
               <td>{item.user}</td>
-              <td>₦{Number(item.target || 0).toLocaleString()}</td>
-              <td>₦{Number(item.current || 0).toLocaleString()}</td>
+              <td>{item.startDate || "-"}</td>
+              <td>₦{Number(item.target ?? 0).toLocaleString()}</td>
+              <td>₦{Number(item.current ?? 0).toLocaleString()}</td>
               <td>
                 <span className={styles[`${item.status.toLowerCase()}Badge`]}>
                   {item.status}
                 </span>
               </td>
-              <td>{item.interest || "-"}</td>
-              <td>{item.maturity || "-"}</td>
+              <td>{item.interest}</td>
+              <td>{item.maturity}</td>
               <td>
                 {item.autoRollover ? (
                   <img src={TickIcon} alt="yes" className={styles.tickIcon} />
@@ -117,32 +108,22 @@ useEffect(() => {
                   "No"
                 )}
               </td>
-              <td>{item.penaltyRate || "-"}</td>
+              <td>{item.penaltyRate}</td>
               <td className={styles.actionDropdownCell}>
                 <button
                   className={styles.actionBtn}
                   onClick={() =>
-                    setActiveDropdown(
-                      activeDropdown === item.id ? null : item.id
-                    )
+                    setActiveDropdown(activeDropdown === item.id ? null : item.id)
                   }
                 >
                   ⋮
                 </button>
                 {activeDropdown === item.id && (
                   <ul className={styles.dropdownList}>
-                    <li onClick={() => openModal(item, "view")}>
-                      View User Details
-                    </li>
-                    <li onClick={() => openModal(item, "edit")}>
-                      Edit Savings Terms
-                    </li>
-                    <li onClick={() => openModal(item, "freeze")}>
-                      Change Freeze Early Termination
-                    </li>
-                    <li onClick={() => openModal(item, "penalty")}>
-                      Edit Early Termination Penalty Rate
-                    </li>
+                    <li onClick={() => openModal(item, "view")}>View User Details</li>
+                    <li onClick={() => openModal(item, "edit")}>Edit Savings Terms</li>
+                    <li onClick={() => openModal(item, "freeze")}>Change Freeze Early Termination</li>
+                    <li onClick={() => openModal(item, "penalty")}>Edit Early Termination Penalty Rate</li>
                   </ul>
                 )}
               </td>
@@ -153,31 +134,16 @@ useEffect(() => {
 
       {/* MODALS */}
       {selectedPlan && modalType === "view" && (
-        <GoalSavingsModal
-          plan={selectedPlan}
-          onClose={() => setSelectedPlan(null)}
-        />
+        <GoalSavingsModal plan={selectedPlan} onSave={handleSave} onClose={() => setSelectedPlan(null)} />
       )}
       {selectedPlan && modalType === "edit" && (
-        <EditGoalSavingsTermsModal
-          plan={selectedPlan}
-          onSave={handleSave}
-          onClose={() => setSelectedPlan(null)}
-        />
+        <EditGoalSavingsTermsModal plan={selectedPlan} onSave={handleSave} onClose={() => setSelectedPlan(null)} />
       )}
       {selectedPlan && modalType === "freeze" && (
-        <FreezeToggleModal
-          plan={selectedPlan}
-          onSave={handleSave}
-          onClose={() => setSelectedPlan(null)}
-        />
+        <FreezeToggleModal plan={selectedPlan} onSave={handleSave} onClose={() => setSelectedPlan(null)} />
       )}
       {selectedPlan && modalType === "penalty" && (
-        <PenaltyRateModal
-          plan={selectedPlan}
-          onSave={handleSave}
-          onClose={() => setSelectedPlan(null)}
-        />
+        <PenaltyRateModal plan={selectedPlan} onSave={handleSave} onClose={() => setSelectedPlan(null)} />
       )}
     </div>
   );

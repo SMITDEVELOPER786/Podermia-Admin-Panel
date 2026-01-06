@@ -1,119 +1,128 @@
+import { useState } from "react";
 import styles from "../css/Reports.module.css";
 
 export default function ExportTools() {
+  const [reportType, setReportType] = useState("");
+  const [dateRange, setDateRange] = useState("");
+  const [format, setFormat] = useState("");
+  const [error, setError] = useState("");
+
+  // ===== Download helper =====
+  const downloadFile = (content, name, type) => {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // ===== Generate PDF =====
+  const generatePDF = (title) => {
+    const pdfContent = `
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 144]
+/Contents 4 0 R /Resources << >> >>
+endobj
+4 0 obj
+<< /Length 44 >>
+stream
+BT
+/F1 12 Tf
+72 72 Td
+(${title} Generated Successfully)
+ET
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f
+trailer
+<< /Root 1 0 R /Size 5 >>
+startxref
+%%EOF
+`;
+    downloadFile(pdfContent, `${title}.pdf`, "application/pdf");
+  };
+
+  // ===== Generate CSV =====
+  const generateCSV = (title) => {
+    const csvContent = `Title,Date Range\n${title},${dateRange}`;
+    downloadFile(csvContent, `${title}.csv`, "text/csv");
+  };
+
+  // ===== Generate Export button =====
+  const handleGenerate = () => {
+    if (!reportType || !dateRange || !format) {
+      setError("Please select Report Type, Date Range and Export Format");
+      return;
+    }
+    setError("");
+
+    if (format === "PDF") {
+      generatePDF(reportType);
+    } else {
+      generateCSV(reportType);
+    }
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <h2>Transaction Reports</h2>
         <div className={styles.exportBtns}>
-          <button className={styles.pdf}>Export PDF</button>
-          <button className={styles.csv}>Export CSV</button>
+          <button className={styles.pdf} onClick={() => generatePDF("Transaction_Report")}>
+            Export PDF
+          </button>
+          <button className={styles.csv} onClick={() => generateCSV("Transaction_Report")}>
+            Export CSV
+          </button>
         </div>
       </div>
 
       <div className={styles.reportGrid}>
-        <div className={styles.reportCard}>
-          <p>Investment</p>
-          <h3>45,450,000</h3>
-          <div className={styles.row}>
-            <span className={styles.green}>+8.3% Growth</span>
-            <span className={styles.tagBlue}>Processed</span>
+        {["Investment","Loan Disbursement","Withdrawal","Deposits","Savings","Loan Repayment"].map((t, i) => (
+          <div className={styles.reportCard} key={i}>
+            <p>{t}</p>
+            <h3>45,450,000</h3>
+            <div className={styles.row}>
+              <span className={styles.green}>+8.3% Growth</span>
+              <span className={styles.tagGreen}>Completed</span>
+            </div>
           </div>
-        </div>
-
-        <div className={styles.reportCard}>
-          <p>Loan Disbursement</p>
-          <h3>28,850,000</h3>
-          <div className={styles.row}>
-            <span className={styles.green}>+12.7% Growth</span>
-            <span className={styles.tagGreen}>Completed</span>
-          </div>
-        </div>
-
-        <div className={styles.reportCard}>
-          <p>Withdrawal</p>
-          <h3>15,220,000</h3>
-          <div className={styles.row}>
-            <span className={styles.green}>+6.8% Growth</span>
-            <span className={styles.tagBlue}>Processed</span>
-          </div>
-        </div>
-
-        <div className={styles.reportCard}>
-          <p>Deposits</p>
-          <h3>38,750,000</h3>
-          <div className={styles.row}>
-            <span className={styles.green}>+13.5% Growth</span>
-            <span className={styles.tagGreen}>Completed</span>
-          </div>
-        </div>
-
-        <div className={styles.reportCard}>
-          <p>Savings</p>
-          <h3>22,340,000</h3>
-          <div className={styles.row}>
-            <span className={styles.green}>+22.1% Growth</span>
-            <span className={styles.tagYellow}>Active</span>
-          </div>
-        </div>
-
-        <div className={styles.reportCard}>
-          <p>Loan Repayment</p>
-          <h3>18,560,000</h3>
-          <div className={styles.row}>
-            <span className={styles.green}>+6.9% Growth</span>
-            <span className={styles.tagGreen}>Completed</span>
-          </div>
-        </div>
+        ))}
       </div>
 
       <h3 className={styles.sectionTitle}>Regularly & Compliance Export</h3>
 
       <div className={styles.exportGrid}>
-        <div className={styles.exportCard}>
-          <h4>CBN Regulatory Report</h4>
-          <p>
-            Compliance Report including transactions logs, AML compliance and 
-            KYC validation details.
-          </p>
-          <div className={styles.btnRow}>
-            <button className={styles.pdf}>Export PDF</button>
-            <button className={styles.csv}>Export CSV</button>
+        {[
+          "CBN Regulatory Report",
+          "Internal Audit Report",
+          "KYC Compliance Report",
+          "Financial Summary report",
+        ].map((title, i) => (
+          <div className={styles.exportCard} key={i}>
+            <h4>{title}</h4>
+            <p>Report export</p>
+            <div className={styles.btnRow}>
+              <button className={styles.pdf} onClick={() => generatePDF(title)}>
+                Export PDF
+              </button>
+              <button className={styles.csv} onClick={() => generateCSV(title)}>
+                Export CSV
+              </button>
+            </div>
           </div>
-        </div>
-
-        <div className={styles.exportCard}>
-          <h4>Internal Audit Report</h4>
-          <p>
-            Includes system logs, user activities, performance evaluations.
-          </p>
-          <div className={styles.btnRow}>
-            <button className={styles.pdf}>Export PDF</button>
-            <button className={styles.csv}>Export CSV</button>
-          </div>
-        </div>
-
-        <div className={styles.exportCard}>
-          <h4>KYC Compliance Report</h4>
-          <p>
-            Contains user identity validation, document verification results.
-          </p>
-          <div className={styles.btnRow}>
-            <button className={styles.pdf}>Export PDF</button>
-            <button className={styles.csv}>Export CSV</button>
-          </div>
-        </div>
-
-        <div className={styles.exportCard}>
-          <h4>Financial Summary report</h4>
-          <p>
-            Breakdown of revenue, investment, loan performance & repayments.
-          </p>
-          <div className={styles.btnRow}>
-            <button className={styles.pdf}>Export PDF</button>
-            <button className={styles.csv}>Export CSV</button>
-          </div>
-        </div>
+        ))}
       </div>
 
       <h3 className={styles.sectionTitle}>Costume Export Builder</h3>
@@ -122,27 +131,43 @@ export default function ExportTools() {
         <div className={styles.builderGrid}>
           <div>
             <label>Report Type</label>
-            <select>
-              <option>Select Report Type</option>
+            <select value={reportType} onChange={(e) => setReportType(e.target.value)}>
+              <option value="">Select Report Type</option>
+              <option value="Transaction Report">Transaction Report</option>
+              <option value="KYC Report">KYC Report</option>
+              <option value="Financial Summary">Financial Summary</option>
             </select>
           </div>
 
           <div>
             <label>Date Range</label>
-            <select>
-              <option>Last 30 Days</option>
+            <select value={dateRange} onChange={(e) => setDateRange(e.target.value)}>
+              <option value="">Select Date Range</option>
+              <option value="Last 7 Days">Last 7 Days</option>
+              <option value="Last 30 Days">Last 30 Days</option>
+              <option value="This Year">This Year</option>
             </select>
           </div>
 
           <div>
             <label>Export Format</label>
-            <select>
-              <option>PDF Report</option>
+            <select value={format} onChange={(e) => setFormat(e.target.value)}>
+              <option value="">Select Format</option>
+              <option value="PDF">PDF</option>
+              <option value="CSV">CSV</option>
             </select>
           </div>
         </div>
 
-        <button className={styles.generateBtn}>Generate Export</button>
+        <button className={styles.generateBtn} onClick={handleGenerate}>
+          Generate Export
+        </button>
+
+        {error && (
+          <p style={{ color: "red", marginTop: "10px", fontSize: "13px" }}>
+            {error}
+          </p>
+        )}
       </div>
     </div>
   );

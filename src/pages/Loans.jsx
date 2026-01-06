@@ -33,60 +33,148 @@ import CollateralSetoffModal from "../components/collateralsetoff"
 import SuspendPenaltyModal from "../components/PenaltySuspendModal"
 import AutoDebitRetryModal from "../components/AutoDebitRetryModal";
 
-
+// action modals for loan list tab
+import ViewRepaymentScheduleModal from "../components/ViewRepaymentScheduleModal";
+import ViewPaymentHistoryModal from "../components/ViewPaymentHistoryModal";
+import MarkRepaymentModal from "../components/MarkRepaymentModal";
+import ReverseRepaymentModal from "../components/ReverseRepaymentModal";
+import ReapplyRepaymentModal from "../components/ReapplyRepaymentModal";
+import AdjustPostingDateModal from "../components/AdjustPostingDateModal";
+import ExtendLoanTenorModal from "../components/ExtendLoanTenorModal";
+import AdjustRepaymentScheduleModal from "../components/AdjustRepaymentScheduleModal";
+import GrantMoratoriumModal from "../components/GrantMoratoriumModal";
+import RestructureBalanceModal from "../components/RestructureBalanceModal";
+import ApplyOrWaiveEarlyRepaymentModal from "../components/ApplyOrWaiveEarlyRepaymentModal";
+import CapitalizePenaltiesModal from "../components/CapitalizePenaltiesModal";
+import ApproveEarlyRepaymentModal from "../components/ApproveEarlyRepaymentModal";
+import PauseAutoDebitModal from "../components/PauseAutoDebitModal";
+import ResumeAutoDebitModal from "../components/ResumeAutoDebitModal";
+import ChangeRepaymentChannelModal from "../components/ChangeRepaymentChannelModal";
+import FlagLoanModal from "../components/FlagLoanModal";
+import SendReminderModal from "../components/SendReminderModal";
 
 function LoansQueueTab({ setActiveTab }) {
   const initialRows = [
-    { user: "John Doe", amount: 500000, collateral: "Savings Vault", ltv: "80%", status: "Pending", fullActions: true, date: "2025-12-01", accountId: "JD123" },
-    { user: "Jahn Smith", amount: 500000, collateral: "T-Bills", ltv: "60%", status: "Under Review", fullActions: false, date: "2025-12-02", accountId: "JS456" },
-    { user: "Mike Johnson", amount: 750000, collateral: "Fixed Savings", ltv: "85%", status: "Approved", fullActions: false, date: "2025-12-03", accountId: "MJ789" },
-    { user: "Sarah Wilson", amount: 500000, collateral: "Fixed Savings", ltv: "70%", status: "Approved", fullActions: true, date: "2025-12-04", accountId: "SW101" }
+    {
+      userId: "U-1001",
+      user: "John Doe",
+      userType: "Individual",
+      amount: 500000,
+      collateral: "Savings Vault",
+      ltv: "80%",
+      status: "Pending",
+      maturityDate: "2026-01-15",
+      fullActions: true,
+      accountId: "JD123",
+    },
+    {
+      userId: "U-1002",
+      user: "Jahn Smith",
+      userType: "Business",
+      amount: 500000,
+      collateral: "Treasury Bills",
+      ltv: "60%",
+      status: "Under Review",
+      maturityDate: "2026-03-10",
+      fullActions: false,
+      accountId: "JS456",
+    },
+    {
+      userId: "U-1003",
+      user: "Mike Johnson",
+      userType: "Individual",
+      amount: 750000,
+      collateral: "Bond",
+      ltv: "85%",
+      status: "Approved",
+      maturityDate: "2026-06-01",
+      fullActions: false,
+      accountId: "MJ789",
+    },
   ];
 
-  const [allRows, setAllRows] = useState(() => {
-    const stored = localStorage.getItem("loanQueue");
-    return stored ? JSON.parse(stored) : initialRows;
-  });
+  const [allRows, setAllRows] = useState(initialRows);
+  const [rows, setRows] = useState(initialRows);
 
-  const [rows, setRows] = useState(allRows);
-  const [filters, setFilters] = useState({ user: "", minAmount: "", collateral: "All Product", status: "Status" });
+  const [filters, setFilters] = useState({
+    user: "",
+    minAmount: "",
+    collateral: "Collateral Type",
+    status: "Status",
+    userType: "User Type",
+    maturityDate: "",
+  });
 
   const [showCriticalModal, setShowCriticalModal] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState(null);
-  const [confirmModal, setConfirmModal] = useState({ open: false, loan: null, type: "" });
-
-  useEffect(() => {
-    localStorage.setItem("loanQueue", JSON.stringify(allRows));
-    applyFilters(); 
-  }, [allRows]);
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    loan: null,
+    type: "",
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
+
   const applyFilters = () => {
     let filtered = [...allRows];
-    if (filters.minAmount !== "") filtered = filtered.filter(r => r.amount >= Number(filters.minAmount));
-    if (filters.user) filtered = filtered.filter(r => r.user.toLowerCase().includes(filters.user.toLowerCase()));
-    if (filters.collateral !== "All Product") filtered = filtered.filter(r => r.collateral === filters.collateral);
-    if (filters.status !== "Status") filtered = filtered.filter(r => r.status === filters.status);
+
+    if (filters.user)
+      filtered = filtered.filter((r) =>
+        r.user.toLowerCase().includes(filters.user.toLowerCase())
+      );
+
+    if (filters.minAmount)
+      filtered = filtered.filter(
+        (r) => r.amount >= Number(filters.minAmount)
+      );
+
+    if (filters.collateral !== "Collateral Type")
+      filtered = filtered.filter((r) => r.collateral === filters.collateral);
+
+    if (filters.status !== "Status")
+      filtered = filtered.filter((r) => r.status === filters.status);
+
+    if (filters.userType !== "User Type")
+      filtered = filtered.filter((r) => r.userType === filters.userType);
+
+    if (filters.maturityDate)
+      filtered = filtered.filter(
+        (r) => r.maturityDate === filters.maturityDate
+      );
+
     setRows(filtered);
   };
 
   const clearFilters = () => {
-    setFilters({ user: "", minAmount: "", collateral: "All Product", status: "Status" });
+    setFilters({
+      user: "",
+      minAmount: "",
+      collateral: "Collateral Type",
+      status: "Status",
+      userType: "User Type",
+      maturityDate: "",
+    });
     setRows(allRows);
   };
 
   const handleConfirmAction = () => {
-    const updatedRows = allRows.map(r =>
+    const updated = allRows.map((r) =>
       r.accountId === confirmModal.loan.accountId
-        ? { ...r, status: confirmModal.type === "approve" ? "Approved" : "Rejected" }
+        ? {
+            ...r,
+            status:
+              confirmModal.type === "approve" ? "Approved" : "Rejected",
+          }
         : r
     );
-    setAllRows(updatedRows); 
+    setAllRows(updated);
+    setRows(updated);
     setConfirmModal({ open: false, loan: null, type: "" });
   };
+
   return (
     <>
       <div className={styles.topBar}>
@@ -108,33 +196,82 @@ function LoansQueueTab({ setActiveTab }) {
       </div>
 
       <div className={styles.filters}>
-        <input type="number" name="minAmount" value={filters.minAmount} onChange={handleInputChange} placeholder="Min Amount" />
-        <input type="text" name="user" value={filters.user} onChange={handleInputChange} placeholder="User Name" />
-        <select name="collateral" value={filters.collateral} onChange={handleInputChange}>
-          <option>All Product</option>
+        <input
+          type="number"
+          name="minAmount"
+          value={filters.minAmount}
+          onChange={handleInputChange}
+          placeholder="Min Amount"
+        />
+
+        <input
+          type="text"
+          name="user"
+          value={filters.user}
+          onChange={handleInputChange}
+          placeholder="User Name"
+        />
+
+        <select
+          name="collateral"
+          value={filters.collateral}
+          onChange={handleInputChange}
+        >
+          <option>Collateral Type</option>
           <option>Savings Vault</option>
-          <option>T-Bills</option>
-          <option>Fixed Savings</option>
+          <option>Commercial Paper</option>
+          <option>Bond</option>
+          <option>Treasury Bills</option>
         </select>
-        <select name="status" value={filters.status} onChange={handleInputChange}>
+
+        <select
+          name="userType"
+          value={filters.userType}
+          onChange={handleInputChange}
+        >
+          <option>User Type</option>
+          <option>Individual</option>
+          <option>Business</option>
+        </select>
+
+        <select
+          name="status"
+          value={filters.status}
+          onChange={handleInputChange}
+        >
           <option>Status</option>
           <option>Pending</option>
           <option>Under Review</option>
           <option>Approved</option>
           <option>Rejected</option>
         </select>
-        <button className={styles.applyBtn} onClick={applyFilters}>Apply Filters</button>
-        <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
+        <input
+          type="date"
+          name="maturityDate"
+          value={filters.maturityDate}
+          onChange={handleInputChange}
+        />
+
+        <button className={styles.applyBtn} onClick={applyFilters}>
+          Apply Filters
+        </button>
+        <button className={styles.clearBtn} onClick={clearFilters}>
+          Clear Filters
+        </button>
       </div>
 
+      {/* TABLE */}
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
             <tr>
+              <th>User ID</th>
               <th>User</th>
+              <th>User Type</th>
               <th>Amount</th>
               <th>Collateral</th>
               <th>LTV</th>
+              <th>Maturity Date</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -142,18 +279,56 @@ function LoansQueueTab({ setActiveTab }) {
           <tbody>
             {rows.map((r, i) => (
               <tr key={i}>
+                <td>{r.userId}</td>
                 <td>{r.user}</td>
+                <td>{r.userType}</td>
                 <td>₦ {r.amount.toLocaleString()}</td>
                 <td>{r.collateral}</td>
                 <td>{r.ltv}</td>
-                <td><span className={`${styles.status} ${styles[r.status.replace(" ", "").toLowerCase()]}`}>{r.status}</span></td>
+                <td>{r.maturityDate}</td>
+                <td>
+                  <span
+                    className={`${styles.status} ${
+                      styles[r.status.replace(" ", "").toLowerCase()]
+                    }`}
+                  >
+                    {r.status}
+                  </span>
+                </td>
                 <td>
                   <div className={styles.actionBtns}>
-                    <img src={eyeIcon} alt="view" style={{ cursor: "pointer" }} onClick={() => { setSelectedLoan(r); setActiveTab("Review"); }} />
+                    <img
+                      src={eyeIcon}
+                      alt="view"
+                      onClick={() => {
+                        setSelectedLoan(r);
+                        setActiveTab("Review");
+                      }}
+                    />
                     {r.fullActions && (
                       <>
-                        <img src={tickIcon} alt="approve" style={{ cursor: "pointer" }} onClick={() => setConfirmModal({ open: true, loan: r, type: "approve" })} />
-                        <img src={crossIcon} alt="reject" style={{ cursor: "pointer" }} onClick={() => setConfirmModal({ open: true, loan: r, type: "reject" })} />
+                        <img
+                          src={tickIcon}
+                          alt="approve"
+                          onClick={() =>
+                            setConfirmModal({
+                              open: true,
+                              loan: r,
+                              type: "approve",
+                            })
+                          }
+                        />
+                        <img
+                          src={crossIcon}
+                          alt="reject"
+                          onClick={() =>
+                            setConfirmModal({
+                              open: true,
+                              loan: r,
+                              type: "reject",
+                            })
+                          }
+                        />
                       </>
                     )}
                   </div>
@@ -165,16 +340,33 @@ function LoansQueueTab({ setActiveTab }) {
       </div>
 
       {showCriticalModal && selectedLoan && (
-        <CriticalActionModal isOpen={showCriticalModal} onClose={() => setShowCriticalModal(false)} loan={selectedLoan} />
+        <CriticalActionModal
+          isOpen={showCriticalModal}
+          onClose={() => setShowCriticalModal(false)}
+          loan={selectedLoan}
+        />
       )}
 
       {confirmModal.open && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h3>{confirmModal.type === "approve" ? "Approve Loan?" : "Reject Loan?"}</h3>
-            <p>Are you sure you want to {confirmModal.type} the loan for <strong>{confirmModal.loan.user}</strong>?</p>
+            <h3>
+              {confirmModal.type === "approve"
+                ? "Approve Loan?"
+                : "Reject Loan?"}
+            </h3>
+            <p>
+              Are you sure you want to {confirmModal.type} loan for{" "}
+              <strong>{confirmModal.loan.user}</strong>?
+            </p>
             <div className={styles.modalButtons}>
-              <button onClick={() => setConfirmModal({ open: false, loan: null, type: "" })}>Cancel</button>
+              <button
+                onClick={() =>
+                  setConfirmModal({ open: false, loan: null, type: "" })
+                }
+              >
+                Cancel
+              </button>
               <button onClick={handleConfirmAction}>Confirm</button>
             </div>
           </div>
@@ -326,29 +518,84 @@ function ReviewTab({ setActiveTab }) {
 }
 function LoanListTab() {
   const initialRows = [
-    { user: "John Doe", amount: 500000, balance: 350000, status: "Active", rate: "15.5%", maturity: "7/1/2025", principal: 500000, days: 45, collateral: "Savings Vault", collateralValue: 625000, ltv: "80%" },
-    { user: "Jahn Smith", amount: 500000, balance: 0, status: "Repaid", rate: "12%", maturity: "8/15/2024", principal: 500000, days: 0, collateral: "T-Bills", collateralValue: 300000, ltv: "60%" },
-    { user: "Mike Johnson", amount: 750000, balance: 800000, status: "Overdue", rate: "85%", maturity: "6/1/2025", principal: 750000, days: 90, collateral: "Fixed Savings", collateralValue: 880000, ltv: "85%" },
-    { user: "Sarah Wilson", amount: 500000, balance: 180000, status: "Defaulted", rate: "20% 70%", maturity: "6/2/2024", principal: 500000, days: 15, collateral: "Fixed Savings", collateralValue: 700000, ltv: "70%" },
+    {
+      userId: "U-2001",
+      user: "John Doe",
+      userType: "Individual",
+      amount: 500000,
+      balance: 350000,
+      status: "Active",
+      rate: "15.5%",
+      maturity: "2025-07-01",
+      principal: 500000,
+      days: 45,
+      collateral: "Savings Vault",
+      collateralValue: 625000,
+      ltv: "80%",
+    },
+    {
+      userId: "U-2002",
+      user: "Jahn Smith",
+      userType: "Business",
+      amount: 500000,
+      balance: 0,
+      status: "Repaid",
+      rate: "12%",
+      maturity: "2024-08-15",
+      principal: 500000,
+      days: 0,
+      collateral: "T-Bills",
+      collateralValue: 300000,
+      ltv: "60%",
+    },
+    {
+      userId: "U-2003",
+      user: "Mike Johnson",
+      userType: "Individual",
+      amount: 750000,
+      balance: 800000,
+      status: "Overdue",
+      rate: "18%",
+      maturity: "2025-06-01",
+      principal: 750000,
+      days: 90,
+      collateral: "Fixed Savings",
+      collateralValue: 880000,
+      ltv: "85%",
+    },
   ];
-
+const [activeDropdownUserId, setActiveDropdownUserId] = useState(null);
   const [rows, setRows] = useState(initialRows);
-  const [filters, setFilters] = useState({ user: "", minAmount: "", date: "" });
+  const [filters, setFilters] = useState({
+    user: "",
+    minAmount: "",
+    date: "",
+    userType: "User Type",
+  });
   const [selectedLoan, setSelectedLoan] = useState(null);
-  const [showLoanModal, setShowLoanModal] = useState(false);
   const [showOtherActions, setShowOtherActions] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [currentAction, setCurrentAction] = useState(null);
+  const [activeModal, setActiveModal] = useState(null);
   const otherActionsRef = useRef(null);
 
   const loanActions = [
-    "View repayment schedule",
-    "View payment history",
-    "Mark repayment as received",
-    "Reverse a repayment",
-    "Re-apply repayment after correction",
-    "Adjust repayment posting date",
-    "Extend loan tenor",
+    { name: "View repayment schedule", modal: "ViewRepaymentSchedule" },
+    { name: "View payment history", modal: "ViewPaymentHistory" },
+    { name: "Mark repayment as received", modal: "MarkRepayment" },
+    { name: "Reverse a repayment", modal: "ReverseRepayment" },
+    { name: "Re-apply repayment after correction", modal: "ReapplyRepayment" },
+    { name: "Adjust repayment posting date", modal: "AdjustPostingDate" },
+    { name: "Extend loan tenor", modal: "ExtendLoanTenor" },
+    { name: "Adjust repayment schedule", modal: "AdjustRepaymentSchedule" },
+    { name: "Grant repayment moratorium", modal: "GrantMoratorium" },
+    { name: "Apply or Waive Early Repayment", modal: "ApplyOrWaiveEarlyRepaymentModal" },
+    { name: "Restructure outstanding balance", modal: "RestructureBalance" },
+    { name: "Capitalize penalties into principal", modal: "CapitalizePenalties" },
+    { name: "Approve early repayment request", modal: "ApproveEarlyRepayment" },
+    { name: "Pause auto-debit", modal: "PauseAutoDebit" },
+    { name: "Resume auto-debit", modal: "ResumeAutoDebit" },
+    { name: "Change repayment channel", modal: "ChangeRepaymentChannel" },
+    { name: "Flag loan for manual monitoring", modal: "FlagLoan" },
+    { name: "Send repayment reminders", modal: "SendReminder" },
   ];
 
   const handleInputChange = (e) => {
@@ -357,21 +604,16 @@ function LoanListTab() {
   };
 
   const applyFilters = () => {
-    let filtered = initialRows;
-    if (filters.user) filtered = filtered.filter(r => r.user.toLowerCase().includes(filters.user.toLowerCase()));
-    if (filters.minAmount !== "") filtered = filtered.filter(r => r.amount >= Number(filters.minAmount));
-    if (filters.date) {
-      filtered = filtered.filter(r => {
-        const [month, day, year] = r.maturity.split("/");
-        const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-        return formattedDate === filters.date;
-      });
-    }
+    let filtered = [...initialRows];
+    if (filters.user) filtered = filtered.filter((r) => r.user.toLowerCase().includes(filters.user.toLowerCase()));
+    if (filters.minAmount) filtered = filtered.filter((r) => r.amount >= Number(filters.minAmount));
+    if (filters.userType !== "User Type") filtered = filtered.filter((r) => r.userType === filters.userType);
+    if (filters.date) filtered = filtered.filter((r) => r.maturity === filters.date);
     setRows(filtered);
   };
 
   const clearFilters = () => {
-    setFilters({ user: "", minAmount: "", date: "" });
+    setFilters({ user: "", minAmount: "", date: "", userType: "User Type" });
     setRows(initialRows);
   };
 
@@ -384,24 +626,61 @@ function LoanListTab() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showOtherActions]);
 
-  const handleActionClick = (action) => {
-    setCurrentAction(action);
-    setShowOtherActions(false);
-    setShowLoanModal(false); // close detail modal
-    setShowConfirmModal(true); // open confirm modal
+ const handleActionClick = (modalName) => {
+  setActiveModal(modalName);
+  setActiveDropdownUserId(null); 
+  setShowOtherActions(false);
+};
+const dropdownRef = useRef(null);
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(e.target)
+    ) {
+      setActiveDropdownUserId(null);
+    }
   };
 
-  const handleConfirm = () => {
-    setShowConfirmModal(false);
-    setShowLoanModal(true); // reopen detail modal after confirm
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
   };
+}, []);
+
+  const ModalComponents = {
+    ViewRepaymentSchedule: ViewRepaymentScheduleModal,
+    ViewPaymentHistory: ViewPaymentHistoryModal,
+    MarkRepayment: MarkRepaymentModal,
+    ReverseRepayment: ReverseRepaymentModal,
+    ReapplyRepayment: ReapplyRepaymentModal,
+    AdjustPostingDate: AdjustPostingDateModal,
+    ExtendLoanTenor: ExtendLoanTenorModal,
+    AdjustRepaymentSchedule: AdjustRepaymentScheduleModal,
+    GrantMoratorium: GrantMoratoriumModal,
+    ApplyOrWaiveEarlyRepaymentModal: ApplyOrWaiveEarlyRepaymentModal,
+    RestructureBalance: RestructureBalanceModal,
+    CapitalizePenalties: CapitalizePenaltiesModal,
+    ApproveEarlyRepayment: ApproveEarlyRepaymentModal,
+    PauseAutoDebit: PauseAutoDebitModal,
+    ResumeAutoDebit: ResumeAutoDebitModal,
+    ChangeRepaymentChannel: ChangeRepaymentChannelModal,
+    FlagLoan: FlagLoanModal,
+    SendReminder: SendReminderModal,
+  };
+
+  const ActiveModalComponent = activeModal ? ModalComponents[activeModal] : null;
 
   return (
     <>
-      <div className={styles.topBar}><h2>All Loans - Master List</h2></div>
-
       <div className={styles.filtersRow}>
         <input type="date" name="date" value={filters.date} onChange={handleInputChange} />
+        <select name="userType" value={filters.userType} onChange={handleInputChange}>
+          <option>User Type</option>
+          <option>Individual</option>
+          <option>Business</option>
+        </select>
         <input type="number" name="minAmount" value={filters.minAmount} onChange={handleInputChange} placeholder="Min Amount" />
         <input type="text" name="user" value={filters.user} onChange={handleInputChange} placeholder="User Name" />
         <div className={styles.filterButtons}>
@@ -414,87 +693,92 @@ function LoanListTab() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>User</th><th>Principal</th><th>Balance</th><th>Rate</th><th>Maturity</th><th>Days</th><th>Collateral</th><th>Collateral Value</th><th>LTV</th><th>Status</th><th>Action</th>
+              <th>User ID</th>
+              <th>User</th>
+              <th>User Type</th>
+              <th>Principal</th>
+              <th>Balance</th>
+              <th>Rate</th>
+              <th>Maturity</th>
+              <th>Days</th>
+              <th>Collateral</th>
+              <th>Collateral Value</th>
+              <th>LTV</th>
+              <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => (
-              <tr key={i}>
-                <td>{row.user}</td>
-                <td>₦ {row.principal.toLocaleString()}</td>
-                <td>₦ {row.balance.toLocaleString()}</td>
-                <td>{row.rate}</td>
-                <td>{row.maturity}</td>
-                <td>{row.days} days</td>
-                <td>{row.collateral}</td>
-                <td>₦ {row.collateralValue.toLocaleString()}</td>
-                <td>{row.ltv}</td>
-                <td><span className={`${styles.status} ${styles[row.status.toLowerCase()]}`}>{row.status}</span></td>
-                <td>
-                  <div className={styles.actionIcon}>
-                    <img src={eyeIcon} alt="view" onClick={() => { setSelectedLoan(row); setShowLoanModal(true); setCurrentAction(null); }} />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {rows.map((row, i) => (
+    <tr key={i}>
+      <td>{row.userId}</td>
+      <td>{row.user}</td>
+      <td>{row.userType}</td>
+      <td>₦ {row.principal.toLocaleString()}</td>
+      <td>₦ {row.balance.toLocaleString()}</td>
+      <td>{row.rate}</td>
+      <td>{row.maturity}</td>
+      <td>{row.days} days</td>
+      <td>{row.collateral}</td>
+      <td>₦ {row.collateralValue.toLocaleString()}</td>
+      <td>{row.ltv}</td>
+      <td>
+        <span className={`${styles.status} ${styles[row.status.toLowerCase()]}`}>
+          {row.status}
+        </span>
+      </td>
+      <td style={{ position: "relative" }}>
+        <span
+          className={styles.actionIcon}
+          onClick={() =>
+            setActiveDropdownUserId(
+              activeDropdownUserId === row.userId ? null : row.userId
+            )
+          }
+        >
+          ⋮
+        </span>
+
+  {activeDropdownUserId === row.userId && (
+  <div
+    className={styles.otherActionsMenu}
+    ref={dropdownRef}
+  >
+    {loanActions.map((action, idx) => (
+      <div
+        key={idx}
+        className={styles.otherActionsItem}
+        onClick={() => {
+          setSelectedLoan(row);
+          setActiveDropdownUserId(null);
+          handleActionClick(action.modal);
+        }}
+      >
+        {action.name}
+      </div>
+    ))}
+  </div>
+)}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+          
         </table>
       </div>
 
-      {/* Loan Details Modal */}
-      {showLoanModal && selectedLoan && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h3>{selectedLoan.user} - Loan Details</h3>
-            <button className={styles.closeModal} onClick={() => setShowLoanModal(false)}>×</button>
-
-            {/* Other Actions */}
-            <div className={styles.otherActions} ref={otherActionsRef}>
-              <div className={styles.otherActionsSelected} onClick={() => setShowOtherActions(!showOtherActions)}>
-                Other Actions <span className={`${styles.dropdownIcon} ${showOtherActions ? styles.rotate : ""}`}>▼</span>
-              </div>
-              {showOtherActions && (
-                <div className={styles.otherActionsMenu}>
-                  {loanActions.map((action, idx) => (
-                    <div key={idx} className={styles.otherActionsItem} onClick={() => handleActionClick(action)}>
-                      {action}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className={styles.detailRow}><strong>Principal:</strong> ₦ {selectedLoan.principal.toLocaleString()}</div>
-            <div className={styles.detailRow}><strong>Balance:</strong> ₦ {selectedLoan.balance.toLocaleString()}</div>
-            <div className={styles.detailRow}><strong>Rate:</strong> {selectedLoan.rate}</div>
-            <div className={styles.detailRow}><strong>Maturity:</strong> {selectedLoan.maturity}</div>
-            <div className={styles.detailRow}><strong>Days:</strong> {selectedLoan.days}</div>
-            <div className={styles.detailRow}><strong>Collateral:</strong> {selectedLoan.collateral}</div>
-            <div className={styles.detailRow}><strong>Collateral Value:</strong> ₦ {selectedLoan.collateralValue.toLocaleString()}</div>
-            <div className={styles.detailRow}><strong>LTV:</strong> {selectedLoan.ltv}</div>
-            <div className={styles.detailRow}><strong>Status:</strong> {selectedLoan.status}</div>
-
-            <div className={styles.formActions}>
-            </div>
-          </div>
-        </div>
+      {ActiveModalComponent && selectedLoan && (
+        <ActiveModalComponent loan={selectedLoan} onClose={() => setActiveModal(null)} />
       )}
 
-      {/* Confirm Modal */}
-      {showConfirmModal && selectedLoan && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h3>Confirm Action: {currentAction}</h3>
-              <p className={styles.confirmText}>
-    Are you sure you want to proceed? This action cannot be reversed.
-  </p>
-
-            <button className={styles.closeModal} onClick={() => setShowConfirmModal(false)}>×</button>
-            <div className={styles.formActions}>
-              <button className={styles.cancelButton} onClick={() => setShowConfirmModal(false)}>Cancel</button>
-              <button className={styles.confirmButton} onClick={handleConfirm}>Confirm</button>
+      {showOtherActions && selectedLoan && (
+        <div className={styles.otherActionsContainer} ref={otherActionsRef}>
+          {loanActions.map((action, idx) => (
+            <div key={idx} className={styles.otherActionsItem} onClick={() => handleActionClick(action.modal)}>
+              {action.name}
             </div>
-          </div>
+          ))}
         </div>
       )}
     </>
@@ -586,6 +870,41 @@ const EMPTY_PRODUCT = {
     step: ""
   }
 };
+const MOCK_PRODUCTS = [
+  {
+    ...EMPTY_PRODUCT,
+    name: "Home Loan",
+    code: "HL001",
+    category: "Secured Loan",
+    controls: { ...EMPTY_PRODUCT.controls, active: true, minAge: "25", maxAge: "60" },
+    admin: { ...EMPTY_PRODUCT.admin, interestRate: "8%", repaymentMethod: "Wallet debit" },
+  },
+  {
+    ...EMPTY_PRODUCT,
+    name: "Car Loan",
+    code: "CL002",
+    category: "Secured Loan",
+    controls: { ...EMPTY_PRODUCT.controls, active: true, minAge: "21", maxAge: "55" },
+    admin: { ...EMPTY_PRODUCT.admin, interestRate: "10%", repaymentMethod: "Bank auto-debit" },
+  },
+  {
+    ...EMPTY_PRODUCT,
+    name: "Personal Loan",
+    code: "PL003",
+    category: "Un-secured Loan",
+    controls: { ...EMPTY_PRODUCT.controls, active: true, minAge: "22", maxAge: "50" },
+    admin: { ...EMPTY_PRODUCT.admin, interestRate: "12%", repaymentMethod: "Manual" },
+  },
+  {
+    ...EMPTY_PRODUCT,
+    name: "Education Loan",
+    code: "EL004",
+    category: "Secured Loan",
+    controls: { ...EMPTY_PRODUCT.controls, active: true, minAge: "18", maxAge: "35" },
+    admin: { ...EMPTY_PRODUCT.admin, interestRate: "7%", repaymentMethod: "Wallet debit" },
+  },
+];
+
 
  function SettingTab() {
   const [products, setProducts] = useState([]);
@@ -594,6 +913,26 @@ const EMPTY_PRODUCT = {
   const [editingIndex, setEditingIndex] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+useEffect(() => {
+  const stored = localStorage.getItem("loanProducts");
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    const safeData = parsed.map(p => ({
+      ...EMPTY_PRODUCT,
+      ...p,
+      globalInterestRate: { ...EMPTY_PRODUCT.globalInterestRate, ...p.globalInterestRate },
+      ltvSetting: { ...EMPTY_PRODUCT.ltvSetting, ...p.ltvSetting },
+      penaltySetting: { ...EMPTY_PRODUCT.penaltySetting, ...p.penaltySetting },
+      tenorSetting: { ...EMPTY_PRODUCT.tenorSetting, ...p.tenorSetting }
+    }));
+    setProducts(safeData);
+    localStorage.setItem("loanProducts", JSON.stringify(safeData));
+  } else {
+    // If nothing in storage, load mock products
+    setProducts(MOCK_PRODUCTS);
+    localStorage.setItem("loanProducts", JSON.stringify(MOCK_PRODUCTS));
+  }
+}, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("loanProducts");
@@ -663,8 +1002,6 @@ const handleSave = () => {
   setNewProduct(EMPTY_PRODUCT);
 };
 
-
-
   return (
     <div className={styles.container}>
       <div className={styles.topBar}>
@@ -701,7 +1038,6 @@ const handleSave = () => {
 ))}
 
       </div>
-
       {modalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -812,7 +1148,11 @@ const handleSave = () => {
               Credit Bureau Reporting
               <input type="checkbox" checked={newProduct.admin.creditBureauReporting} onChange={(e) => handleChange("creditBureauReporting", e.target.checked, "admin")} />
             </label>
-
+            <p>Loan Approval Mode</p>
+<select value={newProduct.category} onChange={(e) => handleChange("category", e.target.value)} style={{padding: "10px", backgroundColor: "#fff", borderRadius: "6px"}}>
+              <option>Automatic</option>
+              <option>Admin Review</option>
+            </select>
            {/* Modal Buttons */}
 {error && <p className={styles.errorText}>{error}</p>}
 <div className={styles.settingModalButtons}>
@@ -826,23 +1166,27 @@ const handleSave = () => {
     </div>
   );
 }
-
 function DefaultManagementTab() {
   const [risk, setRisk] = useState("Risk Level");
   const [recovery, setRecovery] = useState("Recovery Status");
-const [search, setSearch] = useState("");
+  const [userType, setUserType] = useState("All");
+  const [search, setSearch] = useState("");
+  const [filterDate, setFilterDate] = useState("");
 
+  // Each row has unique Risk & Status
   const initialRows = [
-    { id: 1, user: "Emma Devis", acc: "ACC006", outstanding: 180000, days: 45, risk: "High", status: "In Progress", collateral: "Savings Vault", collateralValue: 150000 },
-    { id: 2, user: "Michael Brown", acc: "ACC007", outstanding: 320000, days: 90, risk: "Critical", status: "Legal Action", collateral: "Fixed Saving", collateralValue: 280000 },
-    { id: 3, user: "Lisa Wilson", acc: "ACC008", outstanding: 95000, days: 15, risk: "Medium", status: "Initial", collateral: "Investment Portfolio", collateralValue: 120000 },
-    { id: 4, user: "Robert Johnson", acc: "ACC009", outstanding: 450000, days: 120, risk: "Critical", status: "Write-off", collateral: "Real Estate", collateralValue: 800000 }
+    { id: 1, user: "Emma Devis", acc: "ACC006", userID: "U001", outstanding: 180000, days: 45, risk: "90+ (Sub-Standard)", status: "Notice of loan default", collateral: "Savings Vault", collateralValue: 150000, userType: "Individual", date: "2026-01-01" },
+    { id: 2, user: "Michael Brown", acc: "ACC007", userID: "U002", outstanding: 320000, days: 90, risk: "180+ (Doubtful)", status: "Legal Action", collateral: "Fixed Saving", collateralValue: 280000, userType: "Business", date: "2026-01-02" },
+    { id: 3, user: "Lisa Wilson", acc: "ACC008", userID: "U003", outstanding: 95000, days: 15, risk: "90+ (Sub-Standard)", status: "Recovery Agents Assigned", collateral: "Investment Portfolio", collateralValue: 120000, userType: "Individual", date: "2026-01-03" },
+    { id: 4, user: "Robert Johnson", acc: "ACC009", userID: "U004", outstanding: 450000, days: 120, risk: "360+ (Lost)", status: "Collateral Set-off", collateral: "Real Estate", collateralValue: 800000, userType: "Business", date: "2026-01-04" },
+    { id: 5, user: "Sophia Lee", acc: "ACC010", userID: "U005", outstanding: 200000, days: 60, risk: "180+ (Doubtful)", status: "Credit Bureau Watchlist", collateral: "Stocks", collateralValue: 150000, userType: "Individual", date: "2026-01-05" }
   ];
 
   const [rows, setRows] = useState(initialRows);
   const [actionMenuOpen, setActionMenuOpen] = useState(null);
   const [selectedLoan, setSelectedLoan] = useState(null);
 
+  // Modals
   const [loanDetailsModalOpen, setLoanDetailsModalOpen] = useState(false);
   const [reminderModalOpen, setReminderModalOpen] = useState(false);
   const [recoveryStatusModalOpen, setRecoveryStatusModalOpen] = useState(false);
@@ -853,37 +1197,47 @@ const [search, setSearch] = useState("");
   const [collateralSetoffModalOpen, setCollateralSetoffModalOpen] = useState(false);
   const [interestFreezeModalOpen, setInterestFreezeModalOpen] = useState(false);
   const [suspendPenaltyModalOpen, setSuspendPenaltyModalOpen] = useState(false);
-  const [waivePenaltyModalOpen, setWaivePenaltyModalOpen] = useState(false);
   const [autoDebitRetryModalOpen, setAutoDebitRetryModalOpen] = useState(false);
 
-const applyFilters = () => {
-  let filtered = initialRows;
+  // Filter logic
+  const applyFilters = () => {
+    let filtered = initialRows;
 
-  if (risk !== "Risk Level") {
-    filtered = filtered.filter(r => r.risk === risk);
-  }
+    if (risk !== "Risk Level") filtered = filtered.filter(r => r.risk === risk);
+    if (recovery !== "Recovery Status") filtered = filtered.filter(r => r.status === recovery);
+    if (userType !== "All") filtered = filtered.filter(r => r.userType === userType);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      filtered = filtered.filter(r => r.user.toLowerCase().includes(q) || r.acc.toLowerCase().includes(q));
+    }
+    if (filterDate) filtered = filtered.filter(r => r.date === filterDate);
 
-  if (recovery !== "Recovery Status") {
-    filtered = filtered.filter(r => r.status === recovery);
-  }
+    setRows(filtered);
+  };
 
-  if (search.trim()) {
-    const q = search.toLowerCase();
-    filtered = filtered.filter(r =>
-      r.user.toLowerCase().includes(q) ||
-      r.acc.toLowerCase().includes(q)
-    );
-  }
+  const clearFilters = () => {
+    setRisk("Risk Level");
+    setRecovery("Recovery Status");
+    setUserType("All");
+    setSearch("");
+    setFilterDate("");
+    setRows(initialRows);
+  };
 
-  setRows(filtered);
-};
-
-const clearFilters = () => {
-  setRisk("Risk Level");
-  setRecovery("Recovery Status");
-  setSearch("");
-  setRows(initialRows);
-};
+  const exportToCSV = () => {
+    const headers = ["User", "User ID", "Account ID", "Outstanding", "Days", "Risk", "Status", "Collateral", "Collateral Value", "User Type", "Date"];
+    const csvRows = [
+      headers.join(","),
+      ...rows.map(r => [r.user, r.userID, r.acc, r.outstanding, r.days, r.risk, r.status, r.collateral, r.collateralValue, r.userType, r.date].join(","))
+    ];
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "default_management_report.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleActionClick = (index, e) => {
     e.stopPropagation();
@@ -902,31 +1256,37 @@ const clearFilters = () => {
   return (
     <div className={styles.wrapper}>
       <h2 className={styles.title}>Default Management Dashboard</h2>
+
       <div className={styles.filterRow}>
-   <input
-  className={styles.searchInput}
-  type="text"
-  placeholder="Search by user name"
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-/>
-
-
+        <input
+          className={styles.searchInput}
+          placeholder="Search by user or account ID"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <select value={risk} onChange={(e) => setRisk(e.target.value)}>
           <option>Risk Level</option>
-          <option>High</option>
-          <option>Critical</option>
-          <option>Medium</option>
+          <option>90+ (Sub-Standard)</option>
+          <option>180+ (Doubtful)</option>
+          <option>360+ (Lost)</option>
         </select>
         <select value={recovery} onChange={(e) => setRecovery(e.target.value)}>
           <option>Recovery Status</option>
-          <option>In Progress</option>
+          <option>Notice of loan default</option>
+          <option>Collateral Set-off</option>
+          <option>Recovery Agents Assigned</option>
           <option>Legal Action</option>
-          <option>Initial</option>
-          <option>Write-off</option>
+          <option>Credit Bureau Watchlist</option>
         </select>
+        <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+          <option value="All">All User Types</option>
+          <option value="Individual">Individual</option>
+          <option value="Business">Business</option>
+        </select>
+        <input type="date" value={filterDate} onChange={(e) => setFilterDate(e.target.value)} className={styles.dateInput} />
         <button className={styles.applyBtn} onClick={applyFilters}>Apply Filters</button>
         <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
+        <button className={styles.exportBtn} onClick={exportToCSV}>Export Report</button>
       </div>
 
       <div className={styles.tableWrapper}>
@@ -934,31 +1294,57 @@ const clearFilters = () => {
           <thead>
             <tr>
               <th>User</th>
+              <th>User ID</th>
+              <th>Account ID</th>
               <th>Outstanding</th>
               <th>Days</th>
               <th>Risk</th>
               <th>Status</th>
               <th>Collateral</th>
+              <th>Collateral Value</th>
+              <th>User Type</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row, i) => (
               <tr key={row.id}>
-                <td><strong>{row.user}</strong><br /><span className={styles.acc}>{row.acc}</span></td>
+                <td><strong>{row.user}</strong></td>
+                <td>{row.userID}</td>
+                <td>{row.acc}</td>
                 <td>₦{row.outstanding.toLocaleString()}</td>
                 <td>{row.days} days</td>
-                <td><span className={`${styles.badge} ${styles[row.risk.toLowerCase()]}`}>{row.risk}</span></td>
-                <td><span className={`${styles.badgeStatus} ${styles[row.status.replace(" ","").toLowerCase()]}`}>{row.status}</span></td>
-                <td>{row.collateral}<br /><span className={styles.collateralValue}>₦{row.collateralValue.toLocaleString()}</span></td>
-                <td className={styles.tableCellRelative}>
-                  <button
-                    onClick={(e) => handleActionClick(i, e)}
-                    className={styles.actionButton}
-                  >
-                    <MoreVertical size={18} />
-                  </button>
+                <td>
+  <span
+    className={`${styles.badge} ${
+      row.risk === "90+ (Sub-Standard)" ? styles.medium :
+      row.risk === "180+ (Doubtful)" ? styles.high :
+      styles.critical
+    }`}
+  >
+    {row.risk}
+  </span>
+</td>
 
+<td>
+  <span
+    className={`${styles.badgeStatus} ${
+      row.status === "Notice of loan default" ? styles.inprogress :
+      row.status === "Legal Action" ? styles.legalaction :
+      row.status === "Initial" ? styles.initial :
+      row.status === "Write-off" ? styles["write-off"] :
+      styles.inprogress
+    }`}
+  >
+    {row.status}
+  </span>
+</td>
+
+                <td>{row.collateral}</td>
+                <td>₦{row.collateralValue.toLocaleString()}</td>
+                <td>{row.userType}</td>
+                <td className={styles.tableCellRelative}>
+                  <button onClick={(e) => handleActionClick(i, e)} className={styles.actionButton}><MoreVertical size={18} /></button>
                   {actionMenuOpen === i && (
                     <div className={styles.fixedActionMenu}>
                       <button onClick={() => setLoanDetailsModalOpen(true)} className={styles.actionMenuItem}>View Loan Details</button>
@@ -981,6 +1367,7 @@ const clearFilters = () => {
         </table>
       </div>
 
+      {/* Modals */}
       {loanDetailsModalOpen && <LoanDetailsModal isOpen={loanDetailsModalOpen} onClose={() => setLoanDetailsModalOpen(false)} loan={selectedLoan} />}
       {reminderModalOpen && <ReminderModal isOpen={reminderModalOpen} onClose={() => setReminderModalOpen(false)} loan={selectedLoan} />}
       {recoveryStatusModalOpen && <RecoveryStatusModal isOpen={recoveryStatusModalOpen} onClose={() => setRecoveryStatusModalOpen(false)} loan={selectedLoan} />}
@@ -997,27 +1384,24 @@ const clearFilters = () => {
 }
  function CollateralTab({ setActiveTab }) {
   const initialRows = [
-    { user: "Jhon Doi", acc: "ACC001", asset: "Saving Vault", value: 625000, locked: 500000, ltv: "80%", status: "Locked", loanStatus: "Active" },
-    { user: "Sarah Wilson", acc: "ACC004", asset: "Investment Portfolio", value: 1200000, locked: 875000, ltv: "70%", status: "Released", loanStatus: "Repaid" },
-    { user: "Mike Johnson", acc: "ACC003", asset: "Fixed Savings", value: 400000, locked: 350000, ltv: "85%", status: "Secured", loanStatus: "Defaulted" },
-    { user: "Emma Davis", acc: "ACC005", asset: "Real Estate", value: 200000, locked: 225000, ltv: "60%", status: "Partial Release", loanStatus: "Overdue" }
+    { user: "Jhon Doi", acc: "ACC001", date: "2026-01-01", asset: "Savings Vault", value: 625000, locked: 500000, ltv: "80%", status: "Locked", loanStatus: "Active" },
+    { user: "Sarah Wilson", acc: "ACC004", date: "2026-01-03", asset: "Treasury Bills", value: 1200000, locked: 875000, ltv: "70%", status: "Released", loanStatus: "Repaid" },
+    { user: "Mike Johnson", acc: "ACC003", date: "2026-01-02", asset: "Bonds", value: 400000, locked: 350000, ltv: "85%", status: "Secured", loanStatus: "Defaulted" },
+    { user: "Emma Davis", acc: "ACC005", date: "2026-01-04", asset: "Commercial Paper", value: 200000, locked: 225000, ltv: "60%", status: "Partial Release", loanStatus: "Overdue" }
   ];
-const [search, setSearch] = useState("");
+
+  const [search, setSearch] = useState("");
+  const [filterDate, setFilterDate] = useState("");
   const [rows, setRows] = useState(initialRows);
   const [filters, setFilters] = useState({
     collateralStatus: "Collateral Status",
     assetType: "Asset Type",
     loanStatus: "Loan Status"
   });
-const [openSub, setOpenSub] = useState(null);
 
-const toggleSub = (key) => {
-  setOpenSub(openSub === key ? null : key);
-};
-
+  const [openSub, setOpenSub] = useState(null);
   const [actionMenuOpen, setActionMenuOpen] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
-
   const [showLiquidation, setShowLiquidation] = useState(false);
   const [showAutoDebitModal, setShowAutoDebitModal] = useState(false);
 
@@ -1029,6 +1413,8 @@ const toggleSub = (key) => {
     AssetLiquidationModal,
     MarkCompletionModal
   };
+
+  const toggleSub = (key) => setOpenSub(openSub === key ? null : key);
 
   useEffect(() => {
     const closeMenu = () => setActionMenuOpen(null);
@@ -1043,45 +1429,46 @@ const toggleSub = (key) => {
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-const applyFilters = () => {
-  let filtered = initialRows;
+  const applyFilters = () => {
+    let filtered = initialRows;
 
-  if (filters.collateralStatus !== "Collateral Status") {
-    filtered = filtered.filter(r => r.status === filters.collateralStatus);
-  }
+    if (filters.collateralStatus !== "Collateral Status") {
+      filtered = filtered.filter(r => r.status === filters.collateralStatus);
+    }
+    if (filters.assetType !== "Asset Type") {
+      filtered = filtered.filter(r => r.asset === filters.assetType);
+    }
+    if (filters.loanStatus !== "Loan Status") {
+      filtered = filtered.filter(r => r.loanStatus === filters.loanStatus);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      filtered = filtered.filter(r =>
+        r.user.toLowerCase().includes(q) || r.acc.toLowerCase().includes(q)
+      );
+    }
+    if (filterDate) {
+      filtered = filtered.filter(r => r.date === filterDate);
+    }
 
-  if (filters.assetType !== "Asset Type") {
-    filtered = filtered.filter(r => r.asset === filters.assetType);
-  }
+    setRows(filtered);
+  };
 
-  if (filters.loanStatus !== "Loan Status") {
-    filtered = filtered.filter(r => r.loanStatus === filters.loanStatus);
-  }
-
-  if (search.trim()) {
-    const q = search.toLowerCase();
-    filtered = filtered.filter(r =>
-      r.user.toLowerCase().includes(q) ||
-      r.acc.toLowerCase().includes(q)
-    );
-  }
-
-  setRows(filtered);
-};
-
- const clearFilters = () => {
-  setFilters({
-    collateralStatus: "Collateral Status",
-    assetType: "Asset Type",
-    loanStatus: "Loan Status"
-  });
-  setSearch("");
-  setRows(initialRows);
-};
+  const clearFilters = () => {
+    setFilters({
+      collateralStatus: "Collateral Status",
+      assetType: "Asset Type",
+      loanStatus: "Loan Status"
+    });
+    setSearch("");
+    setFilterDate("");
+    setRows(initialRows);
+  };
 
   if (showLiquidation) {
     return <CollateralLiquidationNotice onBack={() => setShowLiquidation(false)} />;
   }
+
   return (
     <div className={styles.container}>
       <div className={styles.topBar}>
@@ -1090,22 +1477,27 @@ const applyFilters = () => {
           <button className={styles.exportBtn}>
             <img src={exportIcon} alt="" /> Export Reports
           </button>
-          <button className={styles.alertBtn} onClick={() => setShowAutoDebitModal(true)}>
+          {/* <button className={styles.alertBtn} onClick={() => setShowAutoDebitModal(true)}>
             Test Auto-Debit Alert
           </button>
           <button className={styles.liquidationBtn} onClick={() => setShowLiquidation(true)}>
             Test Liquidation Notice
-          </button>
+          </button> */}
         </div>
       </div>
+
       <div className={styles.filters}>
         <input
-  type="text"
-  placeholder="Search by user name or ID"
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-/>
-
+          type="text"
+          placeholder="Search by user name or ID"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <input
+          type="date"
+          value={filterDate}
+          onChange={(e) => setFilterDate(e.target.value)}
+        />
         <select name="collateralStatus" value={filters.collateralStatus} onChange={handleFilterChange}>
           <option>Collateral Status</option>
           <option>Locked</option>
@@ -1115,10 +1507,10 @@ const applyFilters = () => {
         </select>
         <select name="assetType" value={filters.assetType} onChange={handleFilterChange}>
           <option>Asset Type</option>
-          <option>Saving Vault</option>
-          <option>Investment Portfolio</option>
-          <option>Fixed Savings</option>
-          <option>Real Estate</option>
+          <option>Savings Vault</option>
+          <option>Treasury Bills</option>
+          <option>Bonds</option>
+          <option>Commercial Paper</option>
         </select>
         <select name="loanStatus" value={filters.loanStatus} onChange={handleFilterChange}>
           <option>Loan Status</option>
@@ -1130,11 +1522,14 @@ const applyFilters = () => {
         <button className={styles.applyBtn} onClick={applyFilters}>Apply Filters</button>
         <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
       </div>
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
             <tr>
               <th>User</th>
+              <th>User ID</th>
+              <th>Date</th>
               <th>Asset Type</th>
               <th>Value</th>
               <th>Locked</th>
@@ -1144,14 +1539,12 @@ const applyFilters = () => {
               <th>Action</th>
             </tr>
           </thead>
-
           <tbody>
             {rows.map((row, i) => (
               <tr key={i}>
-                <td>
-                  <strong>{row.user}</strong><br />
-                  <span className={styles.acc}>{row.acc}</span>
-                </td>
+                <td><strong>{row.user}</strong></td>
+                <td>{row.acc}</td>
+                <td>{row.date}</td>
                 <td>{row.asset}</td>
                 <td>₦{row.value.toLocaleString()}</td>
                 <td className={row.status === "Released" ? styles.green : styles.red}>
@@ -1178,8 +1571,9 @@ const applyFilters = () => {
                   >
                     <MoreVertical size={18} />
                   </button>
-                 {actionMenuOpen === i && (
-  <div className={styles.fixedActionMenu}>
+                  {/* Action Menu Dropdown */}
+                  {actionMenuOpen === i && (
+                   <div className={styles.fixedActionMenu}>
     <button onClick={() => setSelectedAction({ loan: row, modal: "LockCollateralModal" })}>
       Lock collateral on loan disbursement
     </button>
@@ -1250,7 +1644,7 @@ const applyFilters = () => {
     </div>
 
   </div>
-)}
+                  )}
                 </td>
               </tr>
             ))}
@@ -1266,9 +1660,43 @@ const applyFilters = () => {
       })()}
     </div>
   );
-}
-// reports tab
-function ReportsTab() {
+ }
+ function ReportsTab() {
+  const [datePeriod, setDatePeriod] = useState(""); 
+  const [userType, setUserType] = useState("");     
+  const [userClass, setUserClass] = useState("");   
+  const [error, setError] = useState("");           
+
+  const downloadCSV = (filename, rows) => {
+    const csvContent = rows.map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleGenerate = () => {
+    if (!datePeriod || !userType || !userClass) {
+      setError("Please select Date Period, User Type and User Classification");
+      return;
+    }
+
+    setError(""); // Clear previous error
+
+    const rows = [
+      ["Loan Report", "Date Period", "User Type", "User Classification", "Amount Disbursed", "Amount Repaid"],
+      ["Report 1", datePeriod, userType, userClass, 283000000, 215000000],
+      ["Report 2", datePeriod, userType, userClass, 12000000, 9500000],
+    ];
+
+    downloadCSV("Loan_Report.csv", rows);
+  };
+
+
+
   return (
     <div className={styles.reportsContainer}>
 
@@ -1281,11 +1709,39 @@ function ReportsTab() {
             <option>Weekly</option>
             <option>Yearly</option>
           </select>
+<select className={styles.reportSelect} value={datePeriod} onChange={(e) => setDatePeriod(e.target.value)}>
+    <option value="">Select Date Period</option>
+    <option>Last 7 Days</option>
+    <option>Last 30 Days</option>
+    <option>Last 90 Days</option>
+    <option>This Year</option>
+  </select>
+   <select className={styles.reportSelect} value={userType} onChange={(e) => setUserType(e.target.value)}>
+    <option value="">Select User Type</option>
+    <option>Business</option>
+    <option>Individual</option>
+  </select>
+    <select className={styles.reportSelect} value={userClass} onChange={(e) => setUserClass(e.target.value)}>
+    <option value="">Select User Classification</option>
+    <option>Retail</option>
+    <option>HNI</option>
+    <option>Institutional</option>
+  </select>
+   <button className={styles.exportBtn} onClick={handleGenerate}>
+    <img src={exportIcon} alt="export" />
+    Generate Report
+  </button>
+  {error && (
+  <p style={{ color: "red", marginTop: "10px", fontSize: "13px" }}>
+    {error}
+  </p>
+)}
 
           <button className={styles.exportBtn}>
             <img src={exportIcon} alt="export" />
             Export PDF
           </button>
+          
         </div>
       </div>
 
