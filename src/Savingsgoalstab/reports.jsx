@@ -3,37 +3,50 @@ import styles from "../css/SavingGoals.module.css";
 
 export default function ReportsPage() {
   // ===== Filter States =====
-  const [datePeriod, setDatePeriod] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [userType, setUserType] = useState("");
   const [userClass, setUserClass] = useState("");
   const [error, setError] = useState("");
 
   // ===== CSV Download Function =====
-  const downloadReport = (reportName) => {
-    // Check filters
-    if (!datePeriod || !userType || !userClass) {
-      setError("Please select Date Period, User Type, and User Classification");
+  const downloadReport = (reportName, useFilters = false) => {
+    if (useFilters && (!fromDate || !toDate || !userType || !userClass)) {
+      setError("Please select FROM & TO Date, User Type, and User Classification");
       return;
     }
+    setError("");
 
-    setError(""); // clear error
+    // ===== Report Data per report =====
+    let data = [];
+    if (reportName === "Monthly_Savings_Performance") {
+      data = [
+        ["User", "Plan", "Amount", "Date"],
+        ["Alice Brown", "Fixed Savings", 100000, "2024-01-01"],
+        ["Bob Wilson", "Goal Savings", 250000, "2024-02-01"],
+      ];
+    } else if (reportName === "Savings_Vault_Obligations") {
+      data = [
+        ["Plan", "Maturity Date", "Amount Due"],
+        ["Fixed Savings", "2024-12-15", 100000],
+        ["Goal Savings", "2024-03-10", 250000],
+      ];
+    } else if (reportName === "User_Activity_Trends") {
+      data = [
+        ["User", "Login Count", "Deposits", "Withdrawals"],
+        ["Alice Brown", 12, 150000, 50000],
+        ["Bob Wilson", 9, 250000, 100000],
+      ];
+    } else {
+      // Default sample if filters used
+      data = [
+        ["User", "Plan", "Amount", "Date", "From Date", "To Date", "User Type", "User Classification"],
+        ["Alice Brown", "Fixed Savings", 100000, "2024-01-01", useFilters ? fromDate : "", useFilters ? toDate : "", useFilters ? userType : "", useFilters ? userClass : ""],
+        ["Bob Wilson", "Goal Savings", 250000, "2024-02-01", useFilters ? fromDate : "", useFilters ? toDate : "", useFilters ? userType : "", useFilters ? userClass : ""],
+      ];
+    }
 
-    // Example CSV data with filters included
-    const data = [
-      [
-        "User",
-        "Plan",
-        "Amount",
-        "Date",
-        "Date Period",
-        "User Type",
-        "User Classification",
-      ],
-      ["Alice Brown", "Fixed Savings", 100000, "2024-01-01", datePeriod, userType, userClass],
-      ["Bob Wilson", "Goal Savings", 250000, "2024-02-01", datePeriod, userType, userClass],
-    ];
-
-    const csvRows = data.map((row) => row.join(",")).join("\n");
+    const csvRows = data.map(row => row.join(",")).join("\n");
     const blob = new Blob([csvRows], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -42,17 +55,15 @@ export default function ReportsPage() {
     a.click();
   };
 
-  // ===== Single Generate Report Button =====
+  // ===== Generate All Reports Button (uses filters) =====
   const handleGenerateAllReports = () => {
-    // Generate all reports at once
-    downloadReport("Monthly_Savings_Performance");
-    downloadReport("Savings_Vault_Obligations");
-    downloadReport("User_Activity_Trends");
+    downloadReport("Monthly_Savings_Performance", true);
+    downloadReport("Savings_Vault_Obligations", true);
+    downloadReport("User_Activity_Trends", true);
   };
 
   return (
     <div className={styles.reportsContainer}>
-      {/* ===== Header ===== */}
       <div className={styles.cardBox}>
         <div className={styles.headerRow}>
           <h3>Fixed Savings Rates</h3>
@@ -60,13 +71,11 @@ export default function ReportsPage() {
 
         {/* ===== Filters + Generate Button ===== */}
         <div className={styles.filters}>
-          <select value={datePeriod} onChange={(e) => setDatePeriod(e.target.value)}>
-            <option value="">Select Date Period</option>
-            <option>Last 7 Days</option>
-            <option>Last 30 Days</option>
-            <option>Last 90 Days</option>
-            <option>This Year</option>
-          </select>
+          <div className={styles.dateFilter}>
+            <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} placeholder="From" />
+            <span>to</span>
+            <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} placeholder="To" />
+          </div>
 
           <select value={userType} onChange={(e) => setUserType(e.target.value)}>
             <option value="">Select User Type</option>
@@ -81,7 +90,6 @@ export default function ReportsPage() {
             <option>Institutional</option>
           </select>
 
-          {/* Single Generate Report Button */}
           <button className={styles.generateBtn} onClick={handleGenerateAllReports}>
             Generate Report
           </button>
@@ -92,46 +100,37 @@ export default function ReportsPage() {
           <p style={{ color: "red", marginTop: "10px", fontSize: "13px" }}>{error}</p>
         )}
 
-        {/* ===== Stats ===== */}
+        {/* ===== Stats (Export buttons download CSV immediately) ===== */}
         <div className={styles.topStats}>
           <div className={styles.statCard}>
             <div className={styles.statTitle}>Total Fixed Savings</div>
             <div className={styles.statValue}>₦2.5B</div>
-            <button className={styles.exportBtn}>Export</button>
+            <button className={styles.exportBtn} onClick={() => downloadReport("Total_Fixed_Savings")}>Export</button>
           </div>
 
           <div className={styles.statCard}>
             <div className={styles.statTitle}>Active Goal Savings</div>
             <div className={styles.statValue}>₦1.8B</div>
-            <button className={styles.exportBtn}>Export</button>
+            <button className={styles.exportBtn} onClick={() => downloadReport("Active_Goal_Savings")}>Export</button>
           </div>
         </div>
 
-        {/* ===== Individual Reports (optional clickable items) ===== */}
-        <div
-          className={styles.reportItem}
-          style={{ cursor: "pointer" }}
-        >
+        {/* ===== Individual Reports (clickable, independent of filters) ===== */}
+        <div className={styles.reportItem} style={{ cursor: "pointer" }} onClick={() => downloadReport("Monthly_Savings_Performance")}>
           <div>
             <h4>Monthly Savings Performance</h4>
             <p>Detailed breakdown of all savings activities</p>
           </div>
         </div>
 
-        <div
-          className={styles.reportItem}
-          style={{ cursor: "pointer" }}
-        >
+        <div className={styles.reportItem} style={{ cursor: "pointer" }} onClick={() => downloadReport("Savings_Vault_Obligations")}>
           <div>
             <h4>Savings Vault Obligations Report</h4>
             <p>This report is the analysis of current and upcoming maturity payments.</p>
           </div>
         </div>
 
-        <div
-          className={styles.reportItem}
-          style={{ cursor: "pointer" }}
-        >
+        <div className={styles.reportItem} style={{ cursor: "pointer" }} onClick={() => downloadReport("User_Activity_Trends")}>
           <div>
             <h4>User Activity Trends</h4>
             <p>User engagement and savings</p>

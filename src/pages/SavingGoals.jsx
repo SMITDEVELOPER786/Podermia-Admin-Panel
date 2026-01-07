@@ -14,7 +14,8 @@ export default function SavingGoals() {
   const [activeTab, setActiveTab] = useState("vault");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [startDate, setStartDate] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   // Mock Data
   const fixedSavingsData = [
@@ -43,14 +44,34 @@ export default function SavingGoals() {
         row.userId.toLowerCase().includes(searchTerm.toLowerCase())
       )
       .filter(row => {
-        if (activeTab === "fixed" || activeTab === "goal") {
-          if (!startDate) return true;
-          return row.startDate === startDate;
+        // Fixed & Goal: Filter by FROM → TO
+        if ((activeTab === "fixed" || activeTab === "goal") && (fromDate || toDate)) {
+          const rowDate = new Date(row.startDate);
+          const from = fromDate ? new Date(fromDate) : null;
+          const to = toDate ? new Date(toDate) : null;
+          if (from && to) return rowDate >= from && rowDate <= to;
+          if (from) return rowDate >= from;
+          if (to) return rowDate <= to;
         }
+
+        // Early Withdrawals: Filter by FROM → TO
+        if (activeTab === "withdraw" && (fromDate || toDate)) {
+          const rowDate = new Date(row.date);
+          const from = fromDate ? new Date(fromDate) : null;
+          const to = toDate ? new Date(toDate) : null;
+          if (from && to) return rowDate >= from && rowDate <= to;
+          if (from) return rowDate >= from;
+          if (to) return rowDate <= to;
+        }
+
         return true;
       })
       .filter(row => {
-        if (activeTab === "fixed" || activeTab === "goal" || activeTab === "withdraw") {
+        // Status filter
+        if (activeTab === "fixed" || activeTab === "goal") {
+          return statusFilter === "All" || row.status === statusFilter;
+        }
+        if (activeTab === "withdraw") {
           return statusFilter === "All" || row.status === statusFilter;
         }
         return true;
@@ -61,6 +82,7 @@ export default function SavingGoals() {
     let exportData = [];
     if (activeTab === "fixed") exportData = filterData(fixedSavingsData);
     else if (activeTab === "goal") exportData = filterData(goalSavingsData);
+    else if (activeTab === "withdraw") exportData = filterData(earlyWithdrawData);
 
     if (exportData.length === 0) return alert("No data to export");
 
@@ -136,12 +158,14 @@ export default function SavingGoals() {
             </select>
 
             <div className={styles.dateFilter}>
-              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+              <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} placeholder="From" />
+              <span>to</span>
+              <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} placeholder="To" />
             </div>
 
-            <button className={styles.export}>
-                       <img src={exportIcon} alt="export" /> Export Reports
-                     </button>
+            <button className={styles.export} onClick={handleExport}>
+              <img src={exportIcon} alt="export" /> Export Reports
+            </button>
           </div>
         )}
 
@@ -159,10 +183,20 @@ export default function SavingGoals() {
 
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
               <option value="All">All Status</option>
-              <option value="Active">Active</option>
-              <option value="Matured">Matured</option>
               <option value="Approved">Approved</option>
+              <option value="Active">Active</option>
+              <option value="Pending">Pending</option>
             </select>
+
+            <div className={styles.dateFilter}>
+              <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} placeholder="From" />
+              <span>to</span>
+              <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} placeholder="To" />
+            </div>
+
+            <button className={styles.export} onClick={handleExport}>
+              <img src={exportIcon} alt="export" /> Export Reports
+            </button>
           </div>
         )}
       </div>

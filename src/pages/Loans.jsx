@@ -103,8 +103,6 @@ function LoansQueueTab({ setActiveTab }) {
     status: "Status",
     userType: "User Type",
     maturityDate: "",
-      dateFrom: "",
-  dateTo: "",
   });
 
   const [showCriticalModal, setShowCriticalModal] = useState(false);
@@ -142,21 +140,18 @@ function LoansQueueTab({ setActiveTab }) {
     if (filters.userType !== "User Type")
       filtered = filtered.filter((r) => r.userType === filters.userType);
 
-    if (filters.maturityDate)
-      filtered = filtered.filter(
-        (r) => r.maturityDate === filters.maturityDate
-      );
-if (filters.dateFrom) {
+    if (filters.fromDate) {
   filtered = filtered.filter(
-    (r) => new Date(r.maturityDate) >= new Date(filters.dateFrom)
+    (r) => new Date(r.maturityDate) >= new Date(filters.fromDate)
   );
 }
 
-if (filters.dateTo) {
+if (filters.toDate) {
   filtered = filtered.filter(
-    (r) => new Date(r.maturityDate) <= new Date(filters.dateTo)
+    (r) => new Date(r.maturityDate) <= new Date(filters.toDate)
   );
 }
+
 
     setRows(filtered);
   };
@@ -169,6 +164,9 @@ if (filters.dateTo) {
       status: "Status",
       userType: "User Type",
       maturityDate: "",
+       fromDate: "",
+    toDate: "",
+  toDate: "",
     });
     setRows(allRows);
   };
@@ -260,16 +258,16 @@ if (filters.dateTo) {
         </select>
       <input
   type="date"
-  name="dateFrom"
-  value={filters.dateFrom}
+  name="fromDate"
+  value={filters.fromDate}
   onChange={handleInputChange}
   placeholder="From Date"
 />
 
 <input
   type="date"
-  name="dateTo"
-  value={filters.dateTo}
+  name="toDate"
+  value={filters.toDate}
   onChange={handleInputChange}
   placeholder="To Date"
 />
@@ -589,12 +587,16 @@ function LoanListTab() {
   ];
 const [activeDropdownUserId, setActiveDropdownUserId] = useState(null);
   const [rows, setRows] = useState(initialRows);
-  const [filters, setFilters] = useState({
-    user: "",
-    minAmount: "",
-    date: "",
-    userType: "User Type",
-  });
+ const [filters, setFilters] = useState({
+  user: "",
+  minAmount: "",
+  fromDate: "",
+  toDate: "",
+  userType: "User Type",
+  collateral: "Collateral Type",
+  status: "Status",
+});
+
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [showOtherActions, setShowOtherActions] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
@@ -626,19 +628,68 @@ const [activeDropdownUserId, setActiveDropdownUserId] = useState(null);
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const applyFilters = () => {
-    let filtered = [...initialRows];
-    if (filters.user) filtered = filtered.filter((r) => r.user.toLowerCase().includes(filters.user.toLowerCase()));
-    if (filters.minAmount) filtered = filtered.filter((r) => r.amount >= Number(filters.minAmount));
-    if (filters.userType !== "User Type") filtered = filtered.filter((r) => r.userType === filters.userType);
-    if (filters.date) filtered = filtered.filter((r) => r.maturity === filters.date);
-    setRows(filtered);
-  };
+ 
+const applyFilters = () => {
+  let filtered = [...initialRows];
 
-  const clearFilters = () => {
-    setFilters({ user: "", minAmount: "", date: "", userType: "User Type" });
-    setRows(initialRows);
-  };
+  // Filter by User Name
+  if (filters.user) {
+    filtered = filtered.filter(r =>
+      r.user.toLowerCase().includes(filters.user.toLowerCase())
+    );
+  }
+
+  // Filter by Minimum Amount
+  if (filters.minAmount) {
+    filtered = filtered.filter(r => r.amount >= Number(filters.minAmount));
+  }
+
+  // Filter by User Type
+  if (filters.userType !== "User Type") {
+    filtered = filtered.filter(r => r.userType === filters.userType);
+  }
+
+  // Filter by Collateral Type
+  if (filters.collateral !== "Collateral Type") {
+    filtered = filtered.filter(r => r.collateral === filters.collateral);
+  }
+
+  // Filter by Loan Status
+  if (filters.status !== "Status") {
+    filtered = filtered.filter(r => r.status === filters.status);
+  }
+
+  // Filter by Maturity Date Range
+  if (filters.fromDate) {
+    filtered = filtered.filter(
+      r => new Date(r.maturity) >= new Date(filters.fromDate)
+    );
+  }
+
+  if (filters.toDate) {
+    filtered = filtered.filter(
+      r => new Date(r.maturity) <= new Date(filters.toDate)
+    );
+  }
+
+  // Apply filtered rows to state
+  setRows(filtered);
+};
+
+
+const clearFilters = () => {
+  setFilters({
+    user: "",
+    minAmount: "",
+    fromDate: "",
+    toDate: "",
+    userType: "User Type",
+    status: "Status",
+    collateral: "Collateral Type",
+  });
+  setRows(initialRows);
+};
+
 
   useEffect(() => {
     if (!showOtherActions) return;
@@ -698,7 +749,9 @@ useEffect(() => {
   return (
     <>
       <div className={styles.filtersRow}>
-        <input type="date" name="date" value={filters.date} onChange={handleInputChange} />
+<input type="date" name="fromDate" value={filters.fromDate} onChange={handleInputChange} placeholder="From" />
+<input type="date" name="toDate" value={filters.toDate} onChange={handleInputChange} placeholder="To" />
+
         <select name="userType" value={filters.userType} onChange={handleInputChange}>
           <option>User Type</option>
           <option>Individual</option>
@@ -706,6 +759,13 @@ useEffect(() => {
         </select>
         <input type="number" name="minAmount" value={filters.minAmount} onChange={handleInputChange} placeholder="Min Amount" />
         <input type="text" name="user" value={filters.user} onChange={handleInputChange} placeholder="User Name" />
+        <select name="collateral" value={filters.collateral} onChange={handleInputChange}>
+  <option>Collateral Type</option>
+  <option>Savings Vault</option>
+  <option>Commercial Paper</option>
+  <option>Bond</option>
+  <option>Treasury Bills</option>
+</select>
         <div className={styles.filterButtons}>
           <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
           <button className={styles.apply} onClick={applyFilters}>Apply Filters</button>
@@ -858,7 +918,7 @@ const EMPTY_PRODUCT = {
     earlyRepaymentPenalty: "",
     collateralRequired: false,
     collateralTypes: [],
-    ltvRatio: "",
+    ltvRatio: {},
     guarantorRequired: false,
     numGuarantors: "",
     minRiskScore: "",
@@ -930,6 +990,13 @@ const MOCK_PRODUCTS = [
 
 
  function SettingTab() {
+  const COLLATERAL_TYPES = [
+  "Savings Vault",
+  "Commercial Paper",
+  "Treasury Bills",
+  "Bonds"
+];
+
   const [products, setProducts] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [newProduct, setNewProduct] = useState(EMPTY_PRODUCT);
@@ -951,7 +1018,7 @@ useEffect(() => {
     setProducts(safeData);
     localStorage.setItem("loanProducts", JSON.stringify(safeData));
   } else {
-    // If nothing in storage, load mock products
+    
     setProducts(MOCK_PRODUCTS);
     localStorage.setItem("loanProducts", JSON.stringify(MOCK_PRODUCTS));
   }
@@ -1129,10 +1196,30 @@ const handleSave = () => {
             </select>
             <input placeholder="Interest Rate (% p.a.)" value={newProduct.admin.interestRate} onChange={(e) => handleChange("interestRate", e.target.value, "admin")} />
             <input placeholder="Effective APR" value={newProduct.admin.effectiveAPR} onChange={(e) => handleChange("effectiveAPR", e.target.value, "admin")} />
-            <input placeholder="Processing Fee" value={newProduct.admin.processingFee} onChange={(e) => handleChange("processingFee", e.target.value, "admin")} />
-            <input placeholder="Insurance Fee" value={newProduct.admin.insuranceFee} onChange={(e) => handleChange("insuranceFee", e.target.value, "admin")} />
-            <input placeholder="Management Fee" value={newProduct.admin.managementFee} onChange={(e) => handleChange("managementFee", e.target.value, "admin")} />
-            <input placeholder="Documentation Fee" value={newProduct.admin.documentationFee} onChange={(e) => handleChange("documentationFee", e.target.value, "admin")} />
+           <input
+  placeholder="Processing Fee (% / flat)"
+  value={newProduct.admin.processingFee}
+  onChange={(e) => handleChange("processingFee", e.target.value, "admin")}
+/>
+
+<input
+  placeholder="Insurance Fee (% / flat)"
+  value={newProduct.admin.insuranceFee}
+  onChange={(e) => handleChange("insuranceFee", e.target.value, "admin")}
+/>
+
+<input
+  placeholder="Management Fee (% / flat)"
+  value={newProduct.admin.managementFee}
+  onChange={(e) => handleChange("managementFee", e.target.value, "admin")}
+/>
+
+<input
+  placeholder="Documentation Fee (% / flat)"
+  value={newProduct.admin.documentationFee}
+  onChange={(e) => handleChange("documentationFee", e.target.value, "admin")}
+/>
+
             <input placeholder="VAT Handling" value={newProduct.admin.vatHandling} onChange={(e) => handleChange("vatHandling", e.target.value, "admin")} />
             <p>Fee Deduction Method</p>
             <select value={newProduct.admin.feeDeductionMethod} onChange={(e) => handleChange("feeDeductionMethod", e.target.value, "admin")} style={{padding: "10px", backgroundColor: "#fff", borderRadius: "6px"}}>
@@ -1151,12 +1238,60 @@ const handleSave = () => {
               Collateral Required
               <input type="checkbox" checked={newProduct.admin.collateralRequired} onChange={(e) => handleChange("collateralRequired", e.target.checked, "admin")} />
             </label>
-            <input placeholder="Collateral Types (comma-separated)" value={newProduct.admin.collateralTypes.join(", ")} onChange={(e) => handleChange("collateralTypes", e.target.value.split(","), "admin")} />
-            <input placeholder="LTV Ratio" value={newProduct.admin.ltvRatio} onChange={(e) => handleChange("ltvRatio", e.target.value, "admin")} />
-            <label>
-              Guarantor Required
-              <input type="checkbox" checked={newProduct.admin.guarantorRequired} onChange={(e) => handleChange("guarantorRequired", e.target.checked, "admin")} />
-            </label>
+            <h4>Collateral Types</h4>
+{["Savings Vault", "Commercial Paper","Treasury Bills", "Bonds"].map((type) => {
+  const selected = newProduct.admin.collateralTypes.includes(type);
+
+  return (
+    <div key={type} style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+      <span style={{ flex: 1 }}>{type}</span>
+      
+      {/* Toggle */}
+      <label className={styles.toggleSwitch}>
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={(e) => {
+            const updatedTypes = e.target.checked
+              ? [...newProduct.admin.collateralTypes, type]
+              : newProduct.admin.collateralTypes.filter(t => t !== type);
+            handleChange("collateralTypes", updatedTypes, "admin");
+
+            const updatedLTV = { ...newProduct.admin.ltvRatio };
+            if (e.target.checked && !updatedLTV[type]) updatedLTV[type] = "";
+            if (!e.target.checked) delete updatedLTV[type];
+            handleChange("ltvRatio", updatedLTV, "admin");
+          }}
+        />
+        <span className={styles.slider}></span>
+      </label>
+    </div>
+  );
+})}
+<h4>LTV Ratio per Collateral</h4>
+{newProduct.admin.collateralTypes.map((type) => (
+  <div key={type} style={{ marginBottom: "5px" }}>
+    <label>
+      LTV for {type} (%) 
+      <small style={{ color: "#555", display: "block" }}>
+        Example: 80% → max loan allowed linked to this collateral
+      </small>
+    </label>
+    <input
+      className={`ltvInput ${newProduct.admin.collateralTypes.includes(type) ? "selected" : ""}`}
+      placeholder={`Enter LTV for ${type}`}
+      value={newProduct.admin.ltvRatio[type]}
+      onChange={(e) =>
+        handleChange(
+          "ltvRatio",
+          { ...newProduct.admin.ltvRatio, [type]: e.target.value },
+          "admin"
+        )
+      }
+    />
+  </div>
+))}
+
             <input placeholder="Number of Guarantors" value={newProduct.admin.numGuarantors} onChange={(e) => handleChange("numGuarantors", e.target.value, "admin")} />
             <input placeholder="Minimum Risk Score" value={newProduct.admin.minRiskScore} onChange={(e) => handleChange("minRiskScore", e.target.value, "admin")} />
             <p> Disbursement Method</p>
@@ -1194,16 +1329,19 @@ function DefaultManagementTab() {
   const [recovery, setRecovery] = useState("Recovery Status");
   const [userType, setUserType] = useState("All");
   const [search, setSearch] = useState("");
-  const [filterDate, setFilterDate] = useState("");
+const [fromDate, setFromDate] = useState("");
+const [toDate, setToDate] = useState("");
 
-  // Each row has unique Risk & Status
+
+ 
   const initialRows = [
-    { id: 1, user: "Emma Devis", acc: "ACC006", userID: "U001", outstanding: 180000, days: 45, risk: "90+ (Sub-Standard)", status: "Notice of loan default", collateral: "Savings Vault", collateralValue: 150000, userType: "Individual", date: "2026-01-01" },
-    { id: 2, user: "Michael Brown", acc: "ACC007", userID: "U002", outstanding: 320000, days: 90, risk: "180+ (Doubtful)", status: "Legal Action", collateral: "Fixed Saving", collateralValue: 280000, userType: "Business", date: "2026-01-02" },
-    { id: 3, user: "Lisa Wilson", acc: "ACC008", userID: "U003", outstanding: 95000, days: 15, risk: "90+ (Sub-Standard)", status: "Recovery Agents Assigned", collateral: "Investment Portfolio", collateralValue: 120000, userType: "Individual", date: "2026-01-03" },
-    { id: 4, user: "Robert Johnson", acc: "ACC009", userID: "U004", outstanding: 450000, days: 120, risk: "360+ (Lost)", status: "Collateral Set-off", collateral: "Real Estate", collateralValue: 800000, userType: "Business", date: "2026-01-04" },
-    { id: 5, user: "Sophia Lee", acc: "ACC010", userID: "U005", outstanding: 200000, days: 60, risk: "180+ (Doubtful)", status: "Credit Bureau Watchlist", collateral: "Stocks", collateralValue: 150000, userType: "Individual", date: "2026-01-05" }
+    { id: 1, user: "Emma Devis", acc: "ACC006", userID: "U001", outstanding: 180000, days: 45, risk: "90+ (Sub-Standard)", status: "Notice of loan default", collateral: "Savings Vault", collateralValue: 150000, userType: "Individual", date: "2026-01-01", creditBureauStatus: "Reported" },
+    { id: 2, user: "Michael Brown", acc: "ACC007", userID: "U002", outstanding: 320000, days: 90, risk: "180+ (Doubtful)", status: "Legal Action", collateral: "Fixed Saving", collateralValue: 280000, userType: "Business", date: "2026-01-02", creditBureauStatus: "Pending" },
+    { id: 3, user: "Lisa Wilson", acc: "ACC008", userID: "U003", outstanding: 95000, days: 15, risk: "90+ (Sub-Standard)", status: "Recovery Agents Assigned", collateral: "Investment Portfolio", collateralValue: 120000, userType: "Individual", date: "2026-01-03", creditBureauStatus: "Reported" },
+    { id: 4, user: "Robert Johnson", acc: "ACC009", userID: "U004", outstanding: 450000, days: 120, risk: "360+ (Lost)", status: "Collateral Set-off", collateral: "Real Estate", collateralValue: 800000, userType: "Business", date: "2026-01-04", creditBureauStatus: "Cleared," },
+    { id: 5, user: "Sophia Lee", acc: "ACC010", userID: "U005", outstanding: 200000, days: 60, risk: "180+ (Doubtful)", status: "Credit Bureau Watchlist", collateral: "Stocks", collateralValue: 150000, userType: "Individual", date: "2026-01-05", creditBureauStatus: "Disputed" }
   ];
+const [bureauStatus, setBureauStatus] = useState("All");
 
   const [rows, setRows] = useState(initialRows);
   const [actionMenuOpen, setActionMenuOpen] = useState(null);
@@ -1233,7 +1371,17 @@ function DefaultManagementTab() {
       const q = search.toLowerCase();
       filtered = filtered.filter(r => r.user.toLowerCase().includes(q) || r.acc.toLowerCase().includes(q));
     }
-    if (filterDate) filtered = filtered.filter(r => r.date === filterDate);
+if (fromDate && toDate) {
+  filtered = filtered.filter(r =>
+    new Date(r.date) >= new Date(fromDate) &&
+    new Date(r.date) <= new Date(toDate)
+  );
+}
+if (bureauStatus !== "All") {
+  filtered = filtered.filter(
+    r => r.creditBureauStatus === bureauStatus
+  );
+}
 
     setRows(filtered);
   };
@@ -1243,8 +1391,11 @@ function DefaultManagementTab() {
     setRecovery("Recovery Status");
     setUserType("All");
     setSearch("");
-    setFilterDate("");
     setRows(initialRows);
+    setFromDate("");
+setToDate("");
+setBureauStatus("All");
+
   };
 
   const exportToCSV = () => {
@@ -1306,7 +1457,16 @@ function DefaultManagementTab() {
           <option value="Individual">Individual</option>
           <option value="Business">Business</option>
         </select>
-        <input type="date" value={filterDate} onChange={(e) => setFilterDate(e.target.value)} className={styles.dateInput} />
+<input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+<input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+<select value={bureauStatus} onChange={(e) => setBureauStatus(e.target.value)}>
+  <option value="All">All Bureau Status</option>
+  <option value="Reported">Reported</option>
+  <option value="Pending">Pending</option>
+  <option value="Cleared">Cleared</option>
+  <option value="Disputed">Disputed</option>
+</select>
+
         <button className={styles.applyBtn} onClick={applyFilters}>Apply Filters</button>
         <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
         <button className={styles.exportBtn} onClick={exportToCSV}>Export Report</button>
@@ -1321,8 +1481,11 @@ function DefaultManagementTab() {
               <th>Account ID</th>
               <th>Outstanding</th>
               <th>Days</th>
+              <th>Date</th>
               <th>Risk</th>
+                <th>Credit Bureau Status</th>
               <th>Status</th>
+              
               <th>Collateral</th>
               <th>Collateral Value</th>
               <th>User Type</th>
@@ -1337,6 +1500,12 @@ function DefaultManagementTab() {
                 <td>{row.acc}</td>
                 <td>₦{row.outstanding.toLocaleString()}</td>
                 <td>{row.days} days</td>
+                <td>{row.date}</td>
+                <td>
+  <span className={styles.bureauBadge}>
+    {row.creditBureauStatus}
+  </span>
+</td>
                 <td>
   <span
     className={`${styles.badge} ${
@@ -1414,7 +1583,8 @@ function DefaultManagementTab() {
   ];
 
   const [search, setSearch] = useState("");
-  const [filterDate, setFilterDate] = useState("");
+const [fromDate, setFromDate] = useState("");
+const [toDate, setToDate] = useState("");
   const [rows, setRows] = useState(initialRows);
   const [filters, setFilters] = useState({
     collateralStatus: "Collateral Status",
@@ -1470,8 +1640,11 @@ function DefaultManagementTab() {
         r.user.toLowerCase().includes(q) || r.acc.toLowerCase().includes(q)
       );
     }
-    if (filterDate) {
-      filtered = filtered.filter(r => r.date === filterDate);
+   if (fromDate && toDate) {
+  filtered = filtered.filter(r =>
+    r.date >= fromDate && r.date <= toDate
+  );
+
     }
 
     setRows(filtered);
@@ -1484,7 +1657,9 @@ function DefaultManagementTab() {
       loanStatus: "Loan Status"
     });
     setSearch("");
-    setFilterDate("");
+   setFromDate("");
+setToDate("");
+
     setRows(initialRows);
   };
 
@@ -1516,11 +1691,20 @@ function DefaultManagementTab() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <input
-          type="date"
-          value={filterDate}
-          onChange={(e) => setFilterDate(e.target.value)}
-        />
+       <input
+  type="date"
+  placeholder="From"
+  value={fromDate}
+  onChange={(e) => setFromDate(e.target.value)}
+/>
+
+<input
+  type="date"
+  placeholder="To"
+  value={toDate}
+  onChange={(e) => setToDate(e.target.value)}
+/>
+
         <select name="collateralStatus" value={filters.collateralStatus} onChange={handleFilterChange}>
           <option>Collateral Status</option>
           <option>Locked</option>
@@ -1702,22 +1886,49 @@ function DefaultManagementTab() {
   };
 
   const handleGenerate = () => {
-    if (!datePeriod || !userType || !userClass) {
-      setError("Please select Date Period, User Type and User Classification");
-      return;
-    }
+  if (!fromDate || !toDate || !userType || !userClass) {
+  setError("Please select From Date, To Date, User Type and User Classification");
+  return;
+}
 
-    setError(""); // Clear previous error
 
-    const rows = [
-      ["Loan Report", "Date Period", "User Type", "User Classification", "Amount Disbursed", "Amount Repaid"],
-      ["Report 1", datePeriod, userType, userClass, 283000000, 215000000],
-      ["Report 2", datePeriod, userType, userClass, 12000000, 9500000],
-    ];
+    setError(""); 
+const rows = [
+  ["Loan Report", "Date Period", "User Type", "User Classification", "Amount Disbursed", "Amount Repaid"],
+  ["Report 1", `${fromDate} to ${toDate}`, userType, userClass, 283000000, 215000000],
+  ["Report 2", `${fromDate} to ${toDate}`, userType, userClass, 12000000, 9500000],
+];
+
+downloadCSV("Loan_Report.csv", rows);
+
 
     downloadCSV("Loan_Report.csv", rows);
   };
 
+const getStartDate = () => {
+  const today = new Date();
+  if (datePeriod === "7") {
+    const past = new Date();
+    past.setDate(today.getDate() - 7);
+    return past.toISOString().split("T")[0];
+  }
+  if (datePeriod === "30") {
+    const past = new Date();
+    past.setDate(today.getDate() - 30);
+    return past.toISOString().split("T")[0];
+  }
+  if (datePeriod === "90") {
+    const past = new Date();
+    past.setDate(today.getDate() - 90);
+    return past.toISOString().split("T")[0];
+  }
+  if (datePeriod === "year") {
+    const past = new Date(today.getFullYear(), 0, 1);
+    return past.toISOString().split("T")[0];
+  }
+};
+const [fromDate, setFromDate] = useState("");
+const [toDate, setToDate] = useState("");
 
 
   return (
@@ -1732,13 +1943,22 @@ function DefaultManagementTab() {
             <option>Weekly</option>
             <option>Yearly</option>
           </select>
-<select className={styles.reportSelect} value={datePeriod} onChange={(e) => setDatePeriod(e.target.value)}>
-    <option value="">Select Date Period</option>
-    <option>Last 7 Days</option>
-    <option>Last 30 Days</option>
-    <option>Last 90 Days</option>
-    <option>This Year</option>
-  </select>
+<input
+  type="date"
+  className={styles.reportSelect}
+  value={fromDate}
+  onChange={(e) => setFromDate(e.target.value)}
+  placeholder="From"
+/>
+
+<input
+  type="date"
+  className={styles.reportSelect}
+  value={toDate}
+  onChange={(e) => setToDate(e.target.value)}
+  placeholder="To"
+/>
+
    <select className={styles.reportSelect} value={userType} onChange={(e) => setUserType(e.target.value)}>
     <option value="">Select User Type</option>
     <option>Business</option>

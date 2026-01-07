@@ -1,15 +1,28 @@
 import React, { useState } from "react";
 import styles from "../css/LoanListModal.module.css";
 
-export default function ReverseRepaymentModal({ loan, onClose }) {
+export default function ReverseRepaymentModal({ loan, repayment, onClose, onConfirm }) {
+  // repayment = the specific repayment object to reverse
   const [reason, setReason] = useState("");
 
   const handleSubmit = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
-  
+    // Call parent function with loan, repayment, and reason
+    if (onConfirm) {
+      onConfirm({
+        loanId: loan.userId,
+        user: loan.user,
+        repaymentId: repayment?.id, // link to the specific repayment
+        amount: repayment?.amount,
+        reason,
+      });
+    }
+
     console.log("Repayment reversed", {
       user: loan.user,
+      repaymentId: repayment?.id,
+      amount: repayment?.amount,
       reason,
     });
 
@@ -32,9 +45,15 @@ export default function ReverseRepaymentModal({ loan, onClose }) {
         </button>
 
         <div className={styles.modalBody}>
-          <p>
-            Admin can reverse a repayment that was applied incorrectly.
-          </p>
+          {repayment ? (
+            <p>
+              You are about to reverse the repayment of <strong>₦{repayment.amount.toLocaleString()}</strong> made on <strong>{repayment.date}</strong>.
+            </p>
+          ) : (
+            <p>
+              Select a specific repayment to reverse.
+            </p>
+          )}
 
           <textarea
             value={reason}
@@ -45,6 +64,8 @@ export default function ReverseRepaymentModal({ loan, onClose }) {
               height: "80px",
               padding: "6px",
               marginTop: "6px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
             }}
           />
         </div>
@@ -59,10 +80,10 @@ export default function ReverseRepaymentModal({ loan, onClose }) {
           </button>
 
           <button
-            type="button"       
+            type="button"
             className={styles.confirmButton}
             onClick={onClose}
-          
+            disabled={!reason || !repayment} 
           >
             Confirm
           </button>

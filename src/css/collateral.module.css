@@ -289,3 +289,10 @@
   .table th, .table td { font-size: 11px; padding: 6px 5px; }
   .filters select, .filters button { font-size: 12px; padding: 5px 8px; }
 }
+@media (max-width: 768px) {
+  .modalContent input {
+    width: 40%;
+    font-size: 14px;
+    padding: 11px 14px;
+  }
+}

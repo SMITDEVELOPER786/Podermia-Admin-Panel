@@ -4,21 +4,24 @@ import exportIcon from "../assets/export.png";
 import clockIcon from "../assets/clock.png";
 
 export default function FinancialReports() {
-  const [datePeriod, setDatePeriod] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [error, setError] = useState("");
+
+  const periodLabel = fromDate && toDate ? `${fromDate} to ${toDate}` : "";
 
   const downloadReport = () => {
     const data = [
       ["Metric", "Value", "Date Period"],
-      ["Total Revenue", 12450000, datePeriod],
-      ["Interest Income", 8850000, datePeriod],
-      ["Fees & Commission Income", 2450000, datePeriod],
-      ["Direct Costs", 1350000, datePeriod],
-      ["Interest Expense", 11100000, datePeriod],
-      ["Operating Expenses", 850000, datePeriod],
+      ["Total Revenue", 12450000, periodLabel],
+      ["Interest Income", 8850000, periodLabel],
+      ["Fees & Commission Income", 2450000, periodLabel],
+      ["Direct Costs", 1350000, periodLabel],
+      ["Interest Expense", 11100000, periodLabel],
+      ["Operating Expenses", 850000, periodLabel],
     ];
 
-    const csv = data.map(row => row.join(",")).join("\n");
+    const csv = data.map(r => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
 
@@ -30,8 +33,12 @@ export default function FinancialReports() {
   };
 
   const handleGenerate = () => {
-    if (!datePeriod) {
-      setError("Please select date period");
+    if (!fromDate || !toDate) {
+      setError("Please select FROM and TO dates");
+      return;
+    }
+    if (new Date(fromDate) > new Date(toDate)) {
+      setError("FROM date cannot be greater than TO date");
       return;
     }
     setError("");
@@ -49,24 +56,21 @@ export default function FinancialReports() {
         </button>
       </div>
 
-      {/* DATE FILTER */}
+      {/* DATE FILTER (FROM → TO) */}
       <div className={styles.filters}>
-        <select
-          value={datePeriod}
-          onChange={(e) => setDatePeriod(e.target.value)}
-        >
-          <option value="">Select Date Period</option>
-          <option>Last 7 Days</option>
-          <option>Last 30 Days</option>
-          <option>Last 90 Days</option>
-          <option>This Year</option>
-        </select>
+        <input
+          type="date"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+        />
 
-        <button
-          type="button"
-          className={styles.generate}
-          onClick={handleGenerate}
-        >
+        <input
+          type="date"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+        />
+
+        <button className={styles.generate} onClick={handleGenerate}>
           Generate Report
         </button>
       </div>
@@ -89,7 +93,7 @@ export default function FinancialReports() {
             <span className={item[2].includes("-") ? styles.red : styles.green}>
               {item[2]} from last period
             </span>
-            <small>This Month</small>
+            <small>{periodLabel || "Select date period"}</small>
           </div>
         ))}
       </div>
@@ -98,7 +102,7 @@ export default function FinancialReports() {
       <div className={styles.chartBox}>
         <h3 className={styles.sectionTitle}>Revenue Breakdown</h3>
         <img src={clockIcon} alt="" className={styles.chartIcon} />
-        <p>Interactive charts would be displayed here</p>
+        <p>Data from {periodLabel || "—"}</p>
       </div>
     </div>
   );

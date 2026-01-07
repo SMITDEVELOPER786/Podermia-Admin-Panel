@@ -10,14 +10,13 @@ export default function CriticalActionModal({ isOpen, onClose }) {
   return createPortal(
     <div className={styles.overlay}>
       <div className={styles.modal}>
-
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.headerLeft}>
             <span className={styles.alertIcon}>⚠</span>
             <div>
               <h3>Critical Actions Control</h3>
-              <p>Manage savings actions system-wide</p>
+              <p>Pause or resume all savings-related operations</p>
             </div>
           </div>
           <button className={styles.closeBtn} onClick={onClose}>✕</button>
@@ -26,31 +25,26 @@ export default function CriticalActionModal({ isOpen, onClose }) {
         {/* Status Card */}
         <div className={styles.riskCard}>
           <div>
-            <h4>{paused ? "System Paused" : "Active Operations"}</h4>
-
+            <h4>System Status</h4>
             <p>
-              {paused && (
-                <span className={styles.blackWarning}>⚠ </span>
-              )}
               {paused
-                ? "All savings actions are paused. Deposits, withdrawals, auto-savings, and interest processing are temporarily disabled."
-                : "Savings actions are currently active"}
+                ? "All savings operations are paused. New investments, withdrawals, and system modifications are temporarily disabled."
+                : "Savings system is active. Operations are running normally."}
             </p>
           </div>
-
           <span className={paused ? styles.pausedBadge : styles.activeBadge}>
-            {paused ? "PAUSED" : "Active"}
+            {paused ? "PAUSED" : "ACTIVE"}
           </span>
         </div>
 
         {/* Body */}
         <div className={styles.body}>
-          <h5>Affected Savings Operations:</h5>
+          <h5>Affected Operations:</h5>
           <ul>
-            <li>Deposits</li>
-            <li>Withdrawals</li>
-            <li>Auto-savings processing</li>
-            <li>Interest crediting</li>
+            <li>New savings deposits</li>
+            <li>Withdrawals and early terminations</li>
+            <li>Savings approvals</li>
+            <li>System configuration changes</li>
           </ul>
         </div>
 
@@ -60,7 +54,7 @@ export default function CriticalActionModal({ isOpen, onClose }) {
             className={paused ? styles.resumeBtn : styles.pauseBtn}
             onClick={() => setPaused(!paused)}
           >
-            {paused ? "Restart Actions" : "Pause Actions"}
+            {paused ? "Restart Operations" : "Pause Operations"}
           </button>
 
           <button
@@ -70,7 +64,6 @@ export default function CriticalActionModal({ isOpen, onClose }) {
             Close
           </button>
         </div>
-
       </div>
     </div>,
     document.body

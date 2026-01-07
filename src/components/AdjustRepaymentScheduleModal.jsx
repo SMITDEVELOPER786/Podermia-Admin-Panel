@@ -15,27 +15,38 @@ export default function AdjustRepaymentScheduleModal({ loan, onClose }) {
     const updated = [...schedule];
     updated[index][field] = value;
     setSchedule(updated);
-    setError(""); // clear error on change
+    setError(""); // Clear error on input change
+  };
+
+  const addInstallment = () => {
+    setSchedule([
+      ...schedule,
+      { installment: schedule.length + 1, amount: 0, dueDate: loan.maturity },
+    ]);
+  };
+
+  const removeInstallment = (index) => {
+    const updated = schedule.filter((_, idx) => idx !== index);
+    setSchedule(updated);
   };
 
   const handleSubmit = () => {
-    const emptyField = schedule.some(
+    const invalid = schedule.some(
       (row) => row.amount === "" || row.amount <= 0 || !row.dueDate
     );
 
-    if (emptyField) {
+    if (invalid) {
       setError("All fields must be filled with valid values.");
       return;
     }
 
-    // Normally send to server / API
     console.log("Updated Repayment Schedule:", {
       user: loan.user,
       loanId: loan.userId,
       schedule,
     });
 
-    onClose(); // close modal
+    onClose();
   };
 
   return (
@@ -50,7 +61,9 @@ export default function AdjustRepaymentScheduleModal({ loan, onClose }) {
         </button>
 
         <div className={styles.modalBody}>
-          <p>Admin can modify installment amounts and due dates for this loan.</p>
+          <p>
+            Admin can modify installment amounts and due dates for this loan. You can also add or remove installment rows.
+          </p>
 
           <table className={styles.scheduleTable}>
             <thead>
@@ -58,6 +71,7 @@ export default function AdjustRepaymentScheduleModal({ loan, onClose }) {
                 <th>Installment</th>
                 <th>Amount (₦)</th>
                 <th>Due Date</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -69,7 +83,9 @@ export default function AdjustRepaymentScheduleModal({ loan, onClose }) {
                       type="number"
                       min="0"
                       value={row.amount}
-                      onChange={(e) => handleChange(idx, "amount", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(idx, "amount", e.target.value)
+                      }
                       className={styles.scheduleInput}
                       placeholder="Enter amount"
                     />
@@ -78,14 +94,35 @@ export default function AdjustRepaymentScheduleModal({ loan, onClose }) {
                     <input
                       type="date"
                       value={row.dueDate}
-                      onChange={(e) => handleChange(idx, "dueDate", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(idx, "dueDate", e.target.value)
+                      }
                       className={styles.scheduleInput}
                     />
+                  </td>
+                  <td data-label="Action">
+                    {schedule.length > 1 && (
+                      <button
+                        className={styles.removeRowButton}
+                        onClick={() => removeInstallment(idx)}
+                      >
+                        Remove
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+
+          <button
+            type="button"
+            className={styles.addRowButton}
+            onClick={addInstallment}
+            style={{ marginTop: "10px" }}
+          >
+            + Add Installment
+          </button>
 
           {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
         </div>
@@ -102,7 +139,7 @@ export default function AdjustRepaymentScheduleModal({ loan, onClose }) {
           <button
             type="button"
             className={styles.confirmButton}
-            onClick={handleSubmit}
+            onClick={onClose}
           >
             Save Changes
           </button>

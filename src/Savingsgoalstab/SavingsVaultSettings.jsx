@@ -52,31 +52,31 @@ export default function SavingsVaultSettings() {
 
   return (
     <>
-<div className={styles.sectionHeader}>
-  <h3 className={styles.mainTitle}>Savings Vault Settings</h3>
-
-    <button
+      <div className={styles.sectionHeader}>
+        <h3 className={styles.mainTitle}>Savings Vault Settings</h3>
+        <button
           className={styles.criticalBtn}
           onClick={() => setShowCriticalModal(true)}
         >
           Critical Actions
         </button>
-</div>
+      </div>
 
       <div className={styles.vaultBox}>
-        
         {/* LEFT */}
         <div className={styles.vaultCol}>
           <h4 className={styles.sectionTitle}>Fixed Savings Plan</h4>
 
-          <input className={styles.input}
+          <input
+            className={styles.input}
             placeholder="Minimum Investment Size"
             name="fixedMinInvestment"
             onChange={handleChange}
           />
           {errors.fixedMinInvestment && <p className={styles.error}>{errors.fixedMinInvestment}</p>}
 
-          <input className={styles.input}
+          <input
+            className={styles.input}
             placeholder="Minimum Balance"
             name="fixedMinBalance"
             onChange={handleChange}
@@ -95,14 +95,16 @@ export default function SavingsVaultSettings() {
 
           <h4 className={styles.sectionTitle}>Savings Goal</h4>
 
-          <input className={styles.input}
+          <input
+            className={styles.input}
             placeholder="Minimum Investment Size"
             name="goalMinInvestment"
             onChange={handleChange}
           />
           {errors.goalMinInvestment && <p className={styles.error}>{errors.goalMinInvestment}</p>}
 
-          <input className={styles.input}
+          <input
+            className={styles.input}
             placeholder="Minimum Balance"
             name="goalMinBalance"
             onChange={handleChange}
@@ -125,16 +127,49 @@ export default function SavingsVaultSettings() {
           <div className={styles.toggleRowClean}>
             <span>Freeze Early Termination</span>
             <label className={styles.switch}>
-              <input type="checkbox" name="freezeEarlyTermination" onChange={handleChange} />
+              <input
+                type="checkbox"
+                name="freezeEarlyTermination"
+                onChange={handleChange}
+                checked={settings.freezeEarlyTermination}
+              />
               <span className={styles.slider}></span>
             </label>
           </div>
 
-          <input className={styles.input}
+          <div className={styles.toggleRowClean}>
+            <span>Referral Eligibility</span>
+            <label className={styles.switch}>
+              <input
+                type="checkbox"
+                name="referralEligible"
+                onChange={handleChange}
+                checked={settings.referralEligible}
+              />
+              <span className={styles.slider}></span>
+            </label>
+          </div>
+
+          <div className={styles.toggleRowClean}>
+            <span>Notify User</span>
+            <label className={styles.switch}>
+              <input
+                type="checkbox"
+                name="notifyUser"
+                onChange={handleChange}
+                checked={settings.notifyUser}
+              />
+              <span className={styles.slider}></span>
+            </label>
+          </div>
+
+          <input
+            className={styles.input}
             type="number"
             placeholder="Early Termination Penalty (%)"
             name="earlyTerminationPenalty"
             onChange={handleChange}
+            value={settings.earlyTerminationPenalty}
           />
           {errors.earlyTerminationPenalty && <p className={styles.error}>{errors.earlyTerminationPenalty}</p>}
 

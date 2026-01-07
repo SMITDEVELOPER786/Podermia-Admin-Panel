@@ -1,21 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../css/collateral.module.css";
 
 export default function AssetLiquidationModal({ loan, onClose }) {
+  const [amount, setAmount] = useState("");
+
+  const handleSubmit = () => {
+    // yahan baad me API / logic laga sakte ho
+    console.log("Enforcement Amount:", amount);
+    onClose();
+  };
+
   return (
     <div className={styles.modalBackdrop}>
       <div className={styles.modalContent}>
         <button className={styles.closeBtn} onClick={onClose}>X</button>
-        <h3>Asset Liquidation Enforcement</h3>
-        <p>Loan: {loan.user} - {loan.asset}</p>
+
+        <h3>Record Enforcement (Set-off)</h3>
+
+        <p>
+          <strong>Loan:</strong> {loan.user} <br />
+          <strong>Asset:</strong> {loan.asset}
+        </p>
+
         <label>
-          Select Method:
-          <select>
-            <option>Full Liquidation</option>
-            <option>Partial Liquidation</option>
-          </select>
+          Amount to be enforced
+          <input
+            type="number"
+            placeholder="Enter enforcement amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
         </label>
-        <button className={styles.primaryBtn} onClick={onClose}>Initiate Enforcement</button>
+
+        <button
+          className={styles.primaryBtn}
+          onClick={onClose}
+          disabled={!amount}
+        >
+          Record Enforcement
+        </button>
       </div>
     </div>
   );

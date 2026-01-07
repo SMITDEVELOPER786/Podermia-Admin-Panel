@@ -1,21 +1,22 @@
+// File: SendRepaymentReminderModal.jsx
 import React, { useState } from "react";
 import styles from "../css/LoanListModal.module.css";
 
 export default function SendRepaymentReminderModal({ loan, onClose }) {
-  const [reminderDate, setReminderDate] = useState("");
+  const [daysBefore, setDaysBefore] = useState(""); // Number of days before instalment
   const [message, setMessage] = useState(
-    `Dear ${loan.user}, this is a reminder to complete your repayment for the loan due on ${loan.maturity}.`
+    `Dear ${loan.user}, this is a reminder to complete your repayment for the upcoming loan instalment.`
   );
 
   const handleSubmit = () => {
-    if (!reminderDate) {
-      alert("Please select a reminder date.");
+    if (!daysBefore) {
+      alert("Please enter the number of days before each instalment.");
       return;
     }
 
     alert(
       `Repayment reminder sent for ${loan.user}\n` +
-      `Reminder Date: ${reminderDate}\n` +
+      `Number of days before instalment: ${daysBefore}\n` +
       `Message: ${message}`
     );
     onClose();
@@ -29,16 +30,18 @@ export default function SendRepaymentReminderModal({ loan, onClose }) {
 
         <div className={styles.modalBody}>
           <p>
-            Admin can send a repayment reminder to the borrower. Customize the message if needed.
+            Admin can send a repayment reminder to the borrower. Specify how many days before each loan instalment the reminder should be sent. Customize the message if needed.
           </p>
 
           <div className={styles.formGroup}>
-            <label>Reminder Date</label>
+            <label>Number of Days Before Instalment</label>
             <input
-              type="date"
-              value={reminderDate}
-              onChange={(e) => setReminderDate(e.target.value)}
+              type="number"
+              min="1"
+              value={daysBefore}
+              onChange={(e) => setDaysBefore(e.target.value)}
               className={styles.inputField}
+              placeholder="Enter number of days"
             />
           </div>
 

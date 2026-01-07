@@ -419,3 +419,34 @@
     font-size: 20px;
   }
 }
+/* Add Installment Button */
+.addRowButton {
+  background-color: #4caf50; /* Green */
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.addRowButton:hover {
+  background-color: #45a049;
+}
+
+/* Remove Row Button */
+.removeRowButton {
+  background-color: #f44336; /* Red */
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.removeRowButton:hover {
+  background-color: #d32f2f;
+}

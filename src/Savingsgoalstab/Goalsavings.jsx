@@ -81,7 +81,7 @@ export default function GoalSavings({
             <th>Interest Rate</th>
             <th>Maturity Date</th>
             <th>Auto-rollover</th>
-            <th>Penalty Rate (%)</th>
+            
             <th>Actions</th>
           </tr>
         </thead>
@@ -108,7 +108,7 @@ export default function GoalSavings({
                   "No"
                 )}
               </td>
-              <td>{item.penaltyRate}</td>
+             
               <td className={styles.actionDropdownCell}>
                 <button
                   className={styles.actionBtn}

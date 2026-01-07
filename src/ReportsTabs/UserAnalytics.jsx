@@ -4,8 +4,12 @@ import exportIcon from "../assets/export.png";
 import userIcon from "../assets/userIcon.png";
 
 export default function UserAnalytics() {
-  const [datePeriod, setDatePeriod] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [error, setError] = useState("");
+
+  const datePeriod =
+    fromDate && toDate ? `${fromDate} to ${toDate}` : "";
 
   // ✅ Download CSV
   const downloadCSV = () => {
@@ -19,24 +23,30 @@ export default function UserAnalytics() {
       ["Retention Rate", "82%", datePeriod],
     ];
 
-    const csvContent = data.map(row => row.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = window.URL.createObjectURL(blob);
+    const csvContent = data.map(r => r.join(",")).join("\n");
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
     a.href = url;
     a.download = "User_Analytics_Report.csv";
-    document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    URL.revokeObjectURL(url);
   };
 
   const handleGenerate = () => {
-    if (!datePeriod) {
-      setError("Please select date period before generating report");
+    if (!fromDate || !toDate) {
+      setError("Please select FROM and TO dates");
       return;
     }
+
+    if (new Date(fromDate) > new Date(toDate)) {
+      setError("FROM date cannot be greater than TO date");
+      return;
+    }
+
     setError("");
     downloadCSV();
   };
@@ -52,18 +62,19 @@ export default function UserAnalytics() {
         </button>
       </div>
 
-      {/* ✅ FILTER + GENERATE BUTTON */}
+      {/* ✅ DATE FILTER (FROM → TO) */}
       <div className={styles.filters}>
-        <select
-          value={datePeriod}
-          onChange={(e) => setDatePeriod(e.target.value)}
-        >
-          <option value="">Select Date Period</option>
-          <option>Last 7 Days</option>
-          <option>Last 30 Days</option>
-          <option>Last 90 Days</option>
-          <option>This Year</option>
-        </select>
+        <input
+          type="date"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+        />
+
+        <input
+          type="date"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+        />
 
         <button
           type="button"
@@ -78,65 +89,35 @@ export default function UserAnalytics() {
 
       {/* CARDS */}
       <div className={styles.cards}>
-        <div className={styles.card}>
-          <div className={styles.rowBetween}>
-            <p>Total Users</p>
-            <img src={userIcon} alt="" />
-          </div>
-          <h3>12,245</h3>
-          <span className={styles.green}>+ 8.2% from last period</span>
-          <small>Registered users</small>
-        </div>
+        {[
+          ["Total Users", "12,245", "+ 8.2%", "Registered users"],
+          ["Active Users", "8,156", "+ 12.1%", "Monthly active"],
+          ["New Registrations", "1,456", "+ 23.1%", "This period"],
+          ["KYC Completions", "89%", "- 4.5%", "Verification rate"],
+          ["User Engagement", "76%", "+ 2.8%", "Daily engagement"],
+          ["Retention Rate", "82%", "+ 6.2%", "30 day retention"],
+        ].map((item, i) => (
+          <div className={styles.card} key={i}>
+            <div className={styles.rowBetween}>
+              <p>{item[0]}</p>
+              <img src={userIcon} alt="" />
+            </div>
 
-        <div className={styles.card}>
-          <div className={styles.rowBetween}>
-            <p>Active Users</p>
-            <img src={userIcon} alt="" />
-          </div>
-          <h3>8,156</h3>
-          <span className={styles.green}>+ 12.1% from last period</span>
-          <small>Monthly active</small>
-        </div>
+            <h3>{item[1]}</h3>
 
-        <div className={styles.card}>
-          <div className={styles.rowBetween}>
-            <p>New Registrations</p>
-            <img src={userIcon} alt="" />
-          </div>
-          <h3>1,456</h3>
-          <span className={styles.green}>+ 23.1% from last period</span>
-          <small>This month</small>
-        </div>
+            <span
+              className={
+                item[2].includes("-")
+                  ? styles.red
+                  : styles.green
+              }
+            >
+              {item[2]} from last period
+            </span>
 
-        <div className={styles.card}>
-          <div className={styles.rowBetween}>
-            <p>KYC Completions</p>
-            <img src={userIcon} alt="" />
+            <small>{datePeriod || item[3]}</small>
           </div>
-          <h3>89%</h3>
-          <span className={styles.red}>- 4.5% from last period</span>
-          <small>Verification rate</small>
-        </div>
-
-        <div className={styles.card}>
-          <div className={styles.rowBetween}>
-            <p>User Engagement</p>
-            <img src={userIcon} alt="" />
-          </div>
-          <h3>76%</h3>
-          <span className={styles.green}>+ 2.8% from last period</span>
-          <small>Daily engagement</small>
-        </div>
-
-        <div className={styles.card}>
-          <div className={styles.rowBetween}>
-            <p>Retention Rate</p>
-            <img src={userIcon} alt="" />
-          </div>
-          <h3>82%</h3>
-          <span className={styles.green}>+ 6.2% from last period</span>
-          <small>30 day retention</small>
-        </div>
+        ))}
       </div>
 
       {/* USER SEGMENTS */}

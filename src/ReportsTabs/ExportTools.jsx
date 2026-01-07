@@ -1,4 +1,5 @@
 import { useState } from "react";
+import jsPDF from "jspdf";
 import styles from "../css/Reports.module.css";
 
 export default function ExportTools() {
@@ -7,59 +8,46 @@ export default function ExportTools() {
   const [format, setFormat] = useState("");
   const [error, setError] = useState("");
 
-  // ===== Download helper =====
-  const downloadFile = (content, name, type) => {
-    const blob = new Blob([content], { type });
+  // ===== Generate CSV =====
+  const generateCSV = (title) => {
+    const csvContent = `Report Type,Date Range,Generated On
+${title},${dateRange},${new Date().toLocaleDateString()}`;
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = name;
+    a.download = `${title}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
-  // ===== Generate PDF =====
+  // ===== Generate PDF (jsPDF) =====
   const generatePDF = (title) => {
-    const pdfContent = `
-%PDF-1.4
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 144]
-/Contents 4 0 R /Resources << >> >>
-endobj
-4 0 obj
-<< /Length 44 >>
-stream
-BT
-/F1 12 Tf
-72 72 Td
-(${title} Generated Successfully)
-ET
-endstream
-endobj
-xref
-0 5
-0000000000 65535 f
-trailer
-<< /Root 1 0 R /Size 5 >>
-startxref
-%%EOF
-`;
-    downloadFile(pdfContent, `${title}.pdf`, "application/pdf");
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(title, 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Date Range: ${dateRange}`, 20, 30);
+    doc.text(`Generated On: ${new Date().toLocaleDateString()}`, 20, 40);
+    doc.text("This report is system generated.", 20, 50);
+
+    // Example content table
+    const tableContent = [
+      ["#","Item","Amount"],
+      [1,"Investment","45,450,000"],
+      [2,"Loan Disbursement","30,000,000"],
+      [3,"Withdrawal","10,500,000"],
+    ];
+
+    let startY = 70;
+    tableContent.forEach((row, i) => {
+      doc.text(row.join(" | "), 20, startY + i * 10);
+    });
+
+    doc.save(`${title}.pdf`);
   };
 
-  // ===== Generate CSV =====
-  const generateCSV = (title) => {
-    const csvContent = `Title,Date Range\n${title},${dateRange}`;
-    downloadFile(csvContent, `${title}.csv`, "text/csv");
-  };
-
-  // ===== Generate Export button =====
+  // ===== Handle Generate =====
   const handleGenerate = () => {
     if (!reportType || !dateRange || !format) {
       setError("Please select Report Type, Date Range and Export Format");
@@ -67,11 +55,7 @@ startxref
     }
     setError("");
 
-    if (format === "PDF") {
-      generatePDF(reportType);
-    } else {
-      generateCSV(reportType);
-    }
+    format === "PDF" ? generatePDF(reportType) : generateCSV(reportType);
   };
 
   return (
@@ -129,13 +113,15 @@ startxref
 
       <div className={styles.builder}>
         <div className={styles.builderGrid}>
+          {/* REPORT TYPE */}
           <div>
             <label>Report Type</label>
             <select value={reportType} onChange={(e) => setReportType(e.target.value)}>
               <option value="">Select Report Type</option>
-              <option value="Transaction Report">Transaction Report</option>
-              <option value="KYC Report">KYC Report</option>
-              <option value="Financial Summary">Financial Summary</option>
+              <option value="CBN Regulatory Report">CBN Regulatory Report</option>
+              <option value="Internal Audit Report">Internal Audit Report</option>
+              <option value="KYC Compliance Report">KYC Compliance Report</option>
+              <option value="Financial Summary report">Financial Summary report</option>
             </select>
           </div>
 
