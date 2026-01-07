@@ -15,6 +15,7 @@ import Notifications from "./adminDashboardTabs/Notifications";
 import AllTransactions from "./adminDashboardTabs/AllTransactions";
 import SystemLogs from "./adminDashboardTabs/SystemLogs";
 import CategoryMetrics from "./adminDashboardTabs/CategoryMetrics";
+import SupportSystem from "./SystemSettingsTabs/SupportSystem";
 const isAuthenticated = () => !!localStorage.getItem("token");
 const isTwoFAComplete = () => !!localStorage.getItem("2fa");
 
@@ -112,6 +113,7 @@ const App = () => {
           </PrivateRoute>
         }
       />
+ 
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

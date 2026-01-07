@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "../css/AdminReferrals.module.css";
-import KPICards from "../components/KPICards";
-import Header from "../components/Header";
+// import KPICards from "../components/KPICards";
+// import Header from "../components/Header";
 import ReferralsNavigation from "./AdminReferralsTabs/ReferralsNavigation";
 import Compaigns from "./AdminReferralsTabs/Compaigns";
 import Payouts from "./AdminReferralsTabs/Payouts";
@@ -38,9 +38,9 @@ const AdminReferrals = () => {
   }
   return (
     <>
-      <Header/>
-      <Div className="referrals-section">
-        <KPICards suspendedCard={false}  systemHealthCard={true}/>
+      {/* <Header/> */}
+      <Div className="referrals-section" style={{ padding: "0" }}>
+        {/* <KPICards suspendedCard={false}  systemHealthCard={true}/> */}
         <Div className="admin-heading flexRow">
           <h3>Admin Referrals</h3>
           <p>Super Admin</p>

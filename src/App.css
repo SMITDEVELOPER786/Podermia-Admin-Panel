@@ -264,11 +264,12 @@
   justify-content: space-between;
   gap: 5px;
   margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+  overflow-x: auto;        
+  /* flex-wrap: wrap; */
   padding: 0.5rem;
   background-color: #ECECF0;
   border-radius: 22px;
-  
+  scrollbar-width: none;    
 }
 
 .nav-tab {

@@ -8,7 +8,8 @@ function NavigationTabs({ activeTab, onTabChange }) {
     'Saving & Goals',
     'Admin Management',
     'System Setting',
-    'Report'
+    'Report',
+    'Support System'
   ]
 
   return (

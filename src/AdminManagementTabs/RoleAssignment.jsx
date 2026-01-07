@@ -19,12 +19,12 @@ const availableRoles = [
 
 const permissionModules = [
   {
-    module: "User Management",
-    permissions: ["View User", "Create User", "Edit User", "Delete User", "Suspend User"]
+    module: "Admin Management",
+    permissions: ["View Admin", "Create Admin", "Edit Admin", "Delete Admin", "Suspend Admin"]
   },
   {
     module: "KYC Management",
-    permissions: ["View KYC", "Approve KYC", "Reject KYC", "Manage Documents"]
+    permissions: ["View KYC", "Approve KYC", "Reject KYC", "Manage KYC Documents"]
   },
   {
     module: "Investment Management",

@@ -5,6 +5,7 @@ import UserOverview from '../AdminManagementTabs/AdminOverview'
 import RoleAssignment from '../AdminManagementTabs/RoleAssignment'
 import AdminDirectory from '../AdminManagementTabs/AdminDirectory'
 import AdminAuditLogs from '../AdminManagementTabs/AdminAuditLogs'
+import ManageUsers from '../OverviewTabs/ManageUsers'
 import { useState } from 'react'
 
 function AdminManagement() {
@@ -20,10 +21,13 @@ function AdminManagement() {
         return <AdminAuditLogs />
       case 'Role Assignment':
         return <RoleAssignment />
+      case 'Manage Users':
+        return <ManageUsers backFalse={true} paddingFalse={true}/>
       default:
         return <AdminDirectory />
     }
   }
+
   
   return (
     <div className="content-panel">

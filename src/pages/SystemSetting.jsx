@@ -44,7 +44,6 @@ function SystemSetting() {
     <div className="content-panel">
       <Div className="button-and-head">
         <h3>System Settings</h3>
-        <button onClick={() => setSupportTab(true)}>Support System</button>
       </Div>
 
       <SystemSettingsNav activeTab={activeTab} onTabChange={setActiveTab} />

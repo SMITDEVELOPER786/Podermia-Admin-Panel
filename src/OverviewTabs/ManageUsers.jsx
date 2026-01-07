@@ -20,7 +20,7 @@ function Div({ className, ...props }) {
   return <div className={mappedClass} {...props} />;
 }
 
-const ManageUsers = () => {
+const ManageUsers = ({ backFalse, paddingFalse }) => {
   const navigate = useNavigate();
   const [filtered, setFiltered] = useState([]);
   const [loadingPDF, setLoadingPDF] = useState(false);
@@ -30,85 +30,85 @@ const ManageUsers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [toast, setToast] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [activeOverrideTab, setActiveOverrideTab] = useState('savings');
-  
+  const [activeTab, setActiveTab] = useState("overview");
+  const [activeOverrideTab, setActiveOverrideTab] = useState("savings");
+
   const [savingsOverrides, setSavingsOverrides] = useState({
-    savingsGoalMinInvestment: '',
-    savingsGoalMinBalance: '',
-    savingsGoalMinLockIn: '',
-    fixedSavingsMinInvestment: '',
-    fixedSavingsMinBalance: '',
-    fixedSavingsMinLockIn: '',
-    savingsTermsDate: '',
-    savingsTermsPrincipal: '',
-    savingsTermsInterest: '',
-    savingsTermsMaturityDate: '',
+    savingsGoalMinInvestment: "",
+    savingsGoalMinBalance: "",
+    savingsGoalMinLockIn: "",
+    fixedSavingsMinInvestment: "",
+    fixedSavingsMinBalance: "",
+    fixedSavingsMinLockIn: "",
+    savingsTermsDate: "",
+    savingsTermsPrincipal: "",
+    savingsTermsInterest: "",
+    savingsTermsMaturityDate: "",
     freezeEarlyTermination: false,
-    earlyTerminationPenaltyRate: ''
+    earlyTerminationPenaltyRate: "",
   });
-  
+
   const [investmentOverrides, setInvestmentOverrides] = useState({
-    processingFee: '',
-    processingFeeType: '%',
-    processingFeeProduct: '',
-    statusControl: 'Active',
-    statusControlProduct: ''
+    processingFee: "",
+    processingFeeType: "%",
+    processingFeeProduct: "",
+    statusControl: "Active",
+    statusControlProduct: "",
   });
-  
+
   const [loanOverrides, setLoanOverrides] = useState({
-    ltvPerCollateral: '',
-    ltvCollateralType: '',
-    interestRatePerProduct: '',
-    interestRateLoanProduct: '',
-    tenorPerProduct: '',
-    tenorLoanProduct: '',
-    amountPerProduct: '',
-    amountLoanProduct: '',
-    penaltyRate: '',
-    penaltyLoanProduct: '',
-    defaultRate: '',
-    defaultLoanProduct: '',
-    earlyRepaymentPenalty: '',
-    earlyRepaymentLoanProduct: ''
+    ltvPerCollateral: "",
+    ltvCollateralType: "",
+    interestRatePerProduct: "",
+    interestRateLoanProduct: "",
+    tenorPerProduct: "",
+    tenorLoanProduct: "",
+    amountPerProduct: "",
+    amountLoanProduct: "",
+    penaltyRate: "",
+    penaltyLoanProduct: "",
+    defaultRate: "",
+    defaultLoanProduct: "",
+    earlyRepaymentPenalty: "",
+    earlyRepaymentLoanProduct: "",
   });
-  
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  
+
   const investmentProducts = [
-    'T-Bill 182 days',
-    'Corporate bond',
-    'Commercial paper',
-    'Fixed Deposit Bond',
-    'Infrastructure bond'
+    "T-Bill 182 days",
+    "Corporate bond",
+    "Commercial paper",
+    "Fixed Deposit Bond",
+    "Infrastructure bond",
   ];
-  
+
   const loanProducts = [
-    'Personal Loan-Bronze',
-    'Personal Loan-Silver',
-    'Personal Loan-Gold',
-    'Personal Loan-Platinum'
+    "Personal Loan-Bronze",
+    "Personal Loan-Silver",
+    "Personal Loan-Gold",
+    "Personal Loan-Platinum",
   ];
-  
+
   const collateralTypes = [
-    'Savings Vault',
-    'Commercial Paper',
-    'T-Bills',
-    'Bonds'
+    "Savings Vault",
+    "Commercial Paper",
+    "T-Bills",
+    "Bonds",
   ];
-  
+
   const [kycOverrides, setKycOverrides] = useState({
-    kycStatus: 'Pending',
-    tier: 'Tier 1',
+    kycStatus: "Pending",
+    tier: "Tier 1",
     temporaryAccess: false,
-    conditionalProductAccess: false
+    conditionalProductAccess: false,
   });
 
   const handleBack = () => navigate(-1);
 
   const generateUserId = (index) => {
-    return `USR${String(index + 1).padStart(6, '0')}`;
+    return `USR${String(index + 1).padStart(6, "0")}`;
   };
 
   const [users, setUsers] = useState([
@@ -416,9 +416,9 @@ const ManageUsers = () => {
 
   const handleSelectUser = (user, isSelected) => {
     if (isSelected) {
-      setSelectedUsers(prev => [...prev, user]);
+      setSelectedUsers((prev) => [...prev, user]);
     } else {
-      setSelectedUsers(prev => prev.filter(u => u.id !== user.id));
+      setSelectedUsers((prev) => prev.filter((u) => u.id !== user.id));
     }
   };
 
@@ -427,193 +427,143 @@ const ManageUsers = () => {
   };
 
   const isUserSelected = (user) => {
-    return selectedUsers.some(u => u.id === user.id);
+    return selectedUsers.some((u) => u.id === user.id);
   };
 
   const handleViewUser = (user) => {
     setSelectedUser(user);
     setIsModalOpen(true);
-    setActiveTab('overview');
-    setActiveOverrideTab('savings');
+    setActiveTab("overview");
+    setActiveOverrideTab("savings");
     setSavingsOverrides({
-      savingsGoalMinInvestment: '',
-      savingsGoalMinBalance: '',
-      savingsGoalMinLockIn: '',
-      fixedSavingsMinInvestment: '',
-      fixedSavingsMinBalance: '',
-      fixedSavingsMinLockIn: '',
-      savingsTermsDate: '',
-      savingsTermsPrincipal: '',
-      savingsTermsInterest: '',
-      savingsTermsMaturityDate: '',
+      savingsGoalMinInvestment: "",
+      savingsGoalMinBalance: "",
+      savingsGoalMinLockIn: "",
+      fixedSavingsMinInvestment: "",
+      fixedSavingsMinBalance: "",
+      fixedSavingsMinLockIn: "",
+      savingsTermsDate: "",
+      savingsTermsPrincipal: "",
+      savingsTermsInterest: "",
+      savingsTermsMaturityDate: "",
       freezeEarlyTermination: false,
-      earlyTerminationPenaltyRate: ''
+      earlyTerminationPenaltyRate: "",
     });
-    setInvestmentOverrides({ 
-      processingFee: '', 
-      processingFeeType: '%',
-      processingFeeProduct: '',
-      statusControl: 'Active',
-      statusControlProduct: ''
+    setInvestmentOverrides({
+      processingFee: "",
+      processingFeeType: "%",
+      processingFeeProduct: "",
+      statusControl: "Active",
+      statusControlProduct: "",
     });
     setLoanOverrides({
-      ltvPerCollateral: '',
-      ltvCollateralType: '',
-      interestRatePerProduct: '',
-      interestRateLoanProduct: '',
-      tenorPerProduct: '',
-      tenorLoanProduct: '',
-      amountPerProduct: '',
-      amountLoanProduct: '',
-      penaltyRate: '',
-      penaltyLoanProduct: '',
-      defaultRate: '',
-      defaultLoanProduct: '',
-      earlyRepaymentPenalty: '',
-      earlyRepaymentLoanProduct: ''
+      ltvPerCollateral: "",
+      ltvCollateralType: "",
+      interestRatePerProduct: "",
+      interestRateLoanProduct: "",
+      tenorPerProduct: "",
+      tenorLoanProduct: "",
+      amountPerProduct: "",
+      amountLoanProduct: "",
+      penaltyRate: "",
+      penaltyLoanProduct: "",
+      defaultRate: "",
+      defaultLoanProduct: "",
+      earlyRepaymentPenalty: "",
+      earlyRepaymentLoanProduct: "",
     });
     setKycOverrides({
-      kycStatus: user?.kyc || 'Pending',
-      tier: 'Tier 1',
+      kycStatus: user?.kyc || "Pending",
+      tier: "Tier 1",
       temporaryAccess: false,
-      conditionalProductAccess: false
+      conditionalProductAccess: false,
     });
   };
-  
+
   const handleEditUser = (user) => {
     setEditingUser({ ...user });
     setIsEditModalOpen(true);
   };
-  
+
   const handleSaveUserEdit = () => {
     if (!editingUser) return;
-    
-    setUsers(prevUsers => 
-      prevUsers.map(u => 
-        u.id === editingUser.id ? editingUser : u
-      )
+
+    setUsers((prevUsers) =>
+      prevUsers.map((u) => (u.id === editingUser.id ? editingUser : u))
     );
-    
+
     if (filtered.length > 0) {
-      setFiltered(prevFiltered => 
-        prevFiltered.map(u => 
-          u.id === editingUser.id ? editingUser : u
-        )
+      setFiltered((prevFiltered) =>
+        prevFiltered.map((u) => (u.id === editingUser.id ? editingUser : u))
       );
     }
-    
+
     if (selectedUser && selectedUser.id === editingUser.id) {
       setSelectedUser(editingUser);
     }
-    
+
     setToast({
-      type: 'success',
-      title: 'User Updated',
-      message: `${editingUser.name}'s details have been updated successfully.`
+      type: "success",
+      title: "User Updated",
+      message: `${editingUser.name}'s details have been updated successfully.`,
     });
-    
+
     setIsEditModalOpen(false);
     setEditingUser(null);
   };
 
   const handleModuleNavigation = (module) => {
     const moduleToTabMap = {
-      'Wallet': 'Wallet Admin',
-      'Wallet Admin': 'Wallet Admin',
-      'Savings': 'Saving & Goals',
-      'Savings Admin': 'Saving & Goals',
-      'Investment': 'Investment',
-      'Investment Admin': 'Investment',
-      'Loan': 'Loans',
-      'Loan Admin': 'Loans',
-      'KYC': 'KYC Management',
-      'KYC Admin': 'KYC Management',
-      'Referral': 'Overview', 
-      'Referral Admin': 'Overview'
+      Wallet: "Wallet Admin",
+      "Wallet Admin": "Wallet Admin",
+      Savings: "Saving & Goals",
+      "Savings Admin": "Saving & Goals",
+      Investment: "Investment",
+      "Investment Admin": "Investment",
+      Loan: "Loans",
+      "Loan Admin": "Loans",
+      KYC: "KYC Management",
+      "KYC Admin": "KYC Management",
+      Referral: "Overview",
+      "Referral Admin": "Overview",
     };
 
-    const targetTab = moduleToTabMap[module] || 'Overview';
-    
+    const targetTab = moduleToTabMap[module] || "Overview";
+
     setToast({
-      type: 'info',
-      title: 'Navigation',
-      message: `Navigating to ${targetTab}. User-specific filtering will be available once backend integration is complete.`
+      type: "info",
+      title: "Navigation",
+      message: `Navigating to ${targetTab}. User-specific filtering will be available once backend integration is complete.`,
     });
   };
 
   const handleSecurityAction = (action) => {
     const actionMessages = {
       forcePinReset: {
-        title: 'Force Transaction PIN Reset',
+        title: "Force Transaction PIN Reset",
         message: `Are you sure you want to force ${selectedUser.name} to reset their transaction PIN?`,
-        confirmText: 'Yes, Force Reset'
+        confirmText: "Yes, Force Reset",
       },
       forceLogout: {
-        title: 'Force Logout',
+        title: "Force Logout",
         message: `Are you sure you want to force logout ${selectedUser.name} from all active sessions?`,
-        confirmText: 'Yes, Force Logout'
+        confirmText: "Yes, Force Logout",
       },
       blockDevice: {
-        title: 'Block Device Access',
+        title: "Block Device Access",
         message: `Are you sure you want to block/reset device access for ${selectedUser.name}?`,
-        confirmText: 'Yes, Block Device'
+        confirmText: "Yes, Block Device",
       },
       enforce2FA: {
-        title: 'Enforce Mandatory 2FA',
+        title: "Enforce Mandatory 2FA",
         message: `Are you sure you want to enforce mandatory 2FA for ${selectedUser.name}?`,
-        confirmText: 'Yes, Enforce 2FA'
+        confirmText: "Yes, Enforce 2FA",
       },
       flagInvestigation: {
-        title: 'Flag User for Investigation',
+        title: "Flag User for Investigation",
         message: `Are you sure you want to flag ${selectedUser.name} for investigation?`,
-        confirmText: 'Yes, Flag User'
-      }
-    };
-
-    const actionData = actionMessages[action];
-    setConfirmDialog({
-      type: 'warning',
-      title: actionData.title,
-      message: actionData.message,
-      confirmText: actionData.confirmText,
-      cancelText: 'Cancel',
-      onConfirm: () => {
-        setToast({
-          type: 'success',
-          title: 'Action Completed',
-          message: `${actionData.title} has been executed for ${selectedUser.name}.`
-        });
-        setConfirmDialog(null);
+        confirmText: "Yes, Flag User",
       },
-      onCancel: () => setConfirmDialog(null)
-    });
-  };
-
-  const handleOverrideSave = (section) => {
-    setToast({
-      type: 'success',
-      title: 'Overrides Saved',
-      message: `${section} overrides have been saved for ${selectedUser.name}.`
-    });
-  };
-
-  const handleAccountAction = (action) => {
-    const actionMessages = {
-      suspend: {
-        title: "Suspend Account",
-        message: `Are you sure you want to suspend ${selectedUser.name}'s account? This will prevent them from accessing their account.`,
-        confirmText: "Yes, Suspend Account"
-      },
-      freeze: {
-        title: "Freeze Account",
-        message: `Are you sure you want to freeze ${selectedUser.name}'s account? This will temporarily restrict account activities.`,
-        confirmText: "Yes, Freeze Account"
-      },
-      close: {
-        title: "Close Account",
-        message: `Are you sure you want to close ${selectedUser.name}'s account? This action cannot be undone.`,
-        confirmText: "Yes, Close Account"
-      }
     };
 
     const actionData = actionMessages[action];
@@ -624,17 +574,68 @@ const ManageUsers = () => {
       confirmText: actionData.confirmText,
       cancelText: "Cancel",
       onConfirm: () => {
-        const newStatus = action === 'suspend' ? 'Suspended' : action === 'freeze' ? 'Frozen' : 'Closed';
-        
-        setUsers(prevUsers => 
-          prevUsers.map(u => 
+        setToast({
+          type: "success",
+          title: "Action Completed",
+          message: `${actionData.title} has been executed for ${selectedUser.name}.`,
+        });
+        setConfirmDialog(null);
+      },
+      onCancel: () => setConfirmDialog(null),
+    });
+  };
+
+  const handleOverrideSave = (section) => {
+    setToast({
+      type: "success",
+      title: "Overrides Saved",
+      message: `${section} overrides have been saved for ${selectedUser.name}.`,
+    });
+  };
+
+  const handleAccountAction = (action) => {
+    const actionMessages = {
+      suspend: {
+        title: "Suspend Account",
+        message: `Are you sure you want to suspend ${selectedUser.name}'s account? This will prevent them from accessing their account.`,
+        confirmText: "Yes, Suspend Account",
+      },
+      freeze: {
+        title: "Freeze Account",
+        message: `Are you sure you want to freeze ${selectedUser.name}'s account? This will temporarily restrict account activities.`,
+        confirmText: "Yes, Freeze Account",
+      },
+      close: {
+        title: "Close Account",
+        message: `Are you sure you want to close ${selectedUser.name}'s account? This action cannot be undone.`,
+        confirmText: "Yes, Close Account",
+      },
+    };
+
+    const actionData = actionMessages[action];
+    setConfirmDialog({
+      type: "warning",
+      title: actionData.title,
+      message: actionData.message,
+      confirmText: actionData.confirmText,
+      cancelText: "Cancel",
+      onConfirm: () => {
+        const newStatus =
+          action === "suspend"
+            ? "Suspended"
+            : action === "freeze"
+            ? "Frozen"
+            : "Closed";
+
+        setUsers((prevUsers) =>
+          prevUsers.map((u) =>
             u.id === selectedUser.id ? { ...u, accountStatus: newStatus } : u
           )
         );
-        
+
         if (filtered.length > 0) {
-          setFiltered(prevFiltered => 
-            prevFiltered.map(u => 
+          setFiltered((prevFiltered) =>
+            prevFiltered.map((u) =>
               u.id === selectedUser.id ? { ...u, accountStatus: newStatus } : u
             )
           );
@@ -646,24 +647,24 @@ const ManageUsers = () => {
           suspend: {
             type: "warning",
             title: "Account Suspended",
-            message: `${selectedUser.name}'s account has been suspended successfully.`
+            message: `${selectedUser.name}'s account has been suspended successfully.`,
           },
           freeze: {
             type: "warning",
             title: "Account Frozen",
-            message: `${selectedUser.name}'s account has been frozen successfully.`
+            message: `${selectedUser.name}'s account has been frozen successfully.`,
           },
           close: {
             type: "error",
             title: "Account Closed",
-            message: `${selectedUser.name}'s account has been closed successfully.`
-          }
+            message: `${selectedUser.name}'s account has been closed successfully.`,
+          },
         };
 
         setToast(toastMessages[action]);
         setConfirmDialog(null);
       },
-      onCancel: () => setConfirmDialog(null)
+      onCancel: () => setConfirmDialog(null),
     });
   };
 
@@ -680,9 +681,9 @@ const ManageUsers = () => {
             handleSelectUser(row, e.target.checked);
           }}
           onClick={(e) => e.stopPropagation()}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: "pointer" }}
         />
-      )
+      ),
     },
     { header: "User ID", key: "id" },
     { header: "Name", key: "name" },
@@ -730,7 +731,7 @@ const ManageUsers = () => {
       header: "Actions",
       key: "actions",
       render: (row) => (
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -752,7 +753,7 @@ const ManageUsers = () => {
             <Edit size={18} />
           </button>
         </div>
-      )
+      ),
     },
   ];
 
@@ -787,33 +788,41 @@ const ManageUsers = () => {
         temp = temp.filter((u) => u.kyc === filters.kyc);
       if (filters.status && filters.status !== "All")
         temp = temp.filter((u) => u.accountStatus === filters.status);
-      if (filters.date) temp = temp.filter((u) => u.dateCreated === filters.date);
+      if (filters.date)
+        temp = temp.filter((u) => u.dateCreated === filters.date);
 
       setFiltered(temp);
       setLoading(false);
     }, 500);
   };
 
-
   const handleExportPDF = () => {
     setLoadingPDF(true);
     setTimeout(() => {
       const doc = new jsPDF();
       doc.setFontSize(18);
-      const exportTitle = selectedUsers.length > 0 ? "Selected Users Data" : "All Users Data";
+      const exportTitle =
+        selectedUsers.length > 0 ? "Selected Users Data" : "All Users Data";
       doc.text(exportTitle, 14, 15);
 
-      const exportColumns = columns.filter(c => c.key !== "checkbox");
-      const tableColumn = exportColumns.map((c) => {
-        if (typeof c.header === 'function') return '';
-        return c.header;
-      }).filter(Boolean);
+      const exportColumns = columns.filter((c) => c.key !== "checkbox");
+      const tableColumn = exportColumns
+        .map((c) => {
+          if (typeof c.header === "function") return "";
+          return c.header;
+        })
+        .filter(Boolean);
 
-      const dataToExport = selectedUsers.length > 0 ? selectedUsers : (filtered.length > 0 ? filtered : users);
+      const dataToExport =
+        selectedUsers.length > 0
+          ? selectedUsers
+          : filtered.length > 0
+          ? filtered
+          : users;
       const tableRows = dataToExport.map((u) =>
         exportColumns
-          .filter(c => c.key !== "checkbox")
-          .map((c) => u[c.key] || '')
+          .filter((c) => c.key !== "checkbox")
+          .map((c) => u[c.key] || "")
       );
 
       autoTable(doc, {
@@ -836,11 +845,13 @@ const ManageUsers = () => {
   };
 
   return (
-    <Div className="users-section">
+    <Div className="users-section" style={{ padding: paddingFalse ? "0" : "2%" }}>
       <Div className="head-and-details flexRow">
-        <button className={styles.backBtn} onClick={handleBack}>
-          <ArrowLeftIcon size={25} className={styles.backArrow} />
-        </button>
+        {!backFalse && (
+          <button className={styles.backBtn} onClick={handleBack}>
+            <ArrowLeftIcon size={25} className={styles.backArrow} />
+          </button>
+        )}
         <div>
           <h2>User Management</h2>
           <p>Manage user account, KYC status and permissions</p>
@@ -856,7 +867,11 @@ const ManageUsers = () => {
           dropdowns: [
             { key: "type", label: "Account Type", options: accountTypes },
             { key: "kyc", label: "KYC Status", options: kycStatuses },
-            { key: "status", label: "Account Status", options: accountStatuses },
+            {
+              key: "status",
+              label: "Account Status",
+              options: accountStatuses,
+            },
           ],
           showDate: false,
           showDatePeriod: true,
@@ -871,31 +886,37 @@ const ManageUsers = () => {
             {filtered.length > 0 ? filtered.length : users.length} records
           </span>
         </Div>
-        
+
         {selectedUsers.length > 0 && (
-          <Div className="selection-info flexRow" style={{ 
-            marginTop: '12px', 
-            marginBottom: '12px',
-            padding: '8px 16px',
-            backgroundColor: '#eff6ff',
-            borderRadius: '6px',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <span style={{ fontSize: '14px', color: '#295cbf', fontWeight: '500' }}>
-              {selectedUsers.length} user{selectedUsers.length !== 1 ? 's' : ''} selected
+          <Div
+            className="selection-info flexRow"
+            style={{
+              marginTop: "12px",
+              marginBottom: "12px",
+              padding: "8px 16px",
+              backgroundColor: "#eff6ff",
+              borderRadius: "6px",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span
+              style={{ fontSize: "14px", color: "#295cbf", fontWeight: "500" }}
+            >
+              {selectedUsers.length} user{selectedUsers.length !== 1 ? "s" : ""}{" "}
+              selected
             </span>
             <button
               onClick={handleClearSelection}
               style={{
-                background: 'transparent',
-                border: 'none',
-                color: '#295cbf',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500',
-                textDecoration: 'underline',
-                padding: '4px 8px'
+                background: "transparent",
+                border: "none",
+                color: "#295cbf",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "500",
+                textDecoration: "underline",
+                padding: "4px 8px",
               }}
             >
               Clear selection
@@ -920,8 +941,10 @@ const ManageUsers = () => {
           <Loader2 className={styles.spin} size={16} />
         ) : (
           <>
-            <UploadIcon size={20} color="#fff" /> 
-            {selectedUsers.length > 0 ? `Export Selected Users (${selectedUsers.length})` : 'Export All Users'}
+            <UploadIcon size={20} color="#fff" />
+            {selectedUsers.length > 0
+              ? `Export Selected Users (${selectedUsers.length})`
+              : "Export All Users"}
           </>
         )}
       </button>
@@ -932,8 +955,8 @@ const ManageUsers = () => {
         onClose={() => {
           setIsModalOpen(false);
           setSelectedUser(null);
-          setActiveTab('overview');
-          setActiveOverrideTab('savings');
+          setActiveTab("overview");
+          setActiveOverrideTab("savings");
         }}
         activeTab={activeTab}
         setActiveTab={setActiveTab}

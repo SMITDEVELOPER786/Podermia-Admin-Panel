@@ -4,6 +4,7 @@ function AdminManagementNav({ activeTab, onTabChange }) {
     'Admin Overview',
     'Admin Audit Logs',
     'Role Assignment',
+    'Manage Users'
   ]
 
   return (

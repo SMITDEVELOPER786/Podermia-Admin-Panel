@@ -6,9 +6,9 @@ import TicketResolution from "./SupportSystemTabs/TicketResolution";
 import LiveChat from "./SupportSystemTabs/LiveChat";
 import SupportSystemNavigation from "./SupportSystemTabs/SupportSystemNavigation";
 import styles from "../css/SupportSystem.module.css";
+import ReferralSystem from "../OverviewTabs/AdminReferrals";
 
-import { ArrowLeft } from "lucide-react";
-const SupportSystem = ({ onBack }) => {
+const SupportSystem = () => {
   const [activeTab, setActiveTab] = useState("Support Queue");
   const renderContent = () => {
     switch (activeTab) {
@@ -22,6 +22,8 @@ const SupportSystem = ({ onBack }) => {
         return <TicketResolution />;
       case "Live Chat":
         return <LiveChat />;
+      case "Referral System":
+        return <ReferralSystem />;
       default:
         return <SupportQueue />;
     }
@@ -29,8 +31,10 @@ const SupportSystem = ({ onBack }) => {
 
   return (
     <div className={styles.container}>
-      <button onClick={onBack} className={styles.backButton}><ArrowLeft size={25}/></button>
-      <SupportSystemNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <SupportSystemNavigation
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
       {renderContent()}
     </div>
   );

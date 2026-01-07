@@ -11,7 +11,7 @@ import SavingGoals from './SavingGoals'
 import AdminManagement from './AdminManagement'
 import SystemSetting from './SystemSetting'
 import Report from './Report'
-
+import SupportSystem from '../SystemSettingsTabs/SupportSystem'
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('Overview')
 
@@ -35,6 +35,8 @@ function AdminDashboard() {
         return <SystemSetting />
       case 'Report':
         return <Report />
+      case 'Support System':
+        return <SupportSystem />
       default:
         return <Overview />
     }

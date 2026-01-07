@@ -5,6 +5,7 @@ function SystemSettingsNav({ activeTab, onTabChange }) {
     'Reply Threads',
     'Ticket Resolution',
     'Live Chat',
+    'Referral System',
   ]
 
   
