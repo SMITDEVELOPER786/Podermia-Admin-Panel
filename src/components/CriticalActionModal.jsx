@@ -17,7 +17,7 @@ export default function CriticalActionModal({ isOpen, onClose }) {
             <span className={styles.alertIcon}>⚠</span>
             <div>
               <h3>Critical Actions Control</h3>
-              <p>Manage critical loan operations and system-wide actions</p>
+              <p>Manage savings actions system-wide</p>
             </div>
           </div>
           <button className={styles.closeBtn} onClick={onClose}>✕</button>
@@ -26,15 +26,15 @@ export default function CriticalActionModal({ isOpen, onClose }) {
         {/* Status Card */}
         <div className={styles.riskCard}>
           <div>
-            <h4>{paused ? "System Status" : "Collateral at Risk"}</h4>
+            <h4>{paused ? "System Paused" : "Active Operations"}</h4>
 
             <p>
               {paused && (
                 <span className={styles.blackWarning}>⚠ </span>
               )}
               {paused
-                ? "Critical actions are paused. New loan approvals, disbursements, and system modifications are temporarily disabled."
-                : "Critical actions are currently active"}
+                ? "All savings actions are paused. Deposits, withdrawals, auto-savings, and interest processing are temporarily disabled."
+                : "Savings actions are currently active"}
             </p>
           </div>
 
@@ -45,12 +45,12 @@ export default function CriticalActionModal({ isOpen, onClose }) {
 
         {/* Body */}
         <div className={styles.body}>
-          <h5>Affected Operations:</h5>
+          <h5>Affected Savings Operations:</h5>
           <ul>
-            <li>Loan approvals and rejections</li>
-            <li>Fund disbursements</li>
-            <li>Collateral modifications</li>
-            <li>System configuration changes</li>
+            <li>Deposits</li>
+            <li>Withdrawals</li>
+            <li>Auto-savings processing</li>
+            <li>Interest crediting</li>
           </ul>
         </div>
 
@@ -60,7 +60,7 @@ export default function CriticalActionModal({ isOpen, onClose }) {
             className={paused ? styles.resumeBtn : styles.pauseBtn}
             onClick={() => setPaused(!paused)}
           >
-            {paused ? "Resume Operation" : "Pause Operation"}
+            {paused ? "Restart Actions" : "Pause Actions"}
           </button>
 
           <button

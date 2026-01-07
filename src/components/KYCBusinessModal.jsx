@@ -26,7 +26,7 @@ const stakeholders = {
     {
       name: "Mary Johnson",
       role: "Signatory",
-      tin: "56789876-0001",
+      tin: "56789876",
       badge: "Verified",
       phone: "+234 801 999 9999",
       email: "mary.sign@company.com",
@@ -424,6 +424,9 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                           <p className={styles.personName}>{person.name}</p>
                           <p className={styles.personRole}>{person.role}</p>
                           <p className={styles.personBvn}>BVN: {person.bvn}</p>
+                          <p className={styles.personMeta}>Country: {person.country}</p>
+<p className={styles.personMeta}>Citizenship: {person.citizenship}</p>
+
                         </div>
                         <span className={styles.badgeVerified}>{person.badge}</span>
                       </div>
@@ -439,7 +442,11 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                         <div>
                           <p className={styles.personName}>{person.name}</p>
                           <p className={styles.personRole}>{person.role}</p>
-                          <p className={styles.personBvn}>TIN: {person.tin}</p>
+                      <p className={styles.personBvn}>BVN: {person.tin}</p>
+                      <p className={styles.personMeta}>Country: {person.country}</p>
+<p className={styles.personMeta}>Citizenship: {person.citizenship}</p>
+
+
                         </div>
                         <span className={styles.badgeVerified}>Verified</span>
                       </div>
@@ -455,6 +462,9 @@ export default function KYCBusinessModal({ open, onClose, user, onSave }) {
                           <p className={styles.personName}>{person.name}</p>
                           <p className={styles.personRole}>Ownership: {person.ownership}</p>
                           {person.bvn && <p className={styles.personBvn}>BVN: {person.bvn}</p>}
+                          <p className={styles.personMeta}>Country: {person.country}</p>
+<p className={styles.personMeta}>Citizenship: {person.citizenship}</p>
+
                         </div>
                         <span className={styles.badgeVerified}>{person.badge}</span>
                       </div>
