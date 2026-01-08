@@ -166,7 +166,6 @@ if (filters.toDate) {
       maturityDate: "",
        fromDate: "",
     toDate: "",
-  toDate: "",
     });
     setRows(allRows);
   };
@@ -766,6 +765,18 @@ useEffect(() => {
   <option>Bond</option>
   <option>Treasury Bills</option>
 </select>
+<select
+  name="status"
+  value={filters.status}
+  onChange={handleInputChange}
+    className={styles.statusFilter}
+>
+  <option>Status</option>
+  <option>Active</option>
+  <option>Repaid</option>
+  <option>Overdue</option>
+</select>
+
         <div className={styles.filterButtons}>
           <button className={styles.clearBtn} onClick={clearFilters}>Clear Filters</button>
           <button className={styles.apply} onClick={applyFilters}>Apply Filters</button>
@@ -1482,8 +1493,8 @@ setBureauStatus("All");
               <th>Outstanding</th>
               <th>Days</th>
               <th>Date</th>
-              <th>Risk</th>
                 <th>Credit Bureau Status</th>
+                 <th>Risk</th>
               <th>Status</th>
               
               <th>Collateral</th>

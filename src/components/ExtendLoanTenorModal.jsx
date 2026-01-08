@@ -52,7 +52,7 @@ export default function ExtendLoanTenorModal({ loan, onClose }) {
           <button
             type="button"
             className={styles.confirmButton}
-            onClick={onCloset}
+            onClick={onClose}
           >
             Confirm
           </button>

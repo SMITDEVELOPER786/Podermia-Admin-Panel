@@ -2537,3 +2537,18 @@ select[name="userType"] option:first-child {
   cursor: pointer;
   color: #333;
 }
+.statusFilter {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #bfbfc0;
+  background: #ebebeb;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.statusFilter:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
