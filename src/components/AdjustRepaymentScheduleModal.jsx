@@ -121,7 +121,7 @@ export default function AdjustRepaymentScheduleModal({ loan, onClose }) {
             onClick={addInstallment}
             style={{ marginTop: "10px" }}
           >
-            + Add Installment
+            + Add Installment Row
           </button>
 
           {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}

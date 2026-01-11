@@ -249,7 +249,7 @@ if (filters.toDate) {
           value={filters.status}
           onChange={handleInputChange}
         >
-          <option>Status</option>
+          <option>Loan Status</option>
           <option>Pending</option>
           <option>Under Review</option>
           <option>Approved</option>
@@ -552,6 +552,10 @@ function LoanListTab() {
       collateral: "Savings Vault",
       collateralValue: 625000,
       ltv: "80%",
+       repayments: [
+      { id: 1, amount: 50000, date: "2025-07-01", status: "Active" },
+      { id: 2, amount: 50000, date: "2025-07-01", status: "Active" },
+    ],
     },
     {
       userId: "U-2002",
@@ -567,6 +571,10 @@ function LoanListTab() {
       collateral: "T-Bills",
       collateralValue: 300000,
       ltv: "60%",
+       repayments: [
+      { id: 1, amount: 50000, date: "2024-08-15", status: "Repaid" },
+      { id: 2, amount: 50000, date: "2024-08-15", status: "Repaid" },
+    ],
     },
     {
       userId: "U-2003",
@@ -582,8 +590,14 @@ function LoanListTab() {
       collateral: "Fixed Savings",
       collateralValue: 880000,
       ltv: "85%",
+       repayments: [
+      { id: 1, amount: 750000, date: "2025-06-01", status: "Overdue" },
+      { id: 2, amount: 750000, date: "2025-06-01", status: "Overdue" },
+    ],
     },
   ];
+  const [selectedRepayment, setSelectedRepayment] = useState(null);
+
 const [activeDropdownUserId, setActiveDropdownUserId] = useState(null);
   const [rows, setRows] = useState(initialRows);
  const [filters, setFilters] = useState({
@@ -771,7 +785,7 @@ useEffect(() => {
   onChange={handleInputChange}
     className={styles.statusFilter}
 >
-  <option>Status</option>
+  <option>Loan Status</option>
   <option>Active</option>
   <option>Repaid</option>
   <option>Overdue</option>
@@ -842,11 +856,18 @@ useEffect(() => {
       <div
         key={idx}
         className={styles.otherActionsItem}
-        onClick={() => {
-          setSelectedLoan(row);
-          setActiveDropdownUserId(null);
-          handleActionClick(action.modal);
-        }}
+     onClick={() => {
+  setSelectedLoan(row);
+  setActiveDropdownUserId(null);
+
+  if (action.modal === "AdjustPostingDate" || action.modal === "ReverseRepayment") {
+    // Default select first repayment
+    setSelectedRepayment(row.repayments ? row.repayments[0] : null);
+  }
+
+  handleActionClick(action.modal);
+}}
+
       >
         {action.name}
       </div>
@@ -862,9 +883,17 @@ useEffect(() => {
         </table>
       </div>
 
-      {ActiveModalComponent && selectedLoan && (
-        <ActiveModalComponent loan={selectedLoan} onClose={() => setActiveModal(null)} />
-      )}
+   
+{ActiveModalComponent && selectedLoan && (
+  <ActiveModalComponent
+    loan={selectedLoan}
+    repayment={selectedRepayment}
+    onClose={() => {
+      setActiveModal(null);
+      setSelectedRepayment(null);
+    }}
+  />
+)}
 
       {showOtherActions && selectedLoan && (
         <div className={styles.otherActionsContainer} ref={otherActionsRef}>

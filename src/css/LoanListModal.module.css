@@ -417,11 +417,16 @@
 
   .closeModal {
     font-size: 20px;
+ 
+  }
+   .modalContent table {
+    width: 100%;
+    display: block;
   }
 }
 /* Add Installment Button */
 .addRowButton {
-  background-color: #4caf50; /* Green */
+  background-color: #153ca8; /* Green */
   color: white;
   border: none;
   padding: 8px 14px;
@@ -432,7 +437,7 @@
 }
 
 .addRowButton:hover {
-  background-color: #45a049;
+  background-color: #5d39ff;
 }
 
 /* Remove Row Button */
@@ -449,4 +454,137 @@
 
 .removeRowButton:hover {
   background-color: #d32f2f;
+}
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal Content */
+.modalContent {
+  background: #fff;
+  border-radius: 8px;
+  width: 450px;
+  max-width: 90%;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  position: relative;
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Header */
+.modalHeader {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Close Button */
+.closeModal {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #666;
+}
+
+/* Modal Body */
+.modalBody {
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+/* Modal Actions */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  color: #000 !important;
+  margin-top: 15px;
+}
+
+/* Buttons */
+.cancelButton, .confirmButton {
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+.cancelButton {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.cancelButton:hover {
+  background: #e0e0e0;
+}
+
+.confirmButton {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.confirmButton:hover {
+  background: #45a049;
+}
+
+/* Error Message */
+.errorText {
+  color: red;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+/* Table inside modal */
+.modalBody table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.modalBody th, .modalBody td {
+  border-bottom: 1px solid #ccc;
+  padding: 6px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.modalBody th {
+  font-weight: 600;
+}
+
+/* Table row hover */
+.modalBody tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* Animation for modal */
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.errorText{
+  color: red !important;
 }

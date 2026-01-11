@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import styles from "../css/LoanListModal.module.css";
 
 export default function AdjustPostingDateModal({ loan, repayment, onClose, onConfirm }) {
-  // repayment = the specific repayment object
   const [newDate, setNewDate] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = () => {
-    if (!repayment || !newDate) return;
+    if (!repayment || !newDate) {
+      setError("Please fill all the fields.");
+      return;
+    }
 
-    // Call parent function with details
     if (onConfirm) {
       onConfirm({
         loanId: loan.userId,
@@ -16,15 +18,10 @@ export default function AdjustPostingDateModal({ loan, repayment, onClose, onCon
         repaymentId: repayment.id,
         oldDate: repayment.date,
         newDate,
+        amount: repayment.amount,
+        status: repayment.status,
       });
     }
-
-    console.log("Repayment posting date adjusted", {
-      user: loan.user,
-      repaymentId: repayment.id,
-      oldDate: repayment.date,
-      newDate,
-    });
 
     onClose();
   };
@@ -42,36 +39,62 @@ export default function AdjustPostingDateModal({ loan, repayment, onClose, onCon
 
         <div className={styles.modalBody}>
           {repayment ? (
-            <p>
-              Change the posting date for repayment of <strong>₦{repayment.amount.toLocaleString()}</strong> originally recorded on <strong>{repayment.date}</strong>.
-            </p>
+            <>
+              <div style={{ marginBottom: "10px" }}>
+                <strong>Repayment Details:</strong>
+                <table style={{ width: "100%", marginTop: "6px", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr>
+                      <th style={{ borderBottom: "1px solid #ccc", padding: "2px" }}>Amount</th>
+                      <th style={{ borderBottom: "1px solid #ccc", padding: "2px" }}>Date</th>
+                      <th style={{ borderBottom: "1px solid #ccc", padding: "2px" }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style={{ padding: "4px" }}>₦ {repayment.amount.toLocaleString()}</td>
+                      <td style={{ padding: "4px" }}>{repayment.date}</td>
+                      <td style={{ padding: "4px" }}>{repayment.status || "Paid"}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <label htmlFor="newDate"><strong>New Posting Date:</strong></label>
+              <input
+                id="newDate"
+                type="date"
+                value={newDate}
+                onChange={(e) => {
+                  setNewDate(e.target.value);
+                  if (error) setError("");
+                }}
+                style={{
+                  width: "100%",
+                  padding: "6px",
+                  marginTop: "6px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                }}
+              />
+            </>
           ) : (
-            <p>Please select a repayment to adjust.</p>
+            <p>Please select a specific repayment to adjust.</p>
           )}
 
-          <input
-            type="date"
-            value={newDate}
-            onChange={(e) => setNewDate(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "6px",
-              marginTop: "6px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-            }}
-          />
+          {error && (
+            <p style={{ color: "red", marginTop: "6px", fontWeight: "bold" }}>
+              {error}
+            </p>
+          )}
         </div>
 
         <div className={styles.modalActions}>
           <button className={styles.cancelButton} onClick={onClose}>
             Cancel
           </button>
-          <button
-            className={styles.confirmButton}
-            onClick={onClose}
-            disabled={!newDate || !repayment}
-          >
+
+          <button className={styles.confirmButton} onClick={handleSubmit}>
             Confirm
           </button>
         </div>
